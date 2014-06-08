@@ -1,0 +1,15 @@
+#modDetail {
+  width: 100%;
+  background-size: cover;
+  z-index: -50;
+}
+#modDetail:after {
+  box-shadow: inset 0 0 25em #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  content: "";
+}

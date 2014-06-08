@@ -1,0 +1,54 @@
+!!!5
+html(ng-app="d2mp")
+  head
+    meta(charset='utf8')
+    base(href='/')
+    title D2Moddin: Dota 2 Custom Games
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    link(rel='stylesheet', href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css")
+    link(rel='stylesheet', href='/css/app.css')
+    link(rel='stylesheet', href='/css/login.css')
+    link(rel='stylesheet', href='/css/about.css')
+    link(rel='stylesheet', href='/css/bottombar.css')
+    link(rel='stylesheet', href='/css/home.css')
+    link(rel='stylesheet', href='/css/global.css')
+    link(rel='stylesheet', href='/css/navbar.css')
+    link(rel='stylesheet', href='/css/pnotify.css')
+    link(rel='stylesheet', href='/css/spread.css')
+    link(rel='stylesheet', href='/css/topbar.css')
+    link(rel='stylesheet', href='/css/layout/topbar.css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800')
+  body
+    .loginButtonContainer
+      ul.nav.navbar-nav.navbar-right
+        #login-buttons.login-buttons-dropdown-align-right
+        li#login-dropdown-list.dropdown
+          a.dropdown-toggle(data-toggle="dropdown") Sign In
+          .dropdown-menu
+            .alert.alert-danger
+              | Only invited users can sign in.
+            .login-text-and-button
+              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-info
+                #login-buttons-image-steam.login-image
+                span.text-besides-image.sign-in-text-steam
+                  | Sign in with Steam
+            .login-text-and-button
+              #login-buttons-joinqueue.login-button.single-login-button.col-sm-12.btn.btn-success
+                #login-buttons-image-joinqueue.login-image
+                span.text-besides-image.sign-in-text-quee
+                  | Join the Queue
+    header#topNav
+      .container
+        a(href="/").logo
+          img(src="http://i.imgur.com/ncfLlMB.png",alt="D2MODD.IN")
+        .pull-right(style="position:fixed;top:25px;right:100px")
+          nav.navbar-nav.navbar-right.nav-main.mega-menu
+            ul.nav.nav-pills.nav-main.scroll-menu#topMain
+              li
+                a(href="/mods") Mods
+              li
+                a(href="/lobbies") Lobbies
+              li
+                a(href="/about") About 
+    span#header_shadow(style="pointer-events:none")
+    block body

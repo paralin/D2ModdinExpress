@@ -1,0 +1,4 @@
+header#topNav nav ul.nav-pills>li>a {
+  padding-left: 10px;
+  padding-right: 10px;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "d2moddin",
+  "version": "0.0.1",
+  "authors": [
+    "Christian Stewart <kidovate@gmail.com>"
+  ],
+  "description": "A Dota 2 custom game mode platform.",
+  "main": "app.js",
+  "keywords": [
+    "d2moddin"
+  ],
+  "license": "Private",
+  "homepage": "http://d2modd.in/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "jquery": "~2.1.1"
+  }
+}

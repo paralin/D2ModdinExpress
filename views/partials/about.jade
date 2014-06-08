@@ -1,0 +1,66 @@
+script(src="/js/pages/about.js")
+#wrapper(style="max-width:1040px;padding-left:20px;padding-right:20px;margin-right:auto;margin-left:auto;padding-top:150px")
+  section.container.aboutc
+    h2
+      | About 
+      strong D2Moddin
+    p.lead
+      | D2Moddin was created as an unofficial platform for playing Dota 2 custom
+      | game modes.
+      br
+      | Developed by 
+      a(href="http://steamcommunity.com/id/kidovate") QUANTUM 
+      | during early 2014.
+    .divider(style="margin-bottom:40px")
+      i.fa.fa-star
+    .bs-callout.text-center.nomargin-bottom
+      h3
+        a.btn.btn-success.btn-lg(style="margin-left:20px",border="0") Donate
+        a.btn.btn-info.btn-lg(href="mailto:kidovate@gmail.com",style="margin-left:20px") Contact Us
+    .toggle.toggle-accordion
+      .toggle.active
+        label Who hosts D2Moddin game servers?
+        .toggle-content
+          a.img-thumbnail.lightbox.pull-left.inner
+            img(src="http://i.imgur.com/KwGphvc.png",height=110)
+          p
+            b Masters of Development 
+            | provides a Colonge server to host European games. They are the
+            | developers of Fight or Flight, Element TD, and many other upcoming
+            | game modes.
+          p
+            b jimmydorry 
+            | provides an Australian and North American server.
+          p
+            b Quantum  
+            | hosts a US west server.
+          p
+            b [gerG] Medowar 
+            | hosts two Europe servers.
+          p
+            b BMD, 
+            | the developer of Reflex, provides a US east server.
+          .row
+            .col-md-4
+              h3 Donate a Server
+              p.justify Want to help out D2Moddin? If you have an available Windows server, we would love to add it to the network as a game server. Contact us!
+            .col-md-4
+            .col-md-4
+              h3 Donate Resources
+              p.justify Donations will go towards future development costs and additional server capacity. They are always appreciated.
+      .toggle
+        label How does the manager work?
+        .toggle-content
+          .row
+            .col-md-4
+              h3 The Launcher
+              p.justify D2MPLauncher downloads the mod manager to a temporary directory on your computer. The launcher then runs the D2Moddin manager, which minimizes to your Windows tray. It will either update your existing manager, launch it if it is up to date, or download it for the first time.
+            .col-md-4
+              h3 The Manager
+              p.justify The D2Moddin manager downloads local files (mdoels, textures, and UI files) to your Dota 2 addons directory. It does not modify any files and is designed to be as temporary as possible.
+            .col-md-4
+              h3 Uninstalling
+              p.justify If you wish to remove the manager and all mods from your system, right click the manager in your system tray and click uninstall. This will delete the manager and all addons.
+          p.lead.padding30.text-center 
+            | The source code for the launcher and manager are available on 
+            a(href="https://github.com/kidovate/d2moddinclient") GitHub.
