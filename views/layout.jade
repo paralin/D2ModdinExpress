@@ -1,14 +1,15 @@
 !!!5
-html(ng-app="d2mp")
+html.no-js(ng-app="d2mp",lang="en")
   head
     meta(charset='utf8')
     base(href='/')
     title D2Moddin: Dota 2 Custom Games
     link(rel='stylesheet', href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
-    link(rel='stylesheet', href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css")
+    link(rel='stylesheet', href='//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='/css/app.css')
     link(rel='stylesheet', href='/css/login.css')
     link(rel='stylesheet', href='/css/about.css')
+    link(rel='stylesheet', href='/css/modList.css')
     link(rel='stylesheet', href='/css/bottombar.css')
     link(rel='stylesheet', href='/css/home.css')
     link(rel='stylesheet', href='/css/global.css')
@@ -19,21 +20,28 @@ html(ng-app="d2mp")
     link(rel='stylesheet', href='/css/layout/topbar.css')
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,800')
   body
-    .loginButtonContainer
+    .loginButtonContainer(ng-controller="AuthCtrl")
       ul.nav.navbar-nav.navbar-right
         #login-buttons.login-buttons-dropdown-align-right
         li#login-dropdown-list.dropdown
-          a.dropdown-toggle(data-toggle="dropdown") Sign In
-          .dropdown-menu
+          a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed==false") Sign In
+          a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed") {{auth.user.profile.name}}
+          .dropdown-menu(ng-if="auth.isAuthed")
+            .login-text-and-button
+              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-danger(ng-click="signOut()")
+                #login-buttons-image-steam.login-image
+                span.text-besides-image.sign-in-text-steam
+                  | Sign Out
+          .dropdown-menu(ng-if="auth.isAuthed==false")
             .alert.alert-danger
               | Only invited users can sign in.
             .login-text-and-button
-              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-info
+              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-info(ng-click="startLogin()")
                 #login-buttons-image-steam.login-image
                 span.text-besides-image.sign-in-text-steam
                   | Sign in with Steam
             .login-text-and-button
-              #login-buttons-joinqueue.login-button.single-login-button.col-sm-12.btn.btn-success
+              #login-buttons-joinqueue.login-button.single-login-button.col-sm-12.btn.btn-success(ng-click="joinQueue()")
                 #login-buttons-image-joinqueue.login-image
                 span.text-besides-image.sign-in-text-quee
                   | Join the Queue
@@ -41,7 +49,7 @@ html(ng-app="d2mp")
       .container
         a(href="/").logo
           img(src="http://i.imgur.com/ncfLlMB.png",alt="D2MODD.IN")
-        .pull-right(style="position:fixed;top:25px;right:100px")
+        .pull-right(style="position:fixed;top:25px;right:115px")
           nav.navbar-nav.navbar-right.nav-main.mega-menu
             ul.nav.nav-pills.nav-main.scroll-menu#topMain
               li

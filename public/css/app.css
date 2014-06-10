@@ -1864,3 +1864,6 @@ p, ol li, ul li {
   color: #7e8998;
 }
 
+* {
+  font-family: "Open Sans", sans-serif;
+}

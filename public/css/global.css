@@ -18,3 +18,32 @@ html {
 .btn {
   border-radius: 0;
 }
+.entryPanel {
+  width: 400px;
+  padding-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+.modThumbnail {
+  width: 250px;
+  height: 70px;
+  max-width: 300px;
+  max-height: 80px;
+  padding: 10px;
+  border-color: #e6e6e6;
+  border-width: 1px;
+  border-style: solid;
+  text-align: left;
+  cursor: pointer;
+}
+.modThumbnail .thumbDetail {
+  width: 170px;
+  height: 50px;
+  float: right;
+}
+.modThumbnail .thumbDetail p {
+  font-size: 12px;
+  margin: 0;
+  line-height: 15px;
+}

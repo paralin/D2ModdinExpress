@@ -1,10 +1,9 @@
 'use strict';
 
-/* Directives */
-
-angular.module('d2mp.directives', []).
-  directive('appVersion', function (version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  });
+angular.module('d2mp.directives', [])
+.directive('modthumbnail', function(){
+  return {
+    templateUrl: '/partials/modThumb',
+    replace: true
+  };
+});

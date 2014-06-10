@@ -1,0 +1,22 @@
+#wrapper
+  section.container.text-center(style="margin-top:30px")
+    h1.text-center
+      strong Available 
+      | Mods
+      span.subtitle PICK A GAME MODE
+  #mods
+    section.container
+      .row
+        .col-sm-6.col-md-4(style="width:400px",ng-repeat="mod in mods")
+          .item-box.fixed-box
+            figure
+              a.item-hover(href="/mods/{{mod.name}}")
+                span.overlay.color2
+                  a.btn.btn-primary.go_to_mod(ng-if="mod.playable",href="/lobbies/{{mod.name}}")
+                    i.fa.fa-search
+                    | FIND A GAME
+              img.img-responsive(src="{{mod.thumbnail}}",style="width:260px;height:260px")
+            .item-box-desc
+              h4
+                strong {{mod.fullname}}
+              small.styleColor {{mod.subtitle}}
