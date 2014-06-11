@@ -10,7 +10,29 @@
 
     function LobbyService($rootScope, $authService) {
       this.lobbies = [];
-      this.publicLobbies = [];
+      this.publicLobbies = [
+        {
+          _id: "someid",
+          banned: [],
+          creator: "Quantum",
+          creatorid: "someid",
+          deleted: false,
+          devMode: false,
+          dire: [null, null, null, null, null],
+          radiant: [null, null, null, null, null],
+          enableGG: true,
+          hasPassword: false,
+          isPublic: true,
+          mod: "ura55vChSgFo6LHgz",
+          name: "Test Lobby",
+          password: "",
+          region: 1,
+          requiresFullLobby: true,
+          serverIP: "",
+          state: 0,
+          status: 0
+        }
+      ];
       this.socket = null;
       this.scope = $rootScope;
       this.auth = $authService;
@@ -129,7 +151,6 @@
       this.disconnect();
       console.log("Attempting connection...");
       this.socket = so = new XSockets.WebSocket('ws://127.0.0.1:4502/BrowserController');
-      console.log(so);
       so.on('auth', function(data) {
         if (data.status) {
           $.pnotify({
@@ -141,6 +162,7 @@
         } else {
           _this.lobbies.length = 0;
           _this.publicLobbies.length = 0;
+          _this.scope.$digest();
           $.pnotify({
             title: "Deauthed",
             text: "You are no longer authed with the lobby server.",
@@ -166,6 +188,7 @@
       so.on("close", function() {
         _this.lobbies.length = 0;
         _this.publicLobbies.length = 0;
+        _this.scope.$digest();
         _this.status.managerConnected = false;
         _this.status.managerStatus = "You have lost connection with the lobby server...";
         _this.socket = null;
@@ -184,6 +207,7 @@
         });
         _this.lobbies.length = 0;
         _this.publicLobbies.length = 0;
+        _this.scope.$digest();
         return _this.sendAuth();
       });
     };

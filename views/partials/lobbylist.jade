@@ -20,17 +20,19 @@
               th(style="width:70px")
           tbody
             tr(ng-repeat="lobby in lobbies")
-              td(style="padding:3px")
-                img(ng-src="{{getModThumbnail(lobby)}}")
+              td(style="padding:5px")
+                img(ng-src="{{getModThumbnail(lobby.mod)}}",style="width:35px;height:35px")
               td {{lobby.name}}
               td {{REGIONSH[lobby.region]}}
-              td
+              td(style="margin:0;padding:0")
                 .ilteams
                   p
-                    span.avi(ng-repeat="player in lobby.radiant")
-                      img(ng-src="{{player.avatar}}")
+                    span.avi(ng-repeat="player in lobby.radiant track by $index")
+                      img(ng-src="{{player.avatar}}",ng-hide="player==null")
+                      |  {{player.name}}
                   p
-                    span.avi(ng-repeat="player in lobby.dire")
-                      img(ng-src="{{player.avatar}}")
+                    span.avi(ng-repeat="player in lobby.dire track by $index")
+                      img(ng-src="{{player.avatar}}",ng-hide="player==null")
+                      |  {{player.name}}
               td
                 button.btn.btn-success(ng-click="joinLobby(lobby)") Join

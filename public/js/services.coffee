@@ -5,7 +5,27 @@ global = @
 class LobbyService
   constructor:($rootScope, $authService)->
     @lobbies = []
-    @publicLobbies = []
+    @publicLobbies = [
+      _id: "someid"
+      banned: []
+      creator: "Quantum"
+      creatorid: "someid"
+      deleted: false
+      devMode: false
+      dire: [null,null,null,null,null]
+      radiant: [null,null,null,null,null]
+      enableGG: true
+      hasPassword: false
+      isPublic: true
+      mod: "ura55vChSgFo6LHgz"
+      name: "Test Lobby"
+      password: ""
+      region: 1
+      requiresFullLobby: true
+      serverIP: ""
+      state: 0
+      status: 0
+    ]
     @socket = null
     @scope = $rootScope
     @auth = $authService
@@ -81,8 +101,6 @@ class LobbyService
     @disconnect()
     console.log "Attempting connection..."
     @socket = so = new XSockets.WebSocket 'ws://127.0.0.1:4502/BrowserController'
-    #'ws://ddp2.d2modd.in:4502/'
-    console.log so
     so.on 'auth', (data)=>
       if data.status
         $.pnotify
@@ -93,6 +111,7 @@ class LobbyService
       else
         @lobbies.length = 0
         @publicLobbies.length = 0
+        @scope.$digest()
         $.pnotify
           title: "Deauthed"
           text: "You are no longer authed with the lobby server."
@@ -111,6 +130,7 @@ class LobbyService
     so.on "close", =>
       @lobbies.length = 0
       @publicLobbies.length = 0
+      @scope.$digest()
       @status.managerConnected = false
       @status.managerStatus = "You have lost connection with the lobby server..."
       @socket = null
@@ -126,6 +146,7 @@ class LobbyService
         type: "success"
       @lobbies.length = 0
       @publicLobbies.length = 0
+      @scope.$digest()
       @sendAuth()
     
 angular.module("d2mp.services", []).factory("$authService", [
