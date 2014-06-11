@@ -128,8 +128,8 @@
         _this = this;
       this.disconnect();
       console.log("Attempting connection...");
-      this.socket = new XSockets.WebSocket('ws://ddp2.d2modd.in:4502/');
-      so = this.socket;
+      this.socket = so = new XSockets.WebSocket('ws://127.0.0.1:4502/BrowserController');
+      console.log(so);
       so.on('auth', function(data) {
         if (data.status) {
           $.pnotify({
@@ -163,7 +163,7 @@
           }
         }
       });
-      so.on(XSockets.Events.close, function() {
+      so.on("close", function() {
         _this.lobbies.length = 0;
         _this.publicLobbies.length = 0;
         _this.status.managerConnected = false;
@@ -175,7 +175,8 @@
           type: "error"
         });
       });
-      return so.on(XSockets.Events.open, function(clientinfo) {
+      return so.on("open", function(clientinfo) {
+        console.log("OnOpen");
         $.pnotify({
           title: "Connected",
           text: "Connected to the lobby server",

@@ -31,7 +31,7 @@ module.exports = function(passport){
       if(err)
         return done(err);
       profile = data.players[0];
-      User.findOne({'steam.steamid': identifier.steamid}, function(err, user){
+      User.findOne({'steam.steamid': profile.steamid}, function(err, user){
         if(err)
           return done(err);
         if(user){

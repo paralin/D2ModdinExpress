@@ -80,7 +80,9 @@ class LobbyService
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/'
+    @socket = so = new XSockets.WebSocket 'ws://127.0.0.1:4502/BrowserController'
+    #'ws://ddp2.d2modd.in:4502/'
+    console.log so
     so.on 'auth', (data)=>
       if data.status
         $.pnotify
@@ -106,7 +108,7 @@ class LobbyService
         else
           @status.managerConnected = false
           @status.managerStatus = "Manager has disconnected."
-    so.on XSockets.Events.close, =>
+    so.on "close", =>
       @lobbies.length = 0
       @publicLobbies.length = 0
       @status.managerConnected = false
@@ -116,7 +118,8 @@ class LobbyService
         title: "Disconnected"
         text: "Disconnected from the lobby server."
         type: "error"
-    so.on XSockets.Events.open, (clientinfo)=>
+    so.on "open", (clientinfo)=>
+      console.log "OnOpen"
       $.pnotify
         title: "Connected"
         text: "Connected to the lobby server"
