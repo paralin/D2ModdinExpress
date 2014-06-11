@@ -1663,8 +1663,8 @@ h1, h2, h3, h4, h5, h6 {
   padding: 15px;
   padding-top: 5px;
   padding-bottom: 0;
-  padding-left: 80px;
-  padding-right: 80px;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 h1 span.subtitle, h2 span.subtitle, h3 span.subtitle {

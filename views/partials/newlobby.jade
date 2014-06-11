@@ -1,0 +1,19 @@
+#wrapper
+  .panel.panel-success.entryPanel
+    .panel-heading Create a new lobby
+    .panel-body
+      .form-horizontal(role="form",ng-if="!isAuthed")
+        .form-group
+          label.col-sm-2.control-label(style="width:100%;text-align:center")
+            | You must be signed in to create lobbies.
+      .form-horizontal(role="form",ng-if="isAuthed")
+        .form-group
+          label.col-sm-2.control-label Name
+          .col-sm-10
+            input#lobbyName.form-control(for="lobbyName",placeholder="{{user.profile.name}}'s Lobby")
+        .form-group(style="margin:0")
+          label.col-sm-2.control-label(style="width:100%;text-align:center")
+            | Choose a Mod 
+        .form-group
+          div(ng-click="selectMod(mod)",ng-repeat="mod in mods",style="margin-left:auto;margin-right:auto;width:251px")
+            div(modthumbnail)

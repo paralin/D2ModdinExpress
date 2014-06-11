@@ -1,0 +1,17 @@
+.installDialog
+  div(ng-if="status.managerConnected")
+    div(ng-if="status.managerDownloading")
+      .dTitle Downloading...
+      br
+      | Your mod manager is downloading the addon to your Dota 2 addons directory.
+      button.btn.btn-success.mainBtn.installBtn(disabled) Download/Update
+    div(ng-if="!status.managerDownloading")
+      .dTitle Mod Download
+      | The mod manager will automatically download the mod files to your Dota 2 addons directory.
+      a.btn.btn-success.mainBtn.installBtn(ng-click="startInstall()") Download / Update
+  div(ng-if="!status.managerConnected")
+    .dTitle Mod Manager
+    br
+    p This mod has local files, please launch the manager.
+    p The D2Moddin mod manager downloads maps, models, and other local content required to play this custom game mode to your Dota 2 addons directory.
+    a.btn.btn-primary.mainBtn.managerBtn(style="margin-top:20px",ng-click="launchManager()") Launch Manager

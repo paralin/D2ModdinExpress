@@ -39,7 +39,8 @@
       this.hasAuthed = false;
       this.status = {
         managerConnected: false,
-        managerStatus: "Manager is not running / not connected to this steam."
+        managerStatus: "Manager status unknown, checking...",
+        managerDownloading: false
       };
       this.colls = {
         lobbies: this.lobbies,
@@ -49,7 +50,6 @@
 
     LobbyService.prototype.disconnect = function() {
       if (this.socket !== null) {
-        this.socket.close();
         this.socket = null;
       }
       this.hasAuthed = false;
@@ -61,6 +61,31 @@
         return;
       }
       return this.socket.publish('data', data);
+    };
+
+    LobbyService.prototype.call = function(method, params) {
+      var data;
+      data = {
+        id: method,
+        req: params
+      };
+      console.log(data);
+      return this.send(data);
+    };
+
+    LobbyService.prototype.installMod = function(modname) {
+      this.call("installmod", {
+        mod: modname
+      });
+      this.status.managerDownloading = true;
+      return this.scope.$digest();
+    };
+
+    LobbyService.prototype.createLobby = function(name, modid) {
+      return this.call("createlobby", {
+        name: name,
+        mod: modid
+      });
     };
 
     LobbyService.prototype.sendAuth = function() {
@@ -82,7 +107,7 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
-      var coll, id, idx, obj, op, upd, _i, _len, _ref, _results;
+      var coll, eve, id, idx, obj, op, upd, _i, _len, _ref, _results;
       switch (data.msg) {
         case "error":
           return $.pnotify({
@@ -95,6 +120,7 @@
         case "modneeded":
           return this.scope.$broadcast('lobby:modNeeded', data.name);
         case "installres":
+          this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success);
         case "colupd":
           _ref = data.ops;
@@ -102,12 +128,13 @@
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             upd = _ref[_i];
             coll = this.colls[upd._c];
+            eve = "lobbyUpdate:" + upd._c;
             op = upd._o;
             delete upd["_o"];
             delete upd["_c"];
             switch (op) {
               case "insert":
-                _results.push(coll.push(upd));
+                coll.push(upd);
                 break;
               case "update":
                 id = upd._id;
@@ -116,9 +143,7 @@
                   _id: id
                 });
                 if (obj != null) {
-                  _results.push(_.extend(obj, upd));
-                } else {
-                  _results.push(void 0);
+                  _.extend(obj, upd);
                 }
                 break;
               case "remove":
@@ -129,17 +154,11 @@
                 if (obj != null) {
                   idx = coll.indexOf(obj);
                   if (idx !== -1) {
-                    _results.push(coll.splice(idx, 1));
-                  } else {
-                    _results.push(void 0);
+                    coll.splice(idx, 1);
                   }
-                } else {
-                  _results.push(void 0);
                 }
-                break;
-              default:
-                _results.push(void 0);
             }
+            _results.push(this.scope.$emit(eve, op));
           }
           return _results;
       }
@@ -178,19 +197,20 @@
         if (msg.msg === 'status') {
           if (msg.status) {
             _this.status.managerConnected = true;
-            return _this.status.managerStatus = "Manager running and ready.";
+            _this.status.managerStatus = "Manager running and ready.";
           } else {
             _this.status.managerConnected = false;
-            return _this.status.managerStatus = "Manager has disconnected.";
+            _this.status.managerStatus = "Manager is not connected.";
           }
+          return _this.scope.$digest();
         }
       });
       so.on("close", function() {
         _this.lobbies.length = 0;
         _this.publicLobbies.length = 0;
-        _this.scope.$digest();
         _this.status.managerConnected = false;
         _this.status.managerStatus = "You have lost connection with the lobby server...";
+        _this.scope.$digest();
         _this.socket = null;
         return $.pnotify({
           title: "Disconnected",
@@ -251,6 +271,40 @@
       service.sendAuth();
       global.service = service;
       return service;
+    }
+  ]).factory('$forceLobbyPage', [
+    '$rootScope', '$location', '$lobbyService', function($rootScope, $location, $lobbyService) {
+      $rootScope.$on('lobbyUpdate:lobbies', function(op) {
+        if (op === 'update' || op === 'insert') {
+          if ($location.path() !== "lobby") {
+            $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
+            return $rootScope.$apply();
+          }
+        } else {
+          if ($location.path() === "lobby") {
+            $location.path('/lobbies');
+            return $rootScope.$apply();
+          }
+        }
+      });
+      $rootScope.$on('lobby:modNeeded', function(event, mod) {
+        $location.url('/install/' + mod);
+        return $rootScope.$apply();
+      });
+      return $rootScope.$on('$locationChangeStart', function(event, newurl, oldurl) {
+        if ($lobbyService.lobbies.length > 0) {
+          event.preventDefault();
+          if ($location.path() !== "lobby") {
+            $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
+            return $rootScope.$apply();
+          }
+        } else {
+          if (newurl.indexOf('/lobby/') !== -1) {
+            $location.url('/lobbies');
+            return $rootScope.$apply();
+          }
+        }
+      });
     }
   ]);
 

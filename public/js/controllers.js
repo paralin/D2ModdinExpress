@@ -4,26 +4,32 @@
 
   angular.module("d2mp.controllers", []).controller("HomeCtrl", ["$scope", function($scope) {}]).controller("AboutCtrl", ["$scope", function($scope) {}]).controller("ModsCtrl", ["$scope", function($scope) {}]).controller("LobbyListCtrl", [
     "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", function($scope, $location, $routeParams, $rootScope, $lobbyService) {
-      var publicLobbies;
+      var mod, modName, publicLobbies;
       publicLobbies = $lobbyService.publicLobbies;
       $scope.hasMod = $routeParams.modname != null;
+      modName = null;
+      mod = null;
       if ($scope.hasMod) {
-        $scope.mod = _.findWhere($rootScope.mods, {
-          name: $routeParams.modname
+        modName = $routeParams.modname;
+        $scope.mod = mod = _.findWhere($rootScope.mods, {
+          name: modName
         });
+        $scope.lobbies = publicLobbies;
       }
-      $scope.lobbies = publicLobbies;
+      $scope.createLobby = function() {
+        if ($scope.hasMod) {
+          return $lobbyService.createLobby(null, mod._id);
+        } else {
+          return $location.url('/newlobby');
+        }
+      };
       $scope.joinLobby = function(lobby) {
         console.log(lobby);
       };
       return $scope.getModThumbnail = function(modid) {
-        var mod;
-        console.log(modid);
-        console.log($rootScope.mods);
         mod = _.findWhere($rootScope.mods, {
           _id: modid
         });
-        console.log(mod);
         if (mod != null) {
           return mod.thumbnail;
         } else {
@@ -43,6 +49,46 @@
       return $scope.joinQueue = function() {
         window.location.href = "http://d2modd.in/";
       };
+    }
+  ]).controller("InstallModCtrl", [
+    "$scope", "$lobbyService", "$routeParams", "$rootScope", "$location", function($scope, $lobbyService, $routeParams, $rootScope, $location) {
+      var mod, modname;
+      modname = $routeParams.modname;
+      if (!(modname != null)) {
+        return $location.url('/mods');
+      }
+      mod = _.findWhere($rootScope.mods, {
+        name: modname
+      });
+      if (!(mod != null)) {
+        $location.url('/mods');
+        return $.pnotify({
+          title: "Mod Not Found",
+          text: "The mod you wanted to install can't be found.",
+          type: "error"
+        });
+      }
+      $scope.status = $lobbyService.status;
+      return $scope.startInstall = function() {
+        return $lobbyService.installMod(mod.name);
+      };
+    }
+  ]).controller("CreateLobbyCtrl", [
+    "$scope", "$location", "$lobbyService", "$authService", function($scope, $location, $lobbyService, $authService) {
+      $scope.isAuthed = $authService.isAuthed;
+      $scope.user = $authService.user;
+      return $scope.selectMod = function(mod) {
+        var name;
+        name = $("#lobbyName").val();
+        name = name === "" ? null : name;
+        return $lobbyService.createLobby(name, mod._id);
+      };
+    }
+  ]).controller("BottomBarCtrl", [
+    "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
+      $scope.isAuthed = $authService.isAuthed;
+      $scope.user = $authService.user;
+      return $scope.status = $lobbyService.status;
     }
   ]).controller("ModDetailCtrl", function($scope, $rootScope, $routeParams, $location, $sce) {
     var mod, modname;

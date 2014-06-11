@@ -32,14 +32,14 @@ class LobbyService
     @hasAuthed = false
     @status =
       managerConnected: false
-      managerStatus: "Manager is not running / not connected to this steam."
+      managerStatus: "Manager status unknown, checking..."
+      managerDownloading: false
     @colls =
       lobbies: @lobbies
       publicLobbies: @publicLobbies
   
   disconnect: ->
     if @socket != null
-      @socket.close()
       @socket = null
     @hasAuthed = false
     console.log "Disconnected."
@@ -47,6 +47,24 @@ class LobbyService
   send: (data)->
     return if !@socket?
     @socket.publish 'data', data
+
+  call: (method, params)->
+    data =
+      id: method
+      req: params
+    console.log data
+    @send data
+
+  installMod: (modname)->
+    @call "installmod",
+      mod: modname
+    @status.managerDownloading = true
+    @scope.$digest()
+
+  createLobby: (name, modid)->
+    @call "createlobby",
+      name: name
+      mod: modid
 
   sendAuth: ()->
     if !@auth.isAuthed
@@ -73,10 +91,12 @@ class LobbyService
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
       when "installres"
+        @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success
       when "colupd"
         for upd in data.ops
           coll = @colls[upd._c]
+          eve = "lobbyUpdate:"+upd._c
           op = upd._o
           delete upd["_o"]
           delete upd["_c"]
@@ -96,7 +116,7 @@ class LobbyService
                 idx = coll.indexOf obj
                 if idx isnt -1
                   coll.splice idx, 1
-
+          @scope.$emit eve, op
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
@@ -126,13 +146,14 @@ class LobbyService
           @status.managerStatus = "Manager running and ready."
         else
           @status.managerConnected = false
-          @status.managerStatus = "Manager has disconnected."
+          @status.managerStatus = "Manager is not connected."
+        @scope.$digest()
     so.on "close", =>
       @lobbies.length = 0
       @publicLobbies.length = 0
-      @scope.$digest()
       @status.managerConnected = false
       @status.managerStatus = "You have lost connection with the lobby server..."
+      @scope.$digest()
       @socket = null
       $.pnotify
         title: "Disconnected"
@@ -189,4 +210,31 @@ angular.module("d2mp.services", []).factory("$authService", [
     service.sendAuth()
     global.service = service
     service
+]).factory('$forceLobbyPage', [
+  '$rootScope'
+  '$location'
+  '$lobbyService'
+  ($rootScope, $location, $lobbyService)->
+    $rootScope.$on 'lobbyUpdate:lobbies', (op)->
+      if op in ['update', 'insert'] 
+        if $location.path() isnt "lobby"
+          $location.url "/lobby/"+$lobbyService.lobbies[0]._id
+          $rootScope.$apply()
+      else
+        if $location.path() is "lobby"
+          $location.path('/lobbies')
+          $rootScope.$apply()
+    $rootScope.$on 'lobby:modNeeded', (event, mod)->
+      $location.url '/install/'+mod
+      $rootScope.$apply()
+    $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
+      if $lobbyService.lobbies.length > 0
+        event.preventDefault()
+        if $location.path() isnt "lobby"
+          $location.url "/lobby/"+$lobbyService.lobbies[0]._id
+          $rootScope.$apply()
+      else
+        if newurl.indexOf('/lobby/') != -1
+          $location.url('/lobbies')
+          $rootScope.$apply()
 ])
