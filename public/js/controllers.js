@@ -13,9 +13,15 @@ angular.module('d2mp.controllers', []).
 
   }]).
   controller('LobbyListCtrl', ['$scope', '$location', '$routeParams', '$rootScope', function ($scope, $location, $routeParams, $rootScope) {
+    var lobbies = lobbyCollection.getInstance();
+    var publicLobbies = publicLobbyCollection.getInstance();
     $scope.hasMod = $routeParams.modname != null;
     if($scope.hasMod){
       $scope.mod = _.findWhere($rootScope.mods, {name: $routeParams.modname});
+    }
+    $scope.lobbies = publicLobbies;
+    $scope.joinLobby = function(lobby){
+      console.log(lobby);
     }
   }]).
   controller('AuthCtrl', ["$scope", "$authService", function($scope, $authService){

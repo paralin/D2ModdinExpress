@@ -34,25 +34,24 @@ module.exports = function(passport){
       User.findOne({'steam.steamid': identifier.steamid}, function(err, user){
         if(err)
           return done(err);
-        require('crypto').randomBytes(48, function(ex,buf){
-          var token = buf.toString('hex');
-          if(user){
-            user.steam = identifier;
-            user.profile.name = profile.personaname;
-            user.token = token
-            return done(null, user);
-          }else{
+        if(user){
+          user.steam = identifier;
+          user.profile.name = profile.personaname;
+          return done(null, user);
+        }else{
+          require('crypto').randomBytes(48, function(ex, buf){
             var newUser = new User();
+            newUser._id = buf.toString('hex');
             newUser.steam = profile;
             newUser.profile.name = profile.personaname;
-            newUser.token = token;
+            newUser.authItems = [];
             newUser.save(function(err){
               if(err)
                 throw err;
               return done(null, newUser);
             });
-          }
-        });
+          });
+        }
       })
     });
   }));

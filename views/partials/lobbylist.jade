@@ -22,3 +22,15 @@
             tr(ng-repeat="lobby in lobbies")
               td(style="padding:3px")
                 img(ng-src="{{getModThumbnail(lobby)}}")
+              td {{lobby.name}}
+              td {{REGIONSH[lobby.region]}}
+              td
+                .ilteams
+                  p
+                    span.avi(ng-repeat="player in lobby.radiant")
+                      img(ng-src="{{player.avatar}}")
+                  p
+                    span.avi(ng-repeat="player in lobby.dire")
+                      img(ng-src="{{player.avatar}}")
+              td
+                button.btn.btn-success(ng-click="joinLobby(lobby)") Join

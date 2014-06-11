@@ -73,6 +73,7 @@ app.get('/data/authStatus', function(req, res){
   var resp = {};
   resp.isAuthed = req.user != null;
   resp.user = req.user;
+  resp.token = req.sessionID;
   res.json(resp);
 });
 

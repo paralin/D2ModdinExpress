@@ -6,4 +6,10 @@ angular.module('d2mp.directives', [])
     templateUrl: '/partials/modThumb',
     replace: true
   };
+}).
+directive('inlineteams', function(){
+  return {
+    templateUrl: '/partials/inlineteams',
+    replace: true
+  };
 });
