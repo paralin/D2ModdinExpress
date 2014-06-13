@@ -3,15 +3,16 @@ extends layout
 block body
   div(ng-view,style="width:100%;height:100%")
 
-  .statusBar(ng-controller="BottomBarCtrl")
-    .left
-      i.fa.fa-tachometer 
-      span.status  {{status.managerStatus}}
-    .rightButtons
-      a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
-        | Source
-      button.btn.btn-success(ng-if="!status.managerConnected")
-        | Download Launcher
+  .div(ng-controller="BottomBarCtrl")
+    .statusBar(ng-if="auth.isAuthed")
+      .left
+        i.fa.fa-tachometer 
+        span.status  {{status.managerStatus}}
+      .rightButtons
+        a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
+          | Source
+        button.btn.btn-success(ng-if="!status.managerConnected")
+          | Download Launcher
 
   script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')

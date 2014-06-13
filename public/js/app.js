@@ -27,13 +27,17 @@
         templateUrl: "partials/moddetail",
         controller: "ModDetailCtrl"
       });
-      $routeProvider.when('/install/:modname', {
-        templateUrl: 'partials/installmod',
-        controller: 'InstallModCtrl'
+      $routeProvider.when("/install/:modname", {
+        templateUrl: "partials/installmod",
+        controller: "InstallModCtrl"
       });
-      $routeProvider.when('/newlobby', {
-        templateUrl: '/partials/newlobby',
-        controller: 'CreateLobbyCtrl'
+      $routeProvider.when("/newlobby", {
+        templateUrl: "/partials/newlobby",
+        controller: "CreateLobbyCtrl"
+      });
+      $routeProvider.when("/lobby/:lobbyid", {
+        templateUrl: "/partials/lobby",
+        controller: "LobbyCtrl"
       });
       $routeProvider.otherwise({
         redirectTo: "/"
@@ -42,12 +46,6 @@
     }
   ]).run(function($rootScope, $lobbyService, $forceLobbyPage) {
     $rootScope.mods = [];
-    $rootScope.REGIONS = {
-      UNKNOWN: 0,
-      NA: 1,
-      EU: 2,
-      AUS: 3
-    };
     $rootScope.launchManager = function() {
       window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe");
       return $.pnotify({
@@ -59,12 +57,27 @@
         sticker: true
       });
     };
+    $rootScope.GAMESTATE = {
+      Init: 0,
+      WaitLoad: 1,
+      HeroSelect: 2,
+      StratTime: 3,
+      PreGame: 4,
+      Playing: 5,
+      PostGame: 6,
+      Disconnect: 7
+    };
+    $rootScope.GAMESTATEK = _.invert($rootScope.GAMESTATE);
+    $rootScope.REGIONS = {
+      UNKNOWN: 0,
+      NA: 1,
+      EU: 2
+    };
     $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
     $rootScope.REGIONSH = {
       0: "All Regions",
       1: "North America",
-      2: "Europe",
-      3: "Australia"
+      2: "Europe"
     };
     return $.getJSON("/data/mods", function(data) {
       return $rootScope.$apply(function() {
@@ -73,5 +86,7 @@
       });
     });
   });
+
+  return;
 
 }).call(this);

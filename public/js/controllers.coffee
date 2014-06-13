@@ -98,10 +98,74 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$authService"
   "$lobbyService"
   ($scope, $authService, $lobbyService)->
-    $scope.isAuthed = $authService.isAuthed
-    $scope.user = $authService.user
+    $scope.auth = $authService
     $scope.status = $lobbyService.status
-]).controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
+]).controller('LobbyCtrl', [
+  "$scope"
+  "$authService"
+  "$lobbyService"
+  "$location"
+  "$rootScope"
+  ($scope, $authService, $lobbyService, $location, $rootScope)->
+    list = []
+    if !$authService.isAuthed || $lobbyService.lobbies.length is 0
+      return $location.url('/lobbies')
+    lobby = $scope.lobby = $lobbyService.lobbies[0]
+    $scope.status = $lobbyService.status
+    mod = $scope.mod = _.findWhere $rootScope.mods,
+      _id: lobby.mod
+    $scope.isHost = $scope.lobby.creatorid is $authService.user._id
+    if $scope.isHost
+      $scope.changeTitle = ->
+        title = $(".titleInput").val()
+        $lobbyService.changeTitle title
+        title.blur()
+      $scope.changeRegion = (newVal)->
+        $lobbyService.changeRegion newVal
+      $scope.stopFinding = ->
+        $lobbyService.stopFinding()
+      $scope.sendConnect = ->
+        $lobbyService.sendConnect()
+    $scope.leaveLobby = ->
+      $lobbyService.leaveLobby()
+    $scope.kickPlayer = (player)->
+      $lobbyService.kickPlayer(player)
+    $scope.takeSlot = (goodguys)->
+      $lobbyService.switchTeam goodguys
+    $scope.startQueue = ->
+      $lobbyService.startQueue()
+    $scope.sendMessage = ->
+      msg = $("#chatInput").val()
+      $("#chatInput").val("")
+      return if msg is ""
+      $lobbyService.sendChat msg
+    getEmptySlots = (team)->
+      playerCount = 0
+      for player in team
+        continue if !player?
+        playerCount+=1
+      slotCount = 5-playerCount
+      slots = []
+      while slotCount--
+        slots.push null
+      slots
+    generateEmptySlots = ->
+      $scope.direSlots = getEmptySlots lobby.dire
+      $scope.radiantSlots = getEmptySlots lobby.radiant
+    generateEmptySlots()
+    list.push $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
+      return if op != "update"
+      generateEmptySlots()
+    list.push $rootScope.$on 'lobby:chatMsg', (event, msg)->
+      box = $(".chatBox")
+      return if box.length is 0
+      box.val(box.val()+"\n"+msg)
+      box.scrollTop(box[0].scrollHeight)
+    $scope.$on "$destroy", ->
+      for l in list
+        l()
+])
+.controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
   modname = $routeParams.modname
   mod = _.findWhere($rootScope.mods,
     name: modname

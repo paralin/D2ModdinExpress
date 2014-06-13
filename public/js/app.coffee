@@ -31,23 +31,22 @@ app = angular.module("d2mp", [
       templateUrl: "partials/moddetail"
       controller: "ModDetailCtrl"
 
-    $routeProvider.when '/install/:modname',
-      templateUrl: 'partials/installmod'
-      controller: 'InstallModCtrl'
+    $routeProvider.when "/install/:modname",
+      templateUrl: "partials/installmod"
+      controller: "InstallModCtrl"
 
-    $routeProvider.when '/newlobby',
-      templateUrl: '/partials/newlobby'
-      controller: 'CreateLobbyCtrl'
+    $routeProvider.when "/newlobby",
+      templateUrl: "/partials/newlobby"
+      controller: "CreateLobbyCtrl"
+
+    $routeProvider.when "/lobby/:lobbyid",
+      templateUrl: "/partials/lobby"
+      controller: "LobbyCtrl"
 
     $routeProvider.otherwise redirectTo: "/"
-    $locationProvider.html5Mode true
+    return $locationProvider.html5Mode(true)
 ]).run(($rootScope, $lobbyService, $forceLobbyPage) ->
   $rootScope.mods = []
-  $rootScope.REGIONS = #CN: 4
-    UNKNOWN: 0
-    NA: 1
-    EU: 2
-    AUS: 3
 
   $rootScope.launchManager = ->
     window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe"
@@ -59,15 +58,22 @@ app = angular.module("d2mp", [
       closer: false
       sticker: true
 
+  $rootScope.GAMESTATE = {Init:0,WaitLoad:1,HeroSelect:2,StratTime:3,PreGame:4,Playing:5,PostGame:6,Disconnect:7}
+  $rootScope.GAMESTATEK = _.invert $rootScope.GAMESTATE
+
+  $rootScope.REGIONS =
+    UNKNOWN: 0
+    NA: 1
+    EU: 2
   $rootScope.REGIONSK = _.invert($rootScope.REGIONS)
   $rootScope.REGIONSH =
     0: "All Regions"
     1: "North America"
     2: "Europe"
-    3: "Australia"
 
   $.getJSON "/data/mods", (data) ->
     $rootScope.$apply ->
       window.rootScope = $rootScope
       window.mods = $rootScope.mods = data
 )
+return

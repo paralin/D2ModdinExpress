@@ -1,0 +1,43 @@
+#wrapper
+  section.container.text-center(style="margin-top:30px")
+    h1.text-center
+      strong {{lobby.name}}
+      |  &#91;{{REGIONSH[lobby.region]}}&#93;
+      span.subtitle(ng-if="lobby.status==0",style="margin-top:10px")
+        | Waiting for the host to start the game...
+  div(style="margin-left:auto;margin-right:auto;width:251px")
+    div(modthumbnail)
+  div(ng-if="lobby.status < 2",style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px")
+    button.btn.btn-danger(ng-click="leaveLobby()") Leave Lobby
+  div.teamRow(ng-if="lobby.status==0")
+    .col-sm-6.teamCol.niceShadow
+      .tileTitle Radiant
+      table.table.table-striped
+        tbody
+          tr(ng-repeat="player in lobby.radiant")
+            td
+              i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
+              | {{player.name}}
+          tr(ng-repeat="slot in radiantSlots track by $index")
+            td
+              button.btn.btn-link(style="padding:0",ng-click="takeSlot(true)") Take Slot
+    .col-sm-6.teamCol.niceShadow
+      .tileTitle Dire
+      table.table.table-striped
+        tbody
+          tr(ng-repeat="player in lobby.dire")
+            td
+              i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
+              | {{player.name}}
+          tr(ng-repeat="slot in direSlots track by $index")
+            td 
+              button.btn.btn-link(style="padding:0",ng-click="takeSlot(false)") Take Slot
+    .col-sm-6.hostCol.niceShadow
+      .tileTitle Chat
+      textarea.form-control.chatBox(readonly="readonly")
+      input.form-control#chatInput(maxlength="140",ng-keyup="$event.keyCode==13?sendMessage():null")
+    .col-sm-6.hostCol.niceShadow(ng-if="isHost")
+      .tileTitle Lobby Controls
+      div(style="width:100%;height:150px;padding:15px;padding-top:0")
+        input.titleInput.form-control(value="{{lobby.name}}",maxlength=40,ng-keyup="$event.keyCode==13?changeTitle():null")
+        select.regionInput.form-control(ng-change="changeRegion()",ng-model="lobby.region",ng-options="key as name for (key,name) in REGIONSH")

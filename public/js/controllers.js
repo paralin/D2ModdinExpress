@@ -86,9 +86,106 @@
     }
   ]).controller("BottomBarCtrl", [
     "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
-      $scope.isAuthed = $authService.isAuthed;
-      $scope.user = $authService.user;
+      $scope.auth = $authService;
       return $scope.status = $lobbyService.status;
+    }
+  ]).controller('LobbyCtrl', [
+    "$scope", "$authService", "$lobbyService", "$location", "$rootScope", function($scope, $authService, $lobbyService, $location, $rootScope) {
+      var generateEmptySlots, getEmptySlots, list, lobby, mod;
+      list = [];
+      if (!$authService.isAuthed || $lobbyService.lobbies.length === 0) {
+        return $location.url('/lobbies');
+      }
+      lobby = $scope.lobby = $lobbyService.lobbies[0];
+      $scope.status = $lobbyService.status;
+      mod = $scope.mod = _.findWhere($rootScope.mods, {
+        _id: lobby.mod
+      });
+      $scope.isHost = $scope.lobby.creatorid === $authService.user._id;
+      if ($scope.isHost) {
+        $scope.changeTitle = function() {
+          var title;
+          title = $(".titleInput").val();
+          $lobbyService.changeTitle(title);
+          return title.blur();
+        };
+        $scope.changeRegion = function(newVal) {
+          return $lobbyService.changeRegion(newVal);
+        };
+        $scope.stopFinding = function() {
+          return $lobbyService.stopFinding();
+        };
+        $scope.sendConnect = function() {
+          return $lobbyService.sendConnect();
+        };
+      }
+      $scope.leaveLobby = function() {
+        return $lobbyService.leaveLobby();
+      };
+      $scope.kickPlayer = function(player) {
+        return $lobbyService.kickPlayer(player);
+      };
+      $scope.takeSlot = function(goodguys) {
+        return $lobbyService.switchTeam(goodguys);
+      };
+      $scope.startQueue = function() {
+        return $lobbyService.startQueue();
+      };
+      $scope.sendMessage = function() {
+        var msg;
+        msg = $("#chatInput").val();
+        $("#chatInput").val("");
+        if (msg === "") {
+          return;
+        }
+        return $lobbyService.sendChat(msg);
+      };
+      getEmptySlots = function(team) {
+        var player, playerCount, slotCount, slots, _i, _len;
+        playerCount = 0;
+        for (_i = 0, _len = team.length; _i < _len; _i++) {
+          player = team[_i];
+          if (!(player != null)) {
+            continue;
+          }
+          playerCount += 1;
+        }
+        slotCount = 5 - playerCount;
+        slots = [];
+        while (slotCount--) {
+          slots.push(null);
+        }
+        return slots;
+      };
+      generateEmptySlots = function() {
+        $scope.direSlots = getEmptySlots(lobby.dire);
+        return $scope.radiantSlots = getEmptySlots(lobby.radiant);
+      };
+      generateEmptySlots();
+      list.push($rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
+        if (op !== "update") {
+          return;
+        }
+        return generateEmptySlots();
+      }));
+      list.push($rootScope.$on('lobby:chatMsg', function(event, msg) {
+        var box;
+        box = $(".chatBox");
+        if (box.length === 0) {
+          return;
+        }
+        box.val(box.val() + "\n" + msg);
+        return box.scrollTop(box[0].scrollHeight);
+      }));
+      return $scope.$on("$destroy", function() {
+        var l, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = list.length; _i < _len; _i++) {
+          l = list[_i];
+          _results.push(l());
+        }
+        return _results;
+      });
     }
   ]).controller("ModDetailCtrl", function($scope, $rootScope, $routeParams, $location, $sce) {
     var mod, modname;

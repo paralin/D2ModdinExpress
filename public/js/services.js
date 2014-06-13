@@ -8,7 +8,8 @@
 
   LobbyService = (function() {
 
-    function LobbyService($rootScope, $authService) {
+    function LobbyService($rootScope, $authService, timeout) {
+      this.timeout = timeout;
       this.lobbies = [];
       this.publicLobbies = [
         {
@@ -73,12 +74,57 @@
       return this.send(data);
     };
 
+    LobbyService.prototype.leaveLobby = function() {
+      return this.call("leavelobby");
+    };
+
     LobbyService.prototype.installMod = function(modname) {
       this.call("installmod", {
         mod: modname
       });
-      this.status.managerDownloading = true;
-      return this.scope.$digest();
+      return this.status.managerDownloading = true;
+    };
+
+    LobbyService.prototype.switchTeam = function(goodguys) {
+      return this.call("switchteam", {
+        team: goodguys ? "radiant" : "dire"
+      });
+    };
+
+    LobbyService.prototype.startQueue = function() {
+      return this.call("startqueue", null);
+    };
+
+    LobbyService.prototype.changeRegion = function(region) {
+      return this.call("setregion", {
+        region: region
+      });
+    };
+
+    LobbyService.prototype.sendConnect = function() {
+      return this.call("connectgame", null);
+    };
+
+    LobbyService.prototype.stopFinding = function() {
+      return this.call("stopqueue", null);
+    };
+
+    LobbyService.prototype.changeTitle = function(title) {
+      return this.call("setname", {
+        name: title
+      });
+    };
+
+    LobbyService.prototype.sendChat = function(msg) {
+      return this.call("chatmsg", {
+        message: msg
+      });
+    };
+
+    LobbyService.prototype.kickPlayer = function(player) {
+      return this.call('kickplayer', {
+        steam: player.steam
+      });
     };
 
     LobbyService.prototype.createLobby = function(name, modid) {
@@ -107,7 +153,8 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
-      var coll, eve, id, idx, obj, op, upd, _i, _len, _ref, _results;
+      var _this = this;
+      console.log(JSON.stringify(data));
       switch (data.msg) {
         case "error":
           return $.pnotify({
@@ -123,44 +170,61 @@
           this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success);
         case "colupd":
-          _ref = data.ops;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            upd = _ref[_i];
-            coll = this.colls[upd._c];
-            eve = "lobbyUpdate:" + upd._c;
-            op = upd._o;
-            delete upd["_o"];
-            delete upd["_c"];
-            switch (op) {
-              case "insert":
-                coll.push(upd);
-                break;
-              case "update":
-                id = upd._id;
-                delete upd["_id"];
-                obj = _.findWhere(coll, {
-                  _id: id
-                });
-                if (obj != null) {
-                  _.extend(obj, upd);
-                }
-                break;
-              case "remove":
-                id = upd._id;
-                obj = _.findWhere(coll, {
-                  _id: id
-                });
-                if (obj != null) {
-                  idx = coll.indexOf(obj);
-                  if (idx !== -1) {
-                    coll.splice(idx, 1);
+          return this.timeout(function() {
+            var coll, eve, id, idx, lobby, obj, op, upd, _c, _i, _j, _len, _len1, _ref, _ref1, _results;
+            _ref = data.ops;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              upd = _ref[_i];
+              coll = _this.colls[upd._c];
+              _c = upd._c;
+              eve = "lobbyUpdate:" + _c;
+              op = upd._o;
+              delete upd["_o"];
+              delete upd["_c"];
+              switch (op) {
+                case "insert":
+                  coll.push(upd);
+                  break;
+                case "update":
+                  id = upd._id;
+                  delete upd["_id"];
+                  obj = _.findWhere(coll, {
+                    _id: id
+                  });
+                  if (obj != null) {
+                    _.extend(obj, upd);
                   }
+                  break;
+                case "remove":
+                  id = upd._id;
+                  if (!(id != null)) {
+                    coll.length = 0;
+                  } else {
+                    obj = _.findWhere(coll, {
+                      _id: id
+                    });
+                    if (obj != null) {
+                      idx = coll.indexOf(obj);
+                      if (idx !== -1) {
+                        coll.splice(idx, 1);
+                      }
+                    }
+                  }
+              }
+              if (_c === "lobbies") {
+                _ref1 = _this.lobbies;
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  lobby = _ref1[_j];
+                  lobby.dire = _.without(lobby.dire, null);
+                  lobby.radiant = _.without(lobby.radiant, null);
                 }
+              }
+              console.log(eve);
+              _results.push(_this.scope.$broadcast(eve, op));
             }
-            _results.push(this.scope.$emit(eve, op));
-          }
-          return _results;
+            return _results;
+          });
       }
     };
 
@@ -258,13 +322,13 @@
       authService = {};
       authService.update = updateAuth;
       updateAuth();
-      $interval(updateAuth, 60000);
+      $interval(updateAuth, 15000);
       return authService;
     }
   ]).factory("$lobbyService", [
-    "$interval", "$log", "$authService", "$rootScope", function($interval, $log, $authService, $rootScope) {
+    "$interval", "$log", "$authService", "$rootScope", "$timeout", function($interval, $log, $authService, $rootScope, $timeout) {
       var service;
-      service = new LobbyService($rootScope, $authService);
+      service = new LobbyService($rootScope, $authService, $timeout);
       $rootScope.$on("auth:isAuthed", function() {
         return service.sendAuth();
       });
@@ -273,35 +337,49 @@
       return service;
     }
   ]).factory('$forceLobbyPage', [
-    '$rootScope', '$location', '$lobbyService', function($rootScope, $location, $lobbyService) {
-      $rootScope.$on('lobbyUpdate:lobbies', function(op) {
+    '$rootScope', '$location', '$lobbyService', "$timeout", function($rootScope, $location, $lobbyService, $timeout) {
+      $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
+        var path;
+        path = $location.path();
         if (op === 'update' || op === 'insert') {
-          if ($location.path() !== "lobby") {
-            $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
-            return $rootScope.$apply();
+          if (path.indexOf('lobby/') === -1) {
+            return $timeout(function() {
+              return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
+            });
           }
         } else {
-          if ($location.path() === "lobby") {
-            $location.path('/lobbies');
-            return $rootScope.$apply();
+          console.log(path);
+          if (path.indexOf('lobby/') !== -1) {
+            return $timeout(function() {
+              return $location.path('/lobbies');
+            });
           }
         }
       });
+      $rootScope.$on('lobby:installres', function(event, success) {
+        if (success) {
+          return $location.url('/lobbies/');
+        }
+      });
       $rootScope.$on('lobby:modNeeded', function(event, mod) {
-        $location.url('/install/' + mod);
-        return $rootScope.$apply();
+        return $timeout(function() {
+          return $location.url('/install/' + mod);
+        });
       });
       return $rootScope.$on('$locationChangeStart', function(event, newurl, oldurl) {
         if ($lobbyService.lobbies.length > 0) {
+          if (newurl.indexOf('/lobby/') !== -1) {
+            return;
+          }
           event.preventDefault();
-          if ($location.path() !== "lobby") {
-            $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
-            return $rootScope.$apply();
+          if (oldurl.indexOf('lobby/') === -1) {
+            return $timeout(function() {
+              return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
+            });
           }
         } else {
           if (newurl.indexOf('/lobby/') !== -1) {
-            $location.url('/lobbies');
-            return $rootScope.$apply();
+            return $location.url('/lobbies');
           }
         }
       });

@@ -7,6 +7,12 @@ angular.module('d2mp.directives', [])
     replace: true
   };
 }).
+directive('gameteamstats', function(){
+  return {
+    templateUrl: '/partials/gameteamstats',
+    replace: true
+  }
+}).
 directive('inlineteams', function(){
   return {
     templateUrl: '/partials/inlineteams',

@@ -3,7 +3,7 @@
 global = @
 
 class LobbyService
-  constructor:($rootScope, $authService)->
+  constructor:($rootScope, $authService, @timeout)->
     @lobbies = []
     @publicLobbies = [
       _id: "someid"
@@ -55,11 +55,42 @@ class LobbyService
     console.log data
     @send data
 
+  leaveLobby: ->
+    @call "leavelobby"
+
   installMod: (modname)->
     @call "installmod",
       mod: modname
     @status.managerDownloading = true
-    @scope.$digest()
+
+  switchTeam: (goodguys)->
+    @call "switchteam",
+      team: if goodguys then "radiant" else "dire"
+
+  startQueue: ->
+    @call "startqueue", null
+
+  changeRegion: (region)->
+    @call "setregion",
+      region: region
+
+  sendConnect: ->
+    @call "connectgame", null
+
+  stopFinding: ->
+    @call "stopqueue", null
+
+  changeTitle: (title)->
+    @call "setname",
+      name: title
+
+  sendChat: (msg)->
+    @call "chatmsg",
+      message: msg
+
+  kickPlayer: (player)->
+    @call 'kickplayer',
+      steam: player.steam
 
   createLobby: (name, modid)->
     @call "createlobby",
@@ -80,6 +111,7 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
+    console.log JSON.stringify data
     switch data.msg
       when "error"
         $.pnotify
@@ -94,29 +126,39 @@ class LobbyService
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success
       when "colupd"
-        for upd in data.ops
-          coll = @colls[upd._c]
-          eve = "lobbyUpdate:"+upd._c
-          op = upd._o
-          delete upd["_o"]
-          delete upd["_c"]
-          switch op
-            when "insert"
-              coll.push upd
-            when "update"
-              id = upd._id
-              delete upd["_id"]
-              obj = _.findWhere coll, {_id: id}
-              if obj?
-                _.extend obj, upd
-            when "remove"
-              id = upd._id
-              obj = _.findWhere coll, {_id: id}
-              if obj?
-                idx = coll.indexOf obj
-                if idx isnt -1
-                  coll.splice idx, 1
-          @scope.$emit eve, op
+        @timeout =>
+          for upd in data.ops
+            coll = @colls[upd._c]
+            _c = upd._c
+            eve = "lobbyUpdate:"+_c
+            op = upd._o
+            delete upd["_o"]
+            delete upd["_c"]
+            switch op
+              when "insert"
+                coll.push upd
+              when "update"
+                id = upd._id
+                delete upd["_id"]
+                obj = _.findWhere coll, {_id: id}
+                if obj?
+                  _.extend obj, upd
+              when "remove"
+                id = upd._id
+                if !id?
+                  coll.length = 0
+                else
+                  obj = _.findWhere coll, {_id: id}
+                  if obj?
+                    idx = coll.indexOf obj
+                    if idx isnt -1
+                      coll.splice idx, 1
+            if _c is "lobbies"
+              for lobby in @lobbies
+                lobby.dire = _.without lobby.dire, null
+                lobby.radiant = _.without lobby.radiant, null
+            console.log eve
+            @scope.$broadcast eve, op
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
@@ -196,15 +238,16 @@ angular.module("d2mp.services", []).factory("$authService", [
     authService = {}
     authService.update = updateAuth
     updateAuth()
-    $interval updateAuth, 60000
+    $interval updateAuth, 15000
     return authService
 ]).factory("$lobbyService", [
   "$interval"
   "$log"
   "$authService"
   "$rootScope"
-  ($interval, $log, $authService, $rootScope)->
-    service = new LobbyService $rootScope, $authService
+  "$timeout"
+  ($interval, $log, $authService, $rootScope, $timeout)->
+    service = new LobbyService $rootScope, $authService, $timeout
     $rootScope.$on "auth:isAuthed", ->
       service.sendAuth()
     service.sendAuth()
@@ -214,27 +257,34 @@ angular.module("d2mp.services", []).factory("$authService", [
   '$rootScope'
   '$location'
   '$lobbyService'
-  ($rootScope, $location, $lobbyService)->
-    $rootScope.$on 'lobbyUpdate:lobbies', (op)->
+  "$timeout"
+  ($rootScope, $location, $lobbyService, $timeout)->
+    $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
+      path = $location.path()
       if op in ['update', 'insert'] 
-        if $location.path() isnt "lobby"
-          $location.url "/lobby/"+$lobbyService.lobbies[0]._id
-          $rootScope.$apply()
+        if path.indexOf('lobby/') is -1
+          $timeout ->
+            $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
-        if $location.path() is "lobby"
-          $location.path('/lobbies')
-          $rootScope.$apply()
+        console.log path
+        if path.indexOf('lobby/') isnt -1
+          $timeout ->
+            $location.path('/lobbies')
+    $rootScope.$on 'lobby:installres', (event, success)->
+      if success
+        $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->
-      $location.url '/install/'+mod
-      $rootScope.$apply()
+      $timeout ->
+        $location.url '/install/'+mod
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       if $lobbyService.lobbies.length > 0
+        if newurl.indexOf('/lobby/') != -1
+          return
         event.preventDefault()
-        if $location.path() isnt "lobby"
-          $location.url "/lobby/"+$lobbyService.lobbies[0]._id
-          $rootScope.$apply()
+        if oldurl.indexOf('lobby/') is -1
+          $timeout ->
+            $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         if newurl.indexOf('/lobby/') != -1
           $location.url('/lobbies')
-          $rootScope.$apply()
 ])
