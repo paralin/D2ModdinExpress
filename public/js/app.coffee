@@ -45,7 +45,11 @@ app = angular.module("d2mp", [
 
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
-]).run(($rootScope, $lobbyService, $forceLobbyPage) ->
+]).run([
+  "$rootScope"
+  "$lobbyService"
+  "$forceLobbyPage"
+  ($rootScope, $lobbyService, $forceLobbyPage) ->
   $rootScope.mods = []
 
   $rootScope.launchManager = ->
@@ -75,5 +79,5 @@ app = angular.module("d2mp", [
     $rootScope.$apply ->
       window.rootScope = $rootScope
       window.mods = $rootScope.mods = data
-)
+])
 return
