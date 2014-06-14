@@ -14,8 +14,8 @@
         $scope.mod = mod = _.findWhere($rootScope.mods, {
           name: modName
         });
-        $scope.lobbies = publicLobbies;
       }
+      $scope.lobbies = publicLobbies;
       $scope.createLobby = function() {
         if ($scope.hasMod) {
           return $lobbyService.createLobby(null, mod._id);
