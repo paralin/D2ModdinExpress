@@ -45,39 +45,48 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", function($rootScope, $lobbyService, $forceLobbyPage) {}, $rootScope.mods = [], $rootScope.launchManager = function() {
-      window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe");
-      return $.pnotify({
-        title: "Download Started",
-        text: "Run the launcher (downloading now) to start joining lobbies.",
-        type: "info",
-        delay: 3000,
-        closer: false,
-        sticker: true
+    "$rootScope", "$lobbyService", "$forceLobbyPage", function($rootScope, $lobbyService, $forceLobbyPage) {
+      $rootScope.mods = [];
+      $rootScope.launchManager = function() {
+        window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe");
+        return $.pnotify({
+          title: "Download Started",
+          text: "Run the launcher (downloading now) to start joining lobbies.",
+          type: "info",
+          delay: 3000,
+          closer: false,
+          sticker: true
+        });
+      };
+      $rootScope.GAMESTATE = {
+        Init: 0,
+        WaitLoad: 1,
+        HeroSelect: 2,
+        StratTime: 3,
+        PreGame: 4,
+        Playing: 5,
+        PostGame: 6,
+        Disconnect: 7
+      };
+      $rootScope.GAMESTATEK = _.invert($rootScope.GAMESTATE);
+      $rootScope.REGIONS = {
+        UNKNOWN: 0,
+        NA: 1,
+        EU: 2
+      };
+      $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
+      $rootScope.REGIONSH = {
+        0: "All Regions",
+        1: "North America",
+        2: "Europe"
+      };
+      return $.getJSON("/data/mods", function(data) {
+        return $rootScope.$apply(function() {
+          window.rootScope = $rootScope;
+          return window.mods = $rootScope.mods = data;
+        });
       });
-    }, $rootScope.GAMESTATE = {
-      Init: 0,
-      WaitLoad: 1,
-      HeroSelect: 2,
-      StratTime: 3,
-      PreGame: 4,
-      Playing: 5,
-      PostGame: 6,
-      Disconnect: 7
-    }, $rootScope.GAMESTATEK = _.invert($rootScope.GAMESTATE), $rootScope.REGIONS = {
-      UNKNOWN: 0,
-      NA: 1,
-      EU: 2
-    }, $rootScope.REGIONSK = _.invert($rootScope.REGIONS), $rootScope.REGIONSH = {
-      0: "All Regions",
-      1: "North America",
-      2: "Europe"
-    }, $.getJSON("/data/mods", function(data) {
-      return $rootScope.$apply(function() {
-        window.rootScope = $rootScope;
-        return window.mods = $rootScope.mods = data;
-      });
-    })
+    }
   ]);
 
   return;

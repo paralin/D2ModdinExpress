@@ -50,34 +50,34 @@ app = angular.module("d2mp", [
   "$lobbyService"
   "$forceLobbyPage"
   ($rootScope, $lobbyService, $forceLobbyPage) ->
-  $rootScope.mods = []
+    $rootScope.mods = []
 
-  $rootScope.launchManager = ->
-    window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe"
-    $.pnotify
-      title: "Download Started"
-      text: "Run the launcher (downloading now) to start joining lobbies."
-      type: "info"
-      delay: 3000
-      closer: false
-      sticker: true
+    $rootScope.launchManager = ->
+      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe"
+      $.pnotify
+        title: "Download Started"
+        text: "Run the launcher (downloading now) to start joining lobbies."
+        type: "info"
+        delay: 3000
+        closer: false
+        sticker: true
 
-  $rootScope.GAMESTATE = {Init:0,WaitLoad:1,HeroSelect:2,StratTime:3,PreGame:4,Playing:5,PostGame:6,Disconnect:7}
-  $rootScope.GAMESTATEK = _.invert $rootScope.GAMESTATE
+    $rootScope.GAMESTATE = {Init:0,WaitLoad:1,HeroSelect:2,StratTime:3,PreGame:4,Playing:5,PostGame:6,Disconnect:7}
+    $rootScope.GAMESTATEK = _.invert $rootScope.GAMESTATE
 
-  $rootScope.REGIONS =
-    UNKNOWN: 0
-    NA: 1
-    EU: 2
-  $rootScope.REGIONSK = _.invert($rootScope.REGIONS)
-  $rootScope.REGIONSH =
-    0: "All Regions"
-    1: "North America"
-    2: "Europe"
+    $rootScope.REGIONS =
+      UNKNOWN: 0
+      NA: 1
+      EU: 2
+    $rootScope.REGIONSK = _.invert($rootScope.REGIONS)
+    $rootScope.REGIONSH =
+      0: "All Regions"
+      1: "North America"
+      2: "Europe"
 
-  $.getJSON "/data/mods", (data) ->
-    $rootScope.$apply ->
-      window.rootScope = $rootScope
-      window.mods = $rootScope.mods = data
+    $.getJSON "/data/mods", (data) ->
+      $rootScope.$apply ->
+        window.rootScope = $rootScope
+        window.mods = $rootScope.mods = data
 ])
 return
