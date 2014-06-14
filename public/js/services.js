@@ -233,7 +233,7 @@
         _this = this;
       this.disconnect();
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://127.0.0.1:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://ddp2.d2modd.in:4502/BrowserController');
       so.on('auth', function(data) {
         if (data.status) {
           $.pnotify({

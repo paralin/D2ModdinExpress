@@ -162,7 +162,7 @@ class LobbyService
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://127.0.0.1:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
     so.on 'auth', (data)=>
       if data.status
         $.pnotify
