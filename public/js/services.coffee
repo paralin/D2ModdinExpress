@@ -130,7 +130,7 @@ class LobbyService
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success
       when "colupd"
-        @safeApply =>
+        @safeApply @scope, =>
           for upd in data.ops
             coll = @colls[upd._c]
             _c = upd._c
@@ -219,7 +219,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$rootScope"
   ($rootScope) ->
     ($scope, fn) ->
-      phase = $scope.$root.$$phase
+      phase = $rootScope.$$phase
       if phase is "$apply" or phase is "$digest"
         $scope.$eval fn  if fn
       else
@@ -279,18 +279,18 @@ angular.module("d2mp.services", []).factory("safeApply", [
       path = $location.path()
       if op in ['update', 'insert'] 
         if path.indexOf('lobby/') is -1
-          safeApply ->
+          safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         console.log path
         if path.indexOf('lobby/') isnt -1
-          safeApply ->
+          safeApply $rootScope, ->
             $location.path('/lobbies')
     $rootScope.$on 'lobby:installres', (event, success)->
       if success
         $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->
-      safeApply ->
+      safeApply $rootScope, ->
         $location.url '/install/'+mod
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       if $lobbyService.lobbies.length > 0
@@ -298,7 +298,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
           return
         event.preventDefault()
         if oldurl.indexOf('lobby/') is -1
-          safeApply ->
+          safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         if newurl.indexOf('/lobby/') != -1

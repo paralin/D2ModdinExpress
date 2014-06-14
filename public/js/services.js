@@ -176,7 +176,7 @@
           this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success);
         case "colupd":
-          return this.safeApply(function() {
+          return this.safeApply(this.scope, function() {
             var coll, eve, id, idx, lobby, obj, op, upd, _c, _i, _j, _len, _len1, _ref, _ref1, _results;
             _ref = data.ops;
             _results = [];
@@ -309,7 +309,7 @@
     "$rootScope", function($rootScope) {
       return function($scope, fn) {
         var phase;
-        phase = $scope.$root.$$phase;
+        phase = $rootScope.$$phase;
         if (phase === "$apply" || phase === "$digest") {
           if (fn) {
             $scope.$eval(fn);
@@ -366,14 +366,14 @@
         path = $location.path();
         if (op === 'update' || op === 'insert') {
           if (path.indexOf('lobby/') === -1) {
-            return safeApply(function() {
+            return safeApply($rootScope, function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });
           }
         } else {
           console.log(path);
           if (path.indexOf('lobby/') !== -1) {
-            return safeApply(function() {
+            return safeApply($rootScope, function() {
               return $location.path('/lobbies');
             });
           }
@@ -385,7 +385,7 @@
         }
       });
       $rootScope.$on('lobby:modNeeded', function(event, mod) {
-        return safeApply(function() {
+        return safeApply($rootScope, function() {
           return $location.url('/install/' + mod);
         });
       });
@@ -396,7 +396,7 @@
           }
           event.preventDefault();
           if (oldurl.indexOf('lobby/') === -1) {
-            return safeApply(function() {
+            return safeApply($rootScope, function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });
           }
