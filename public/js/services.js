@@ -8,8 +8,8 @@
 
   LobbyService = (function() {
 
-    function LobbyService($rootScope, $authService, timeout) {
-      this.timeout = timeout;
+    function LobbyService($rootScope, $authService, safeApply) {
+      this.safeApply = safeApply;
       this.lobbies = [];
       this.publicLobbies = [
         {
@@ -176,7 +176,7 @@
           this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success);
         case "colupd":
-          return this.timeout(function() {
+          return this.safeApply(function() {
             var coll, eve, id, idx, lobby, obj, op, upd, _c, _i, _j, _len, _len1, _ref, _ref1, _results;
             _ref = data.ops;
             _results = [];
@@ -226,7 +226,6 @@
                   lobby.radiant = _.without(lobby.radiant, null);
                 }
               }
-              console.log(eve);
               _results.push(_this.scope.$broadcast(eve, op));
             }
             return _results;
@@ -306,7 +305,25 @@
 
   })();
 
-  angular.module("d2mp.services", []).factory("$authService", [
+  angular.module("d2mp.services", []).factory("safeApply", [
+    "$rootScope", function($rootScope) {
+      return function($scope, fn) {
+        var phase;
+        phase = $scope.$root.$$phase;
+        if (phase === "$apply" || phase === "$digest") {
+          if (fn) {
+            $scope.$eval(fn);
+          }
+        } else {
+          if (fn) {
+            $scope.$apply(fn);
+          } else {
+            $scope.$apply();
+          }
+        }
+      };
+    }
+  ]).factory("$authService", [
     "$interval", "$http", "$log", "$rootScope", function($interval, $http, $log, $rootScope) {
       var authService, updateAuth;
       updateAuth = function() {
@@ -332,9 +349,9 @@
       return authService;
     }
   ]).factory("$lobbyService", [
-    "$interval", "$log", "$authService", "$rootScope", "$timeout", function($interval, $log, $authService, $rootScope, $timeout) {
+    "$interval", "$log", "$authService", "$rootScope", "safeApply", function($interval, $log, $authService, $rootScope, safeApply) {
       var service;
-      service = new LobbyService($rootScope, $authService, $timeout);
+      service = new LobbyService($rootScope, $authService, safeApply);
       $rootScope.$on("auth:isAuthed", function() {
         return service.sendAuth();
       });
@@ -343,20 +360,20 @@
       return service;
     }
   ]).factory('$forceLobbyPage', [
-    '$rootScope', '$location', '$lobbyService', "$timeout", function($rootScope, $location, $lobbyService, $timeout) {
+    '$rootScope', '$location', '$lobbyService', "safeApply", function($rootScope, $location, $lobbyService, safeApply) {
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
         var path;
         path = $location.path();
         if (op === 'update' || op === 'insert') {
           if (path.indexOf('lobby/') === -1) {
-            return $timeout(function() {
+            return safeApply(function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });
           }
         } else {
           console.log(path);
           if (path.indexOf('lobby/') !== -1) {
-            return $timeout(function() {
+            return safeApply(function() {
               return $location.path('/lobbies');
             });
           }
@@ -368,7 +385,7 @@
         }
       });
       $rootScope.$on('lobby:modNeeded', function(event, mod) {
-        return $timeout(function() {
+        return safeApply(function() {
           return $location.url('/install/' + mod);
         });
       });
@@ -379,7 +396,7 @@
           }
           event.preventDefault();
           if (oldurl.indexOf('lobby/') === -1) {
-            return $timeout(function() {
+            return safeApply(function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });
           }

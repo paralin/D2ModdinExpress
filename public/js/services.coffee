@@ -3,7 +3,7 @@
 global = @
 
 class LobbyService
-  constructor:($rootScope, $authService, @timeout)->
+  constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
     @publicLobbies = [
       _id: "someid"
@@ -130,7 +130,7 @@ class LobbyService
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success
       when "colupd"
-        @timeout =>
+        @safeApply =>
           for upd in data.ops
             coll = @colls[upd._c]
             _c = upd._c
@@ -161,7 +161,6 @@ class LobbyService
               for lobby in @lobbies
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
-            console.log eve
             @scope.$broadcast eve, op
   connect: ->
     @disconnect()
@@ -216,7 +215,20 @@ class LobbyService
       @scope.$digest()
       @sendAuth()
     
-angular.module("d2mp.services", []).factory("$authService", [
+angular.module("d2mp.services", []).factory("safeApply", [
+  "$rootScope"
+  ($rootScope) ->
+    ($scope, fn) ->
+      phase = $scope.$root.$$phase
+      if phase is "$apply" or phase is "$digest"
+        $scope.$eval fn  if fn
+      else
+        if fn
+          $scope.$apply fn
+        else
+          $scope.$apply()
+      return
+  ]).factory("$authService", [
   "$interval"
   "$http"
   "$log"
@@ -249,9 +261,9 @@ angular.module("d2mp.services", []).factory("$authService", [
   "$log"
   "$authService"
   "$rootScope"
-  "$timeout"
-  ($interval, $log, $authService, $rootScope, $timeout)->
-    service = new LobbyService $rootScope, $authService, $timeout
+  "safeApply"
+  ($interval, $log, $authService, $rootScope, safeApply)->
+    service = new LobbyService $rootScope, $authService, safeApply
     $rootScope.$on "auth:isAuthed", ->
       service.sendAuth()
     service.sendAuth()
@@ -261,24 +273,24 @@ angular.module("d2mp.services", []).factory("$authService", [
   '$rootScope'
   '$location'
   '$lobbyService'
-  "$timeout"
-  ($rootScope, $location, $lobbyService, $timeout)->
+  "safeApply"
+  ($rootScope, $location, $lobbyService, safeApply)->
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert'] 
         if path.indexOf('lobby/') is -1
-          $timeout ->
+          safeApply ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         console.log path
         if path.indexOf('lobby/') isnt -1
-          $timeout ->
+          safeApply ->
             $location.path('/lobbies')
     $rootScope.$on 'lobby:installres', (event, success)->
       if success
         $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->
-      $timeout ->
+      safeApply ->
         $location.url '/install/'+mod
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       if $lobbyService.lobbies.length > 0
@@ -286,7 +298,7 @@ angular.module("d2mp.services", []).factory("$authService", [
           return
         event.preventDefault()
         if oldurl.indexOf('lobby/') is -1
-          $timeout ->
+          safeApply ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         if newurl.indexOf('/lobby/') != -1
