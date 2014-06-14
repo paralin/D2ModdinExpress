@@ -35,8 +35,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         $location.url('/newlobby')
 
     $scope.joinLobby = (lobby) ->
-      console.log lobby
-      return
+      $lobbyService.joinLobby lobby._id
 
     $scope.getModThumbnail = (modid) ->
       mod = _.findWhere($rootScope.mods, _id: modid)

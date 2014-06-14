@@ -24,7 +24,7 @@
         }
       };
       $scope.joinLobby = function(lobby) {
-        console.log(lobby);
+        return $lobbyService.joinLobby(lobby._id);
       };
       return $scope.getModThumbnail = function(modid) {
         mod = _.findWhere($rootScope.mods, {

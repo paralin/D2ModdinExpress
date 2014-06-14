@@ -95,6 +95,12 @@
       return this.call("startqueue", null);
     };
 
+    LobbyService.prototype.joinLobby = function(id) {
+      return this.call("joinlobby", {
+        LobbyID: id
+      });
+    };
+
     LobbyService.prototype.changeRegion = function(region) {
       return this.call("setregion", {
         region: region

@@ -70,6 +70,10 @@ class LobbyService
   startQueue: ->
     @call "startqueue", null
 
+  joinLobby: (id)->
+    @call "joinlobby",
+      LobbyID: id
+
   changeRegion: (region)->
     @call "setregion",
       region: region
