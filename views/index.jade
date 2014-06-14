@@ -11,7 +11,7 @@ block body
       .rightButtons
         a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
           | Source
-        button.btn.btn-success(ng-if="!status.managerConnected")
+        button.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()")
           | Download Launcher
 
   script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
