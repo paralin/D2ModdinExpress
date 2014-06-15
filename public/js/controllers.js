@@ -115,10 +115,10 @@
         $scope.stopFinding = function() {
           return $lobbyService.stopFinding();
         };
-        $scope.sendConnect = function() {
-          return $lobbyService.sendConnect();
-        };
       }
+      $scope.sendConnect = function() {
+        return $lobbyService.sendConnect();
+      };
       $scope.leaveLobby = function() {
         return $lobbyService.leaveLobby();
       };

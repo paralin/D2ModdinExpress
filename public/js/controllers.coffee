@@ -123,8 +123,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         $lobbyService.changeRegion newVal
       $scope.stopFinding = ->
         $lobbyService.stopFinding()
-      $scope.sendConnect = ->
-        $lobbyService.sendConnect()
+    $scope.sendConnect = ->
+      $lobbyService.sendConnect()
     $scope.leaveLobby = ->
       $lobbyService.leaveLobby()
     $scope.kickPlayer = (player)->
