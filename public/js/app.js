@@ -72,13 +72,15 @@
       $rootScope.REGIONS = {
         UNKNOWN: 0,
         NA: 1,
-        EU: 2
+        EU: 2,
+        AUS: 3
       };
       $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
       $rootScope.REGIONSH = {
         0: "All Regions",
         1: "North America",
-        2: "Europe"
+        2: "Europe",
+        3: "Australia"
       };
       return $.getJSON("/data/mods", function(data) {
         return $rootScope.$apply(function() {
