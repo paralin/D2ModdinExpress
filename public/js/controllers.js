@@ -105,8 +105,8 @@
       if ($scope.isHost) {
         $scope.changeTitle = function() {
           var title;
-          title = $(".titleInput").val();
-          $lobbyService.changeTitle(title);
+          title = $(".titleInput");
+          $lobbyService.changeTitle(title.val());
           return title.blur();
         };
         $scope.changeRegion = function(newVal) {

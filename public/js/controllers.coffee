@@ -116,8 +116,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.isHost = $scope.lobby.creatorid is $authService.user._id
     if $scope.isHost
       $scope.changeTitle = ->
-        title = $(".titleInput").val()
-        $lobbyService.changeTitle title
+        title = $(".titleInput")
+        $lobbyService.changeTitle title.val()
         title.blur()
       $scope.changeRegion = (newVal)->
         $lobbyService.changeRegion newVal
