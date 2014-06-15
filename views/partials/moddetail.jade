@@ -12,4 +12,4 @@
           div(ng-if="mod.playable == true")  Play Now
           div(ng-if="mod.playable == false") Not Available
 video#modDetail(ng-if="mod.spreadvideo",src="{{mod.spreadvideo}}",style="background:url('{{mod.spreadimage}}') no-repeat;z-index:-5000",autoplay,loop)
-#modDetail(ng-if="mod.spreadvideo==null",style="background-image:url('{{mod.spreadimage}}');height:100%;z-index:-5000")
+#modDetail(ng-if="mod.spreadvideo==null",style="background-image:url('{{mod.spreadimage}}');height:100%;z-index:-5000;pointer-events:none")

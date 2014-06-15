@@ -5,27 +5,7 @@ global = @
 class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
-    @publicLobbies = [
-      _id: "someid"
-      banned: []
-      creator: "Quantum"
-      creatorid: "someid"
-      deleted: false
-      devMode: false
-      dire: [null,null,null,null,null]
-      radiant: [null,null,null,null,null]
-      enableGG: true
-      hasPassword: false
-      isPublic: true
-      mod: "ura55vChSgFo6LHgz"
-      name: "Test Lobby"
-      password: ""
-      region: 1
-      requiresFullLobby: true
-      serverIP: ""
-      state: 0
-      status: 0
-    ]
+    @publicLobbies = []
     @socket = null
     @scope = $rootScope
     @auth = $authService
