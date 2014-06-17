@@ -11,29 +11,7 @@
     function LobbyService($rootScope, $authService, safeApply) {
       this.safeApply = safeApply;
       this.lobbies = [];
-      this.publicLobbies = [
-        {
-          _id: "someid",
-          banned: [],
-          creator: "Quantum",
-          creatorid: "someid",
-          deleted: false,
-          devMode: false,
-          dire: [null, null, null, null, null],
-          radiant: [null, null, null, null, null],
-          enableGG: true,
-          hasPassword: false,
-          isPublic: true,
-          mod: "ura55vChSgFo6LHgz",
-          name: "Test Lobby",
-          password: "",
-          region: 1,
-          requiresFullLobby: true,
-          serverIP: "",
-          state: 0,
-          status: 0
-        }
-      ];
+      this.publicLobbies = [];
       this.socket = null;
       this.scope = $rootScope;
       this.auth = $authService;
