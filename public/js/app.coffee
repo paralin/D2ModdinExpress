@@ -5,6 +5,8 @@ app = angular.module("d2mp", [
   "d2mp.filters"
   "d2mp.services"
   "d2mp.directives"
+  'angulartics'
+  'angulartics.google.analytics'
 ]).config([
   "$routeProvider"
   "$locationProvider"
