@@ -35,8 +35,12 @@ app.use(cookieParser(process.env.SESSION_SECRET||"justanrpg"));
 app.use(bodyParser());
 app.use(session({
   secret: process.env.SESSION_SECRET||"justanrpg",
+  cookie: {
+    maxAge: 1800000
+  },
   store: new MongoStore({
-    url: process.env.MONGO_URL||"mongodb://localhost/d2moddin"
+    url: process.env.MONGO_URL||"mongodb://localhost/d2moddin",
+
   })
 }));
 app.use(passport.initialize());
