@@ -19,7 +19,7 @@
               th Teams
               th(style="width:70px")
           tbody
-            tr(ng-repeat="lobby in lobbies")
+            tr(ng-repeat="lobby in lobbies | filter:lobbyFilter")
               td(style="padding:5px")
                 img(ng-src="{{getModThumbnail(lobby.mod)}}",style="width:35px;height:35px")
               td {{lobby.name}}

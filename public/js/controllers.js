@@ -7,6 +7,7 @@
       var mod, modName, publicLobbies;
       publicLobbies = $lobbyService.publicLobbies;
       $scope.hasMod = $routeParams.modname != null;
+      $scope.lobbyFilter = {};
       modName = null;
       mod = null;
       if ($scope.hasMod) {
@@ -14,6 +15,7 @@
         $scope.mod = mod = _.findWhere($rootScope.mods, {
           name: modName
         });
+        $scope.lobbyFilter.mod = mod._id;
       }
       $scope.lobbies = publicLobbies;
       $scope.createLobby = function() {

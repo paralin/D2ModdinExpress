@@ -21,12 +21,15 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   ($scope, $location, $routeParams, $rootScope, $lobbyService) ->
     publicLobbies = $lobbyService.publicLobbies
     $scope.hasMod = $routeParams.modname?
+    $scope.lobbyFilter = {}
     modName = null
     mod = null
     if $scope.hasMod
       modName = $routeParams.modname
       $scope.mod = mod = _.findWhere $rootScope.mods,
         name: modName
+      $scope.lobbyFilter.mod = mod._id
+
     $scope.lobbies = publicLobbies
     $scope.createLobby = ->
       if $scope.hasMod
