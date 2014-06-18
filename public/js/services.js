@@ -16,6 +16,7 @@
       this.scope = $rootScope;
       this.auth = $authService;
       this.hasAuthed = false;
+      this.hasAttemptedConnection = false;
       this.status = {
         managerConnected: false,
         managerStatus: "Manager status unknown, checking...",
@@ -211,6 +212,13 @@
       }
     };
 
+    LobbyService.prototype.reconnect = function() {
+      var _this = this;
+      return setTimeout(function() {
+        return _this.connect();
+      }, 3000);
+    };
+
     LobbyService.prototype.connect = function() {
       var so,
         _this = this;
@@ -259,14 +267,19 @@
         _this.status.managerStatus = "You have lost connection with the lobby server...";
         _this.scope.$digest();
         _this.socket = null;
-        return $.pnotify({
-          title: "Disconnected",
-          text: "Disconnected from the lobby server.",
-          type: "error"
-        });
+        if (!_this.hasAttemptedConnection) {
+          _this.hasAttemptedConnection = true;
+          $.pnotify({
+            title: "Disconnected",
+            text: "Disconnected from the lobby server.",
+            type: "error"
+          });
+        }
+        return _this.reconnect();
       });
       return so.on("open", function(clientinfo) {
         console.log("OnOpen");
+        _this.hasAttemptedConnection = false;
         $.pnotify({
           title: "Connected",
           text: "Connected to the lobby server",

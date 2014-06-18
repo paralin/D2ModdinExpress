@@ -10,6 +10,7 @@ class LobbyService
     @scope = $rootScope
     @auth = $authService
     @hasAuthed = false
+    @hasAttemptedConnection = false
     @status =
       managerConnected: false
       managerStatus: "Manager status unknown, checking..."
@@ -142,6 +143,12 @@ class LobbyService
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
             @scope.$broadcast eve, op
+
+  reconnect: ->
+    setTimeout(=>
+      @connect()
+    ,3000)
+
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
@@ -180,12 +187,16 @@ class LobbyService
       @status.managerStatus = "You have lost connection with the lobby server..."
       @scope.$digest()
       @socket = null
-      $.pnotify
-        title: "Disconnected"
-        text: "Disconnected from the lobby server."
-        type: "error"
+      if !@hasAttemptedConnection
+        @hasAttemptedConnection = true
+        $.pnotify
+          title: "Disconnected"
+          text: "Disconnected from the lobby server."
+          type: "error"
+      @reconnect()
     so.on "open", (clientinfo)=>
       console.log "OnOpen"
+      @hasAttemptedConnection = false
       $.pnotify
         title: "Connected"
         text: "Connected to the lobby server"
