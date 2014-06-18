@@ -126,6 +126,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         pass = $(".passwordInput")
         $lobbyService.changePassword pass.val()
         pass.blur()
+        $.pnotify
+          title: "Password Set"
+          type: "info"
+          text: "You have set a password on this lobby."
       $scope.changeRegion = (newVal)->
         $lobbyService.changeRegion newVal
       $scope.stopFinding = ->

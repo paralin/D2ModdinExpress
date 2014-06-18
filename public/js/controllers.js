@@ -115,7 +115,12 @@
           var pass;
           pass = $(".passwordInput");
           $lobbyService.changePassword(pass.val());
-          return pass.blur();
+          pass.blur();
+          return $.pnotify({
+            title: "Password Set",
+            type: "info",
+            text: "You have set a password on this lobby."
+          });
         };
         $scope.changeRegion = function(newVal) {
           return $lobbyService.changeRegion(newVal);

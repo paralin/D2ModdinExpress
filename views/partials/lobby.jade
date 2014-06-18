@@ -1,7 +1,9 @@
 #wrapper
   section.container.text-center(style="margin-top:30px")
     h1.text-center
-      strong {{lobby.name}}
+      strong 
+        i.fa.fa-lock(ng-if="lobby.hasPassword")
+        | {{lobby.name}}
       |  &#91;{{REGIONSH[lobby.region]}}&#93;
       span.subtitle(ng-if="lobby.status==0",style="margin-top:10px")
         | Waiting for the host to start the game...
@@ -58,5 +60,5 @@
       div(style="width:100%;height:150px;padding:15px;padding-top:0")
         input.titleInput.form-control(value="{{lobby.name}}",maxlength=40,ng-keyup="$event.keyCode==13?changeTitle():null")
         select.regionInput.form-control(ng-change="changeRegion(region)",ng-model="region",ng-options="key as item for (key,item) in REGIONSH")
-        input.passwordInput.form-control(value="{{lobby.password}}",placeholder="no password",maxlength=40,ng-keyup="$event.keyCode==13?changePassowrd():null")
+        input.passwordInput.form-control(value="{{lobby.password}}",placeholder="no password",maxlength=40,ng-keyup="$event.keyCode==13?changePassword():null")
         .btn.btn-success(style="margin-top:0;width:100%",ng-click="startQueue()") Start Game
