@@ -109,6 +109,12 @@
           $lobbyService.changeTitle(title.val());
           return title.blur();
         };
+        $scope.changePassword = function() {
+          var pass;
+          pass = $(".passwordInput");
+          $lobbyService.changePassword(pass.val());
+          return pass.blur();
+        };
         $scope.changeRegion = function(newVal) {
           return $lobbyService.changeRegion(newVal);
         };

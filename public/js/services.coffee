@@ -65,6 +65,14 @@ class LobbyService
   stopFinding: ->
     @call "stopqueue", null
 
+  usePassword: (pass)->
+    @call "joinpasswordlobby",
+      password: pass
+
+  changePassword: (pass)->
+    @call "setpassword",
+      password: pass
+
   changeTitle: (title)->
     @call "setname",
       name: title
@@ -152,7 +160,8 @@ class LobbyService
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'auth', (data)=>
       if data.status
         $.pnotify

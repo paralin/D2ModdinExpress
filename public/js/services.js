@@ -94,6 +94,18 @@
       return this.call("stopqueue", null);
     };
 
+    LobbyService.prototype.usePassword = function(pass) {
+      return this.call("joinpasswordlobby", {
+        password: pass
+      });
+    };
+
+    LobbyService.prototype.changePassword = function(pass) {
+      return this.call("setpassword", {
+        password: pass
+      });
+    };
+
     LobbyService.prototype.changeTitle = function(title) {
       return this.call("setname", {
         name: title
@@ -224,7 +236,7 @@
         _this = this;
       this.disconnect();
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://ddp2.d2modd.in:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502/BrowserController');
       so.on('auth', function(data) {
         if (data.status) {
           $.pnotify({

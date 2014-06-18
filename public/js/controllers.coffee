@@ -119,6 +119,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         title = $(".titleInput")
         $lobbyService.changeTitle title.val()
         title.blur()
+      $scope.changePassword = ->
+        pass = $(".passwordInput")
+        $lobbyService.changePassword pass.val()
+        pass.blur()
       $scope.changeRegion = (newVal)->
         $lobbyService.changeRegion newVal
       $scope.stopFinding = ->
