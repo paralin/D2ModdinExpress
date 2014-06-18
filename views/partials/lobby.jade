@@ -31,7 +31,7 @@
       .tileTitle Radiant
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:'player.failedConnect'}")
+          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}")
             td
               i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
               | {{player.name}}
@@ -42,7 +42,7 @@
       .tileTitle Dire
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.dire",ng-class="{danger:'player.failedConnect'}")
+          tr(ng-repeat="player in lobby.dire",ng-class="{danger:player.failedConnect}")
             td
               i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
               | {{player.name}}
