@@ -40,6 +40,11 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.joinLobby = (lobby) ->
       $lobbyService.joinLobby lobby._id
 
+    $scope.enterPassword = ->
+      bootbox.prompt "Enter the lobby password:", (pass)->
+        return if !pass?
+        $lobbyService.usePassword pass
+
     $scope.getModThumbnail = (modid) ->
       mod = _.findWhere($rootScope.mods, _id: modid)
       if mod?

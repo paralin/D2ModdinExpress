@@ -28,6 +28,14 @@
       $scope.joinLobby = function(lobby) {
         return $lobbyService.joinLobby(lobby._id);
       };
+      $scope.enterPassword = function() {
+        return bootbox.prompt("Enter the lobby password:", function(pass) {
+          if (!(pass != null)) {
+            return;
+          }
+          return $lobbyService.usePassword(pass);
+        });
+      };
       return $scope.getModThumbnail = function(modid) {
         mod = _.findWhere($rootScope.mods, {
           _id: modid
