@@ -116,11 +116,19 @@
           pass = $(".passwordInput");
           $lobbyService.changePassword(pass.val());
           pass.blur();
-          return $.pnotify({
-            title: "Password Set",
-            type: "info",
-            text: "You have set a password on this lobby."
-          });
+          if (pass.val() === "") {
+            return $.pnotify({
+              title: "Password Unset",
+              type: "info",
+              text: "Your lobby is no longer password protected."
+            });
+          } else {
+            return $.pnotify({
+              title: "Password Set",
+              type: "info",
+              text: "You have set a password on this lobby."
+            });
+          }
         };
         $scope.changeRegion = function(newVal) {
           return $lobbyService.changeRegion(newVal);
