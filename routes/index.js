@@ -13,7 +13,7 @@ exports.partials = function (req, res) {
 };
 
 exports.modList = function(req,res){
-  mods.find({}, function(err, modL){
-    res.json(modL);  
+  mods.find({isPublic: true}, function(err, modL){
+    res.json(modL); 
   });
 };
