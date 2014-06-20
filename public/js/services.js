@@ -30,9 +30,12 @@
 
     LobbyService.prototype.disconnect = function() {
       if (this.socket !== null) {
+        this.socket.close();
         this.socket = null;
       }
       this.hasAuthed = false;
+      this.lobbies.length = 0;
+      this.publicLobbies.length = 0;
       return console.log("Disconnected.");
     };
 
@@ -49,7 +52,6 @@
         id: method,
         req: params
       };
-      console.log(data);
       return this.send(data);
     };
 
@@ -151,7 +153,6 @@
 
     LobbyService.prototype.handleMsg = function(data) {
       var _this = this;
-      console.log(JSON.stringify(data));
       switch (data.msg) {
         case "error":
           return $.pnotify({
@@ -229,6 +230,10 @@
 
     LobbyService.prototype.reconnect = function() {
       var _this = this;
+      if (!this.auth.isAuthed) {
+        console.log("Not re-connecting as we aren't logged in.");
+        return;
+      }
       return setTimeout(function() {
         return _this.connect();
       }, 3000);
@@ -276,12 +281,10 @@
         }
       });
       so.on("close", function() {
-        _this.lobbies.length = 0;
-        _this.publicLobbies.length = 0;
         _this.status.managerConnected = false;
         _this.status.managerStatus = "You have lost connection with the lobby server...";
+        _this.disconnect();
         _this.scope.$digest();
-        _this.socket = null;
         if (!_this.hasAttemptedConnection) {
           _this.hasAttemptedConnection = true;
           $.pnotify({
@@ -358,8 +361,12 @@
     "$interval", "$log", "$authService", "$rootScope", "safeApply", function($interval, $log, $authService, $rootScope, safeApply) {
       var service;
       service = new LobbyService($rootScope, $authService, safeApply);
-      $rootScope.$on("auth:isAuthed", function() {
-        return service.sendAuth();
+      $rootScope.$on("auth:isAuthed", function(event, auth) {
+        if (auth) {
+          return service.sendAuth();
+        } else {
+          return service.disconnect();
+        }
       });
       service.sendAuth();
       global.service = service;

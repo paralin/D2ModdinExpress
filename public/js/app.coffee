@@ -51,8 +51,16 @@ app = angular.module("d2mp", [
   "$rootScope"
   "$lobbyService"
   "$forceLobbyPage"
-  ($rootScope, $lobbyService, $forceLobbyPage) ->
+  ($rootScope, $lobbyService, $forceLobbyPage) =>
     $rootScope.mods = []
+
+    $rootScope.totalPlayerCount = (lobby)->
+      count = 0
+      for plyr in lobby.dire
+        count+=1 if plyr?
+      for plyr in lobby.radiant
+        count+=1 if plyr?
+      count
 
     $rootScope.launchManager = ->
       window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe"

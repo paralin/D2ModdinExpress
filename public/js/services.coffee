@@ -21,8 +21,11 @@ class LobbyService
   
   disconnect: ->
     if @socket != null
+      @socket.close()
       @socket = null
     @hasAuthed = false
+    @lobbies.length = 0
+    @publicLobbies.length = 0
     console.log "Disconnected."
 
   send: (data)->
@@ -33,7 +36,6 @@ class LobbyService
     data =
       id: method
       req: params
-    console.log data
     @send data
 
   leaveLobby: ->
@@ -104,7 +106,6 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
-    console.log JSON.stringify data
     switch data.msg
       when "error"
         $.pnotify
@@ -154,6 +155,9 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
+    if !@auth.isAuthed
+      console.log "Not re-connecting as we aren't logged in."
+      return
     setTimeout(=>
       @connect()
     ,3000)
@@ -191,12 +195,10 @@ class LobbyService
           @status.managerStatus = "Manager is not connected."
         @scope.$digest()
     so.on "close", =>
-      @lobbies.length = 0
-      @publicLobbies.length = 0
       @status.managerConnected = false
       @status.managerStatus = "You have lost connection with the lobby server..."
+      @disconnect()
       @scope.$digest()
-      @socket = null
       if !@hasAttemptedConnection
         @hasAttemptedConnection = true
         $.pnotify
@@ -265,8 +267,11 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "safeApply"
   ($interval, $log, $authService, $rootScope, safeApply)->
     service = new LobbyService $rootScope, $authService, safeApply
-    $rootScope.$on "auth:isAuthed", ->
-      service.sendAuth()
+    $rootScope.$on "auth:isAuthed", (event,auth)->
+      if auth
+        service.sendAuth()
+      else
+        service.disconnect()
     service.sendAuth()
     global.service = service
     service
