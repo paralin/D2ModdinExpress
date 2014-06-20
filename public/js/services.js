@@ -173,6 +173,9 @@
             _results = [];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               upd = _ref[_i];
+              if (!(upd != null)) {
+                continue;
+              }
               coll = _this.colls[upd._c];
               _c = upd._c;
               eve = "lobbyUpdate:" + _c;

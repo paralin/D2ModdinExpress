@@ -121,6 +121,7 @@ class LobbyService
       when "colupd"
         @safeApply @scope, =>
           for upd in data.ops
+            continue if !upd?
             coll = @colls[upd._c]
             _c = upd._c
             eve = "lobbyUpdate:"+_c
