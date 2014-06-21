@@ -93,7 +93,7 @@ class LobbyService
       mod: modid
 
   sendAuth: ()->
-    if !@auth.isAuthed
+    if !@auth.isAuthed || !_.contains(@auth.user.authItems, "invited")
       @disconnect()
     else
       if !@hasAuthed
@@ -155,8 +155,8 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
-    if !@auth.isAuthed
-      console.log "Not re-connecting as we aren't logged in."
+    if !@auth.isAuthed || !_.contains(@auth.user.authItems, "invited")
+      console.log "Not re-connecting as we aren't logged in/not invited."
       return
     setTimeout(=>
       @connect()

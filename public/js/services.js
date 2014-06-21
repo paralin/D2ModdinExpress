@@ -134,7 +134,7 @@
     };
 
     LobbyService.prototype.sendAuth = function() {
-      if (!this.auth.isAuthed) {
+      if (!this.auth.isAuthed || !_.contains(this.auth.user.authItems, "invited")) {
         return this.disconnect();
       } else {
         if (!this.hasAuthed) {
@@ -230,8 +230,8 @@
 
     LobbyService.prototype.reconnect = function() {
       var _this = this;
-      if (!this.auth.isAuthed) {
-        console.log("Not re-connecting as we aren't logged in.");
+      if (!this.auth.isAuthed || !_.contains(this.auth.user.authItems, "invited")) {
+        console.log("Not re-connecting as we aren't logged in/not invited.");
         return;
       }
       return setTimeout(function() {
