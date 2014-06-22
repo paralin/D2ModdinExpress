@@ -40,6 +40,10 @@
         templateUrl: "/partials/lobby",
         controller: "LobbyCtrl"
       });
+      $routeProvider.when('/invitequeue', {
+        templateUrl: '/partials/invitequeue',
+        controller: 'InviteQueueCtrl'
+      });
       $routeProvider.otherwise({
         redirectTo: "/"
       });

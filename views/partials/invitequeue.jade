@@ -1,0 +1,80 @@
+style
+  hr{margin-top:10px;margin-bottom:15px}
+  h4{margin-top:10px;margin-bottom:5px}
+#wrapper
+  #mods
+    header#page-title(style="margin-bottom:20px")
+      .container
+        h1 D2Moddin Invites
+        ul.breadcrumb
+          li
+            a(href='/') Home
+          li.active Queue
+    section.container
+      .row
+        .col-md-9
+          .row
+            .col-sm-4.col-md-4(ng-controller="AuthCtrl")
+              h3 Beta Queue
+              hr
+              h1(style="text-align:center") {{queue.totalCount|number}}
+              p(style="width:100%;text-align:center")
+                | Players in Queue
+              h1(ng-if="queue.inQueue",style="text-align:center") {{queue.myPos|number}}
+              p(ng-if="queue.inQueue",style="width:100%;text-align:center")
+                | Position in Queue
+              h1(ng-if="queue.inQueue&&queue.invited",style="text-align:center") Invited
+              p
+              a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="queue.invited") Start Playing
+              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue",ng-click="joinQueue()") Join the Queue
+              button.btn.btn-success(ng-click="skipQueue()",style="width:100%",ng-if="queue.inQueue&&!queue.invited") Skip the Queue
+            .col-sm-8.col-md-8
+              .desc
+                h3.page-header(style="margin:10px 0 10px") What is D2Moddin 
+                p
+                  b Dota 2 
+                  | is a 2013 multiplayer online battle arena video game
+                  | and the stand-alone sequel to the Defense of the Ancients
+                  | (DotA) mod.
+                p
+                  b D2Moddin 
+                  | is an effort to return to the roots of Dota 2 as a
+                  | mod, allowing thousands of players to easily play unofficial
+                  | custom game modes created by the community.
+                p
+                  | Thousands of games are now hosted daily on D2Moddin's server
+                  | network, and with a queue of over 201,000 players, we are
+                  | constantly working to scale up our service and allow more
+                h4 Skip the Queue
+                hr
+                p 
+                  | You can donate to support the project and skip the queue! The
+                  | first perk is at $2.50 and awards you an instant invite code
+                  | for D2Moddin.
+                h4 The Game Modes
+                hr
+                p 
+                  | Currently we host four game modes on D2Moddin (and are
+                  | adding more as they are completed):
+                p 
+                  b Reflex (by BMD)
+                  | - a fast paced action game that excercises
+                  | hand-eye coordination and fast reflexes.
+                p
+                  b Hero Line Wars (by EinAlex)
+                  | - Fight against creeps sent by
+                  | the other team and send waves to quickly overwhelm the enemy
+                  | and increase your periodic income!
+                p
+                  b Pudge Wars (by Kobb and Aderum) 
+                  |  - The classic WC3 mod
+                  | re-created in Dota 2.
+                p
+                  b Fight or Flight
+                  |  (by MoD)  
+                  | - The first competitive Dota 2 mod.
+        aside.col-md-3
+          h3 Donations
+          hr
+          .fr-widget(data-type="badge",data-variant="tall",data-width="220",data-url="http://fnd.us/c/2nfla")
+script(type="text/javascript",src="//static.fundrazr.com/widgets/1957/widgets.js")

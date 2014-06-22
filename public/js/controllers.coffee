@@ -185,8 +185,21 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.$on "$destroy", ->
       for l in list
         l()
-])
-.controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
+]).controller("InviteQueueCtrl", [
+  "$scope"
+  "$queueService"
+  ($scope, $queueService)->
+    $scope.queue = $queueService
+    $scope.skipQueue = ->
+      bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!")
+]).controller("NavCtrl", [
+  "$scope"
+  "$queueService"
+  "$authService"
+  ($scope, $queueService, $authService)->
+    $scope.queue = $queueService
+    $scope.auth = $authService
+]).controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
   modname = $routeParams.modname
   mod = _.findWhere($rootScope.mods,
     name: modname

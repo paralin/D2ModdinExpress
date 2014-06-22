@@ -216,6 +216,18 @@
         return _results;
       });
     }
+  ]).controller("InviteQueueCtrl", [
+    "$scope", "$queueService", function($scope, $queueService) {
+      $scope.queue = $queueService;
+      return $scope.skipQueue = function() {
+        return bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!");
+      };
+    }
+  ]).controller("NavCtrl", [
+    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
+      $scope.queue = $queueService;
+      return $scope.auth = $authService;
+    }
   ]).controller("ModDetailCtrl", function($scope, $rootScope, $routeParams, $location, $sce) {
     var mod, modname;
     modname = $routeParams.modname;

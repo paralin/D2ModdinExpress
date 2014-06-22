@@ -2,6 +2,13 @@
 
 global = @
 
+class QueueService
+  constructor:($rootScope, $authService, @safeApply)->
+    @totalCount = 201150
+    @inQueue = true
+    @myPos = 500
+    @invited = false
+
 class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
@@ -245,6 +252,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
         if data.isAuthed != authService.isAuthed
           $log.log "Authed: "+data.isAuthed
           authService.isAuthed = data.isAuthed
+          authService.user = data.user
           $rootScope.$broadcast "auth:isAuthed", data.isAuthed
         authService.user = data.user
         authService.token = data.token
@@ -275,12 +283,23 @@ angular.module("d2mp.services", []).factory("safeApply", [
     service.sendAuth()
     global.service = service
     service
+]).factory("$queueService", [
+  "$authService"
+  "$rootScope"
+  "safeApply"
+  ($authService, $rootScope, safeApply)->
+    service = new QueueService $rootScope, $authService, safeApply
+    global.queue = service
+    service
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'
   '$lobbyService'
+  '$authService'
+  '$queueService'
+  '$timeout'
   "safeApply"
-  ($rootScope, $location, $lobbyService, safeApply)->
+  ($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply)->
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert'] 
@@ -298,6 +317,15 @@ angular.module("d2mp.services", []).factory("safeApply", [
       safeApply $rootScope, ->
         $location.url '/install/'+mod
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
+      window.FundRazr = undefined
+      $("#fr_hovercard-outer").remove()
+      if !$queueService.invited && newurl.indexOf('lobb') != -1
+        event.preventDefault()
+        console.log "redirect #{newurl}"
+        return $timeout ->
+          console.log "safeapply"
+          $location.url "/invitequeue"
+          console.log $location.url()
       if $lobbyService.lobbies.length > 0
         if newurl.indexOf('/lobby/') != -1
           return

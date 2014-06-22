@@ -2,9 +2,23 @@
 (function() {
   "use strict";
 
-  var LobbyService, global;
+  var LobbyService, QueueService, global;
 
   global = this;
+
+  QueueService = (function() {
+
+    function QueueService($rootScope, $authService, safeApply) {
+      this.safeApply = safeApply;
+      this.totalCount = 201150;
+      this.inQueue = true;
+      this.myPos = 500;
+      this.invited = false;
+    }
+
+    return QueueService;
+
+  })();
 
   LobbyService = (function() {
 
@@ -343,6 +357,7 @@
           if (data.isAuthed !== authService.isAuthed) {
             $log.log("Authed: " + data.isAuthed);
             authService.isAuthed = data.isAuthed;
+            authService.user = data.user;
             $rootScope.$broadcast("auth:isAuthed", data.isAuthed);
           }
           authService.user = data.user;
@@ -372,8 +387,15 @@
       global.service = service;
       return service;
     }
+  ]).factory("$queueService", [
+    "$authService", "$rootScope", "safeApply", function($authService, $rootScope, safeApply) {
+      var service;
+      service = new QueueService($rootScope, $authService, safeApply);
+      global.queue = service;
+      return service;
+    }
   ]).factory('$forceLobbyPage', [
-    '$rootScope', '$location', '$lobbyService', "safeApply", function($rootScope, $location, $lobbyService, safeApply) {
+    '$rootScope', '$location', '$lobbyService', '$authService', '$queueService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply) {
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
         var path;
         path = $location.path();
@@ -402,6 +424,17 @@
         });
       });
       return $rootScope.$on('$locationChangeStart', function(event, newurl, oldurl) {
+        window.FundRazr = void 0;
+        $("#fr_hovercard-outer").remove();
+        if (!$queueService.invited && newurl.indexOf('lobb') !== -1) {
+          event.preventDefault();
+          console.log("redirect " + newurl);
+          return $timeout(function() {
+            console.log("safeapply");
+            $location.url("/invitequeue");
+            return console.log($location.url());
+          });
+        }
         if ($lobbyService.lobbies.length > 0) {
           if (newurl.indexOf('/lobby/') !== -1) {
             return;

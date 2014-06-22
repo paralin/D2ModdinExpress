@@ -45,6 +45,10 @@ app = angular.module("d2mp", [
       templateUrl: "/partials/lobby"
       controller: "LobbyCtrl"
 
+    $routeProvider.when '/invitequeue',
+      templateUrl: '/partials/invitequeue'
+      controller: 'InviteQueueCtrl'
+
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
 ]).run([
