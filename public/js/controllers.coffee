@@ -188,7 +188,11 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("InviteQueueCtrl", [
   "$scope"
   "$queueService"
-  ($scope, $queueService)->
+  "$authService"
+  ($scope, $queueService, $authService)->
+    $scope.auth = $authService
+    $scope.startSignin = ->
+      window.location.href = "/auth/steam"
     $scope.queue = $queueService
     $scope.skipQueue = ->
       bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!")

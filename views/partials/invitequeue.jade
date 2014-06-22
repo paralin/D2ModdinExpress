@@ -14,20 +14,21 @@ style
       .row
         .col-md-9
           .row
-            .col-sm-4.col-md-4(ng-controller="AuthCtrl")
+            .col-sm-4.col-md-4
               h3 Beta Queue
               hr
               h1(style="text-align:center") {{queue.totalCount|number}}
               p(style="width:100%;text-align:center")
                 | Players in Queue
-              h1(ng-if="queue.inQueue",style="text-align:center") {{queue.myPos|number}}
-              p(ng-if="queue.inQueue",style="width:100%;text-align:center")
+              h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.myPos|number}}
+              p(ng-if="queue.inQueue&&auth.isAuthed",style="width:100%;text-align:center")
                 | Position in Queue
               h1(ng-if="queue.inQueue&&queue.invited",style="text-align:center") Invited
               p
-              a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="queue.invited") Start Playing
-              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue",ng-click="joinQueue()") Join the Queue
-              button.btn.btn-success(ng-click="skipQueue()",style="width:100%",ng-if="queue.inQueue&&!queue.invited") Skip the Queue
+              a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="auth.isAuthed&&queue.invited") Start Playing
+              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue&&auth.isAuthed",ng-click="joinQueue()") Join the Queue
+              button.btn.btn-success(ng-click="skipQueue()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Skip the Queue
+              button.btn.btn-success(ng-click="startSignin()",style="width:100%",ng-if="!auth.isAuthed") Signin w/ Steam
             .col-sm-8.col-md-8
               .desc
                 h3.page-header(style="margin:10px 0 10px") What is D2Moddin 

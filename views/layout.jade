@@ -34,18 +34,11 @@ html.no-js(ng-app="d2mp",lang="en")
                 span.text-besides-image.sign-in-text-steam
                   | Sign Out
           .dropdown-menu(ng-if="auth.isAuthed==false")
-            .alert.alert-danger
-              | Only invited users can sign in.
             .login-text-and-button
               #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-info(ng-click="startLogin()")
                 #login-buttons-image-steam.login-image
                 span.text-besides-image.sign-in-text-steam
                   | Sign in with Steam
-            .login-text-and-button
-              #login-buttons-joinqueue.login-button.single-login-button.col-sm-12.btn.btn-success(ng-click="joinQueue()")
-                #login-buttons-image-joinqueue.login-image
-                span.text-besides-image.sign-in-text-quee
-                  | Join the Queue
     header#topNav(ng-controller="NavCtrl")
       .container
         a(href="/").logo

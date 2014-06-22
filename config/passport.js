@@ -40,27 +40,18 @@ module.exports = function(passport){
           user.profile.name = profile.personaname;
           return done(null, user);
         }else{
-          request('http://d2modd.in/api/getInvitedUserStatus/?key=822956923836&user_id='+profile.steamid, function(rerr, rresp, rbody){
-            if(rerr){
-              return done(rerr, null);
-            }
-            data = JSON.parse(rbody);
-            if(data.invited != 1){
-              return done(new Error("You have not been invited to D2Moddin yet. You are "+data.queue_id+" in the queue."));
-            }
-            require('crypto').randomBytes(12, function(ex, buf){
-              var newUser = new User();
-              newUser._id = buf.toString('hex');
-              newUser.steam = profile;
-              newUser.profile.name = profile.personaname;
-              newUser.authItems = [];
-              newUser.save(function(err){
-                if(err)
-                  throw err;
-                return done(null, newUser);
-              });
+          require('crypto').randomBytes(12, function(ex, buf){
+            var newUser = new User();
+            newUser._id = buf.toString('hex');
+            newUser.steam = profile;
+            newUser.profile.name = profile.personaname;
+            newUser.authItems = [];
+            newUser.save(function(err){
+              if(err)
+                throw err;
+              return done(null, newUser);
             });
-          })
+          });
         }
       })
     });

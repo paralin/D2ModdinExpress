@@ -217,7 +217,11 @@
       });
     }
   ]).controller("InviteQueueCtrl", [
-    "$scope", "$queueService", function($scope, $queueService) {
+    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
+      $scope.auth = $authService;
+      $scope.startSignin = function() {
+        return window.location.href = "/auth/steam";
+      };
       $scope.queue = $queueService;
       return $scope.skipQueue = function() {
         return bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!");
