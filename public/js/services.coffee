@@ -284,11 +284,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert'] 
-        if path.indexOf('lobby/') is -1
+        if path.indexOf('lobby/') is -1 && $lobbyService.lobbies.length > 0
           safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
-        console.log path
         if path.indexOf('lobby/') isnt -1
           safeApply $rootScope, ->
             $location.path('/lobbies')

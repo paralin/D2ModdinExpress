@@ -378,13 +378,12 @@
         var path;
         path = $location.path();
         if (op === 'update' || op === 'insert') {
-          if (path.indexOf('lobby/') === -1) {
+          if (path.indexOf('lobby/') === -1 && $lobbyService.lobbies.length > 0) {
             return safeApply($rootScope, function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });
           }
         } else {
-          console.log(path);
           if (path.indexOf('lobby/') !== -1) {
             return safeApply($rootScope, function() {
               return $location.path('/lobbies');
