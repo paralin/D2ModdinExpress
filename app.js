@@ -37,8 +37,8 @@ updateQueueStats = function(){
   InviteQueue.count({}, function(err, count){//Use invited:false?
     queueStats.totalCount = count;
   });
-  InviteQueue.count({invited: true}, function(err, count){
-    queueStats.totalInvited = count;
+  InviteQueue.findOne({invited: false}).sort({_id: 1}).exec(function(err, queue){
+    queueStats.totalInvited = queue._id-1;
   });
 };
 updateQueueStats();
