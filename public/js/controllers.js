@@ -227,10 +227,7 @@
           return $queueService.tryUseKey(res.replace(/\s/g, ""));
         });
       };
-      $scope.queue = $queueService;
-      return $scope.skipQueue = function() {
-        return bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!");
-      };
+      return $scope.queue = $queueService;
     }
   ]).controller("NavCtrl", [
     "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {

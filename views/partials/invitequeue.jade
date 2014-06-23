@@ -30,7 +30,7 @@ style
               p
               a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="auth.isAuthed&&queue.invited") Start Playing
               button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue&&auth.isAuthed",ng-click="queue.joinQueue()") Join the Queue
-              button.btn.btn-success(ng-click="skipQueue()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Skip the Queue
+              a.btn.btn-success(href="http://fundrazr.com/campaigns/2nfla/pay?perk=36yD7",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Skip the Queue
               button.btn.btn-success(ng-click="startEnterKey()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Use Invite Key
               button.btn.btn-success(ng-click="startSignin()",style="width:100%",ng-if="!auth.isAuthed") Signin w/ Steam
             .col-sm-8.col-md-8
