@@ -207,6 +207,7 @@
 
     LobbyService.prototype.sendAuth = function() {
       if (!this.auth.isAuthed || !this.queue.invited) {
+        console.log("Not authed or not invited, not sending auth.");
         return this.disconnect();
       } else {
         if (!this.hasAuthed) {
@@ -435,14 +436,13 @@
     "$interval", "$log", "$authService", "$queueService", "$rootScope", "safeApply", function($interval, $log, $authService, $queueService, $rootScope, safeApply) {
       var service;
       service = new LobbyService($rootScope, $authService, $queueService, safeApply);
-      $rootScope.$on("auth:isAuthed", function(event, auth) {
-        if (auth) {
+      $rootScope.$on("auth:data", function(event, data) {
+        if ($authService.isAuthed) {
           return service.sendAuth();
         } else {
           return service.disconnect();
         }
       });
-      service.sendAuth();
       global.service = service;
       return service;
     }

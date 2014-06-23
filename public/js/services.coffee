@@ -132,6 +132,7 @@ class LobbyService
 
   sendAuth: ()->
     if !@auth.isAuthed || !@queue.invited
+      console.log "Not authed or not invited, not sending auth."
       @disconnect()
     else
       if !@hasAuthed
@@ -309,12 +310,11 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "safeApply"
   ($interval, $log, $authService, $queueService, $rootScope, safeApply)->
     service = new LobbyService $rootScope, $authService, $queueService, safeApply
-    $rootScope.$on "auth:isAuthed", (event,auth)->
-      if auth
+    $rootScope.$on "auth:data", (event,data)->
+      if $authService.isAuthed
         service.sendAuth()
       else
         service.disconnect()
-    service.sendAuth()
     global.service = service
     service
 ]).factory("$queueService", [

@@ -172,8 +172,9 @@ app.get('/data/authStatus', function(req, res){
   resp.isAuthed = req.user != null;
   resp.queue = _.clone(queueStats);
   if(req.user){
+    resp.token = req.sessionID;
     resp.user = {
-      _id: req.user.steamid,
+      _id: req.user._id,
       steam: req.user.steam,
       profile: req.user.profile,
       authItems: req.user.authItems
