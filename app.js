@@ -14,7 +14,7 @@ cookieParser = require('cookie-parser'),
 bodyParser = require('body-parser'),
 session = require('express-session'),
 path = require('path'),
-cluster = require('cluster'),
+cluster = require('cluster');
 require('coffee-script/register');
 var _ = require('underscore');
 
@@ -22,8 +22,9 @@ var _ = require('underscore');
 //    console.log('Caught exception: ' + err);
 //});
 
+http.globalAgent.maxSockets = 100;
 if(cluster.isMaster){
-  var cpuCount = require('os').cpus().length;
+  var cpuCount = 10;
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
   }
