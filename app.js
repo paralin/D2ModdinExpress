@@ -8,6 +8,7 @@ stylus = require('stylus'),
 mongoose = require('mongoose'),
 passport = require('passport'),
 flash = require('connect-flash'),
+favicon = require('serve-favicon'),
 nib = require('nib'),
 cookieParser = require('cookie-parser'),
 bodyParser = require('body-parser'),
@@ -48,6 +49,7 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(morgan('dev'));
+app.use(favicon(__dirname + '/public/images/favicon.png'));
 app.use(cookieParser(process.env.SESSION_SECRET||"justanrpg"));
 app.use(bodyParser());
 app.use(session({
