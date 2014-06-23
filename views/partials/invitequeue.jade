@@ -19,7 +19,7 @@ style
               hr
               h1(style="text-align:center") {{queue.totalCount|number}}
               p(style="width:100%;text-align:center")
-                | Players in Queue
+                | Total Players
               h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.originalPos|number}}
               p(ng-if="queue.inQueue&&auth.isAuthed",style="width:100%;text-align:center")
                 | Original Queue Position
