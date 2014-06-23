@@ -8,13 +8,70 @@
 
   QueueService = (function() {
 
-    function QueueService($rootScope, $authService, safeApply) {
+    function QueueService($rootScope, authService, safeApply, http) {
+      var _this = this;
+      this.authService = authService;
       this.safeApply = safeApply;
+      this.http = http;
       this.totalCount = 201150;
       this.inQueue = true;
       this.myPos = 500;
       this.invited = false;
+      $rootScope.$on("auth:data", function(event, data) {
+        return _this.safeApply($rootScope, function() {
+          if (data.queue != null) {
+            _this.totalCount = data.queue.totalCount;
+            _this.inQueue = data.queue.inQueue;
+            _this.invited = data.queue.invited;
+            _this.myPos = (data.queue.queueID + 1) - data.queue.totalInvited;
+            return _this.originalPos = data.queue.queueID + 1;
+          }
+        });
+      });
     }
+
+    QueueService.prototype.joinQueue = function() {
+      var _this = this;
+      return this.http({
+        method: 'POST',
+        url: '/queue/joinQueue'
+      }).success(function(data, status, headers, config) {
+        if (data.error) {
+          $.pnotify({
+            title: "Queue Error",
+            text: data.error,
+            type: "error"
+          });
+        }
+        return _this.authService.update();
+      });
+    };
+
+    QueueService.prototype.tryUseKey = function(key) {
+      var _this = this;
+      return this.http({
+        method: 'POST',
+        url: '/queue/tryUseKey',
+        data: {
+          key: key
+        }
+      }).success(function(data, status, headers, config) {
+        if (data.error) {
+          $.pnotify({
+            title: "Key Error",
+            text: data.error,
+            type: "error"
+          });
+        } else {
+          $.pnotify({
+            title: "Key Claimed",
+            text: "That key has been claimed!",
+            type: "success"
+          });
+        }
+        return _this.authService.update();
+      });
+    };
 
     return QueueService;
 
@@ -22,7 +79,8 @@
 
   LobbyService = (function() {
 
-    function LobbyService($rootScope, $authService, safeApply) {
+    function LobbyService($rootScope, $authService, queue, safeApply) {
+      this.queue = queue;
       this.safeApply = safeApply;
       this.lobbies = [];
       this.publicLobbies = [];
@@ -148,7 +206,7 @@
     };
 
     LobbyService.prototype.sendAuth = function() {
-      if (!this.auth.isAuthed || !_.contains(this.auth.user.authItems, "invited")) {
+      if (!this.auth.isAuthed || !this.queue.invited) {
         return this.disconnect();
       } else {
         if (!this.hasAuthed) {
@@ -244,7 +302,7 @@
 
     LobbyService.prototype.reconnect = function() {
       var _this = this;
-      if (!this.auth.isAuthed || !_.contains(this.auth.user.authItems, "invited")) {
+      if (!this.auth.isAuthed || !this.queue.invited) {
         console.log("Not re-connecting as we aren't logged in/not invited.");
         return;
       }
@@ -347,7 +405,7 @@
       };
     }
   ]).factory("$authService", [
-    "$interval", "$http", "$log", "$rootScope", function($interval, $http, $log, $rootScope) {
+    "$interval", "$http", "$log", "$rootScope", "safeApply", function($interval, $http, $log, $rootScope, safeApply) {
       var authService, updateAuth;
       updateAuth = function() {
         $http({
@@ -356,10 +414,11 @@
         }).success(function(data, status, headers, config) {
           if (data.isAuthed !== authService.isAuthed) {
             $log.log("Authed: " + data.isAuthed);
-            authService.isAuthed = data.isAuthed;
-            authService.user = data.user;
-            $rootScope.$broadcast("auth:isAuthed", data.isAuthed);
           }
+          authService.isAuthed = data.isAuthed;
+          authService.user = data.user;
+          $rootScope.$broadcast("auth:isAuthed", data.isAuthed);
+          $rootScope.$broadcast("auth:data", data);
           authService.user = data.user;
           authService.token = data.token;
         }).error(function(data, status, headers, config) {
@@ -373,9 +432,9 @@
       return authService;
     }
   ]).factory("$lobbyService", [
-    "$interval", "$log", "$authService", "$rootScope", "safeApply", function($interval, $log, $authService, $rootScope, safeApply) {
+    "$interval", "$log", "$authService", "$queueService", "$rootScope", "safeApply", function($interval, $log, $authService, $queueService, $rootScope, safeApply) {
       var service;
-      service = new LobbyService($rootScope, $authService, safeApply);
+      service = new LobbyService($rootScope, $authService, $queueService, safeApply);
       $rootScope.$on("auth:isAuthed", function(event, auth) {
         if (auth) {
           return service.sendAuth();
@@ -388,9 +447,9 @@
       return service;
     }
   ]).factory("$queueService", [
-    "$authService", "$rootScope", "safeApply", function($authService, $rootScope, safeApply) {
+    "$authService", "$rootScope", "safeApply", "$http", function($authService, $rootScope, safeApply, $http) {
       var service;
-      service = new QueueService($rootScope, $authService, safeApply);
+      service = new QueueService($rootScope, $authService, safeApply, $http);
       global.queue = service;
       return service;
     }
@@ -428,11 +487,8 @@
         $("#fr_hovercard-outer").remove();
         if (!$queueService.invited && newurl.indexOf('lobb') !== -1) {
           event.preventDefault();
-          console.log("redirect " + newurl);
           return $timeout(function() {
-            console.log("safeapply");
-            $location.url("/invitequeue");
-            return console.log($location.url());
+            return $location.url("/invitequeue");
           });
         }
         if ($lobbyService.lobbies.length > 0) {

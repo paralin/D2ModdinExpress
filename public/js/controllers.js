@@ -53,11 +53,8 @@
       $scope.startLogin = function() {
         window.location.href = "/auth/steam";
       };
-      $scope.signOut = function() {
+      return $scope.signOut = function() {
         window.location.href = "/logout";
-      };
-      return $scope.joinQueue = function() {
-        window.location.href = "http://d2modd.in/";
       };
     }
   ]).controller("InstallModCtrl", [
@@ -221,6 +218,14 @@
       $scope.auth = $authService;
       $scope.startSignin = function() {
         return window.location.href = "/auth/steam";
+      };
+      $scope.startEnterKey = function() {
+        return bootbox.prompt("Enter your invite key:", function(res) {
+          if (!(res != null)) {
+            return;
+          }
+          return $queueService.tryUseKey(res.replace(/\s/g, ""));
+        });
       };
       $scope.queue = $queueService;
       return $scope.skipQueue = function() {

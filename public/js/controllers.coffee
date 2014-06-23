@@ -63,10 +63,6 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.signOut = ->
       window.location.href = "/logout"
       return
-
-    $scope.joinQueue = ->
-      window.location.href = "http://d2modd.in/"
-      return
 ]).controller("InstallModCtrl", [
   "$scope"
   "$lobbyService"
@@ -193,6 +189,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.auth = $authService
     $scope.startSignin = ->
       window.location.href = "/auth/steam"
+    $scope.startEnterKey = ->
+      bootbox.prompt "Enter your invite key:", (res)->
+        return if !res?
+        $queueService.tryUseKey res.replace(/\s/g, "")
     $scope.queue = $queueService
     $scope.skipQueue = ->
       bootbox.alert("You can skip the queue for a minimum donation of $2.50. Please click the blue donation widget on the right side of the page to get your invite!")

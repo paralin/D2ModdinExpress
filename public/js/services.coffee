@@ -3,14 +3,45 @@
 global = @
 
 class QueueService
-  constructor:($rootScope, $authService, @safeApply)->
+  constructor:($rootScope, @authService, @safeApply, @http)->
     @totalCount = 201150
     @inQueue = true
     @myPos = 500
     @invited = false
+    $rootScope.$on "auth:data", (event,data)=>
+      @safeApply $rootScope, =>
+        if data.queue?
+          @totalCount = data.queue.totalCount
+          @inQueue = data.queue.inQueue
+          @invited = data.queue.invited
+          @myPos = (data.queue.queueID+1)-data.queue.totalInvited
+          @originalPos = data.queue.queueID+1
+  joinQueue: ->
+    @http({method: 'POST', url: '/queue/joinQueue'})
+      .success (data, status, headers, config)=>
+        if(data.error)
+          $.pnotify
+            title: "Queue Error"
+            text: data.error
+            type: "error"
+        @authService.update()
+  tryUseKey: (key)->
+    @http({method: 'POST', url: '/queue/tryUseKey', data: {key: key}})
+      .success (data, status, headers, config)=>
+        if(data.error)
+          $.pnotify
+            title: "Key Error"
+            text: data.error
+            type: "error"
+        else
+          $.pnotify
+            title: "Key Claimed"
+            text: "That key has been claimed!"
+            type: "success"
+        @authService.update()
 
 class LobbyService
-  constructor:($rootScope, $authService, @safeApply)->
+  constructor:($rootScope, $authService, @queue, @safeApply)->
     @lobbies = []
     @publicLobbies = []
     @socket = null
@@ -100,7 +131,7 @@ class LobbyService
       mod: modid
 
   sendAuth: ()->
-    if !@auth.isAuthed || !_.contains(@auth.user.authItems, "invited")
+    if !@auth.isAuthed || !@queue.invited
       @disconnect()
     else
       if !@hasAuthed
@@ -162,7 +193,7 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
-    if !@auth.isAuthed || !_.contains(@auth.user.authItems, "invited")
+    if !@auth.isAuthed || !@queue.invited
       console.log "Not re-connecting as we aren't logged in/not invited."
       return
     setTimeout(=>
@@ -243,7 +274,8 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$http"
   "$log"
   "$rootScope"
-  ($interval, $http, $log, $rootScope) ->
+  "safeApply"
+  ($interval, $http, $log, $rootScope, safeApply) ->
     updateAuth = ->
       $http(
         method: "GET"
@@ -251,9 +283,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
       ).success((data, status, headers, config) ->
         if data.isAuthed != authService.isAuthed
           $log.log "Authed: "+data.isAuthed
-          authService.isAuthed = data.isAuthed
-          authService.user = data.user
-          $rootScope.$broadcast "auth:isAuthed", data.isAuthed
+        authService.isAuthed = data.isAuthed
+        authService.user = data.user
+        $rootScope.$broadcast "auth:isAuthed", data.isAuthed
+        $rootScope.$broadcast "auth:data", data
         authService.user = data.user
         authService.token = data.token
         return
@@ -271,10 +304,11 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$interval"
   "$log"
   "$authService"
+  "$queueService"
   "$rootScope"
   "safeApply"
-  ($interval, $log, $authService, $rootScope, safeApply)->
-    service = new LobbyService $rootScope, $authService, safeApply
+  ($interval, $log, $authService, $queueService, $rootScope, safeApply)->
+    service = new LobbyService $rootScope, $authService, $queueService, safeApply
     $rootScope.$on "auth:isAuthed", (event,auth)->
       if auth
         service.sendAuth()
@@ -287,8 +321,9 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$authService"
   "$rootScope"
   "safeApply"
-  ($authService, $rootScope, safeApply)->
-    service = new QueueService $rootScope, $authService, safeApply
+  "$http"
+  ($authService, $rootScope, safeApply, $http)->
+    service = new QueueService $rootScope, $authService, safeApply, $http
     global.queue = service
     service
 ]).factory('$forceLobbyPage', [
@@ -321,11 +356,8 @@ angular.module("d2mp.services", []).factory("safeApply", [
       $("#fr_hovercard-outer").remove()
       if !$queueService.invited && newurl.indexOf('lobb') != -1
         event.preventDefault()
-        console.log "redirect #{newurl}"
         return $timeout ->
-          console.log "safeapply"
           $location.url "/invitequeue"
-          console.log $location.url()
       if $lobbyService.lobbies.length > 0
         if newurl.indexOf('/lobby/') != -1
           return

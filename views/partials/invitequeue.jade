@@ -20,14 +20,18 @@ style
               h1(style="text-align:center") {{queue.totalCount|number}}
               p(style="width:100%;text-align:center")
                 | Players in Queue
-              h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.myPos|number}}
+              h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.originalPos|number}}
               p(ng-if="queue.inQueue&&auth.isAuthed",style="width:100%;text-align:center")
+                | Original Queue Position
+              h1(ng-if="queue.inQueue&&auth.isAuthed&&!queue.invited",style="text-align:center") {{queue.myPos|number}}
+              p(ng-if="queue.inQueue&&auth.isAuthed&&!queue.invited",style="width:100%;text-align:center")
                 | Position in Queue
               h1(ng-if="queue.inQueue&&queue.invited",style="text-align:center") Invited
               p
               a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="auth.isAuthed&&queue.invited") Start Playing
-              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue&&auth.isAuthed",ng-click="joinQueue()") Join the Queue
+              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue&&auth.isAuthed",ng-click="queue.joinQueue()") Join the Queue
               button.btn.btn-success(ng-click="skipQueue()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Skip the Queue
+              button.btn.btn-success(ng-click="startEnterKey()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Use Invite Key
               button.btn.btn-success(ng-click="startSignin()",style="width:100%",ng-if="!auth.isAuthed") Signin w/ Steam
             .col-sm-8.col-md-8
               .desc
