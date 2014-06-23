@@ -55,7 +55,7 @@ app.use(bodyParser());
 app.use(session({
   secret: process.env.SESSION_SECRET||"justanrpg",
   cookie: {
-    maxAge: 7200000
+    maxAge: 86400000
   },
   store: new MongoStore({
     url: process.env.MONGO_URL||"mongodb://localhost/d2moddin"
