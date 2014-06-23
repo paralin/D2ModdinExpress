@@ -48,7 +48,8 @@ setInterval(updateQueueStats, 60000);
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-app.use(morgan('dev'));
+if(process.env.NODE_ENV !== "production")
+  app.use(morgan('dev'));
 app.use(favicon(__dirname + '/public/images/favicon.png'));
 app.use(cookieParser(process.env.SESSION_SECRET||"justanrpg"));
 app.use(bodyParser());

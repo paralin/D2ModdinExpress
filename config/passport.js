@@ -23,7 +23,8 @@ module.exports = function(passport){
   passport.use('steam', new SteamStrategy({
     returnURL: ROOT_URL+"auth/steam/return",
     realm: ROOT_URL,
-    apiKey: Steam.key
+    apiKey: Steam.key,
+    stateless: true
   },
   function(identifier, profile, done){
     var steamid = identifier.split('/');
