@@ -18,12 +18,21 @@ cluster = require('cluster');
 require('coffee-script/register');
 var _ = require('underscore');
 
+
+var cacheOpts = {
+    max:100,
+    maxAge:1000*60*2//cache for 2min
+};
+require('mongoose-cache').install(mongoose, cacheOpts);
+
+var useCluster = process.env.USE_CLUSTER != null;
+
 //process.on('uncaughtException', function(err) {
 //    console.log('Caught exception: ' + err);
 //});
 
 http.globalAgent.maxSockets = 100;
-if(cluster.isMaster){
+if(cluster.isMaster&&useCluster){
   var cpuCount = 10;
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
@@ -60,7 +69,7 @@ if(cluster.isMaster){
       InviteQueue.count({}, function(err, count){//Use invited:false?
         queueStats.totalCount = count;
       });
-      InviteQueue.findOne({invited: false}).sort({_id: 1}).exec(function(err, queue){
+      InviteQueue.findOne({invited: false}).sort({_id: 1}).cache().exec(function(err, queue){
         queueStats.totalInvited = queue._id-1;
       });
     };
@@ -204,7 +213,7 @@ if(cluster.isMaster){
           profile: req.user.profile,
           authItems: req.user.authItems
         };
-        InviteQueue.findOne({'steam_id': resp.user.steam.steamid}, function(err, queue){
+        InviteQueue.findOne({'steam_id': resp.user.steam.steamid}).cache().exec(function(err, queue){
           if(err)
             return done(err);
           if(queue){
@@ -224,7 +233,10 @@ if(cluster.isMaster){
     app.get('*', routes.index);
 
     http.createServer(app).listen(app.get('port'), function () {
-      console.log('Worker '+cluster.worker.id+' running on port ' + app.get('port'));
+      if(useCluster)
+        console.log('Worker '+cluster.worker.id+' running on port ' + app.get('port'));
+      else
+        console.log('Server running on port '+app.get('port'));
     });
 
   });
