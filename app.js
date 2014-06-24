@@ -71,6 +71,10 @@ if(cluster.isMaster&&useCluster){
       InviteQueue.findOne({invited: false}).sort({_id: 1}).cache().exec(function(err, queue){
         queueStats.totalInvited = queue._id-1;
       });
+      InviteQueue.count({invited: true}, function(err, count){
+        queueStats.totalInvites = count;
+	console.log("Total invites: "+count);
+      });
     };
     updateQueueStats();
     setInterval(updateQueueStats, 60000);

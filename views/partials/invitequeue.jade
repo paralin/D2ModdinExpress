@@ -20,7 +20,7 @@ style
               h1(style="text-align:center") {{queue.totalCount|number}}
               p(style="width:100%;text-align:center")
                 | Total Players
-              h1(style="text-align:center") {{queue.totalInvited|number}}
+              h1(style="text-align:center") {{queue.totalInvites|number}}
               p(style="width:100%;text-align:center")
                 | Total Invitations
               h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.originalPos|number}}
