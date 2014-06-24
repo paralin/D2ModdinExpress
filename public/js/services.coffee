@@ -15,6 +15,7 @@ class QueueService
           @inQueue = data.queue.inQueue
           @invited = data.queue.invited
           @myPos = (data.queue.queueID+1)-data.queue.totalInvited
+          @totalInvited = data.queue.totalInvited
           @originalPos = data.queue.queueID+1
   joinQueue: ->
     @http({method: 'POST', url: '/queue/joinQueue'})

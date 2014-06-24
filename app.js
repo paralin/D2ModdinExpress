@@ -18,7 +18,6 @@ cluster = require('cluster');
 require('coffee-script/register');
 var _ = require('underscore');
 
-
 var cacheOpts = {
     max:100,
     maxAge:1000*60*2//cache for 2min

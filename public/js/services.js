@@ -24,6 +24,7 @@
             _this.inQueue = data.queue.inQueue;
             _this.invited = data.queue.invited;
             _this.myPos = (data.queue.queueID + 1) - data.queue.totalInvited;
+            _this.totalInvited = data.queue.totalInvited;
             return _this.originalPos = data.queue.queueID + 1;
           }
         });
