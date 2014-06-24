@@ -99,12 +99,14 @@ if(cluster.isMaster&&useCluster){
     app.use(passport.initialize());
     app.use(passport.session());
     app.use(flash());
-    app.use(stylus.middleware(
-      {
-      src: __dirname+'/public'
-  , compile: compile
+    if(process.env.NODE_ENV !== "production"){
+      app.use(stylus.middleware(
+        {
+        src: __dirname+'/public'
+        , compile: compile
+      }
+      ));
     }
-    ));
     app.use(methodOverride());
     app.use(express.static(path.join(__dirname, 'public')));
 
