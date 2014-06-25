@@ -72,6 +72,8 @@ class LobbyService
     return if !@socket?
     @socket.publish 'data', data
 
+  startLoadTest: ->
+    @call "startLoadTest", {}
   call: (method, params)->
     data =
       id: method
@@ -206,8 +208,8 @@ class LobbyService
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'auth', (data)=>
       if data.status
         $.pnotify
@@ -338,8 +340,13 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "safeApply"
   ($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply)->
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
+      if($lobbyService.lobbies[0].LobbyType == 1)
+        if $location.url().indexOf('dotest') == -1
+          $timeout =>
+            $location.url('/dotest')
+          return
       path = $location.path()
-      if op in ['update', 'insert'] 
+      if op in ['update', 'insert']
         if path.indexOf('lobby/') is -1 && $lobbyService.lobbies.length > 0
           safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
@@ -348,25 +355,39 @@ angular.module("d2mp.services", []).factory("safeApply", [
           safeApply $rootScope, ->
             $location.path('/lobbies')
     $rootScope.$on 'lobby:installres', (event, success)->
-      if success
+      if success && $location.url().indexOf('loadtest') is -1
         $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->
+      if $location.url().indexOf('loadtest') != -1
+        $pnotify
+          title: "Install Needed"
+          text: "You still need to install the #{mod} mod before you can start."
+          type: "error"
+          delay: 4000
+        return
       safeApply $rootScope, ->
         $location.url '/install/'+mod
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       window.FundRazr = undefined
       $("#fr_hovercard-outer").remove()
-      if !$queueService.invited && newurl.indexOf('lobb') != -1
+      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newUrl.indexOf('loadtest') != -1 || newUrl.indexOf('installmod') != -1 || newUrl.indexOf('dotest') != -1)
         event.preventDefault()
         return $timeout ->
           $location.url "/invitequeue"
       if $lobbyService.lobbies.length > 0
-        if newurl.indexOf('/lobby/') != -1
-          return
-        event.preventDefault()
-        if oldurl.indexOf('lobby/') is -1
-          safeApply $rootScope, ->
-            $location.url "/lobby/"+$lobbyService.lobbies[0]._id
+        if $lobbyService.lobbies[0].LobbyType == 1
+          if newurl.indexOf('dotest') != -1
+            return
+          event.preventDefault()
+          if oldurl.indexOf('dotest') == -1
+            $location.url '/dotest'
+        else if $lobbyService.lobbies[0].LobbyType == 0
+          if newurl.indexOf('/lobby/') != -1
+            return
+          event.preventDefault()
+          if oldurl.indexOf('lobby/') is -1
+            safeApply $rootScope, ->
+              $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
         if newurl.indexOf('/lobby/') != -1
           $location.url('/lobbies')

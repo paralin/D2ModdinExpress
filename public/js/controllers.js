@@ -234,6 +234,65 @@
       $scope.queue = $queueService;
       return $scope.auth = $authService;
     }
+  ]).controller("LoadTestCtrl", [
+    "$scope", "$lobbyService", function($scope, $lobbyService) {
+      $scope.status = $lobbyService.status;
+      $scope.startTest = function() {
+        return $lobbyService.startLoadTest();
+      };
+      $scope.startInstall = function() {
+        return $lobbyService.installMod('checker');
+      };
+      $scope.showTroubleshoot = function(trouble) {
+        var msg, title;
+        msg = "Can't find troubleshooting for " + trouble + ", sorry.";
+        title = "Not found!";
+        switch (trouble) {
+          case "manager":
+            title = "Manager Issues";
+            msg = "<p>First, check to make sure you're signed into the same Steam account on your computer as you are on the website. You need to restart the manager (right click dota icon in tray -> restart) any time you've changed something like this.</p>\n<p>Next, check to see if it actually connects - if it says 'Connected' then it has. If you're still having issues try running steam://flushconfig in your browser. If your client has connected but it does not say it has in the browser, the system is simply not linking the client with your account (it can't find the SteamIDs detected on your machine in any user accounts).</p>";
+            break;
+          case "download":
+            title = "Download Issues";
+            msg = "<p>So, the manager is connected, but download isn't working? First, double check that your manager is actually connected properly.</p>\n<p>You should see a notification at the bottom right with the install progress. Please wait at least 15 seconds for the download to start - it's possible that the server is just laggy right now.</p>\n<p>If your download fails midway, it's probably because the download had a hiccup midway through. Try again.</p>\n<p>If your extract fails, try closing Dota 2. Also check in the manager preferences (right click manager -> preferences in taskbar) that your Dota 2 directory is correct.</p>";
+        }
+        return bootbox.dialog({
+          title: title,
+          message: msg,
+          buttons: {
+            close: {
+              label: "Close",
+              className: 'btn-success'
+            }
+          }
+        });
+      };
+      return $scope.$watch('$viewContentLoaded', function() {
+        var wiz;
+        window.wiz = wiz = $("#setup-wizard").wizard({
+          keyboard: false,
+          backdrop: false,
+          showCancel: false,
+          showClose: false,
+          progressBarCurrent: true,
+          contentHeight: 325
+        });
+        wiz.setSubtitle("Set up and test your D2Moddin client.");
+        wiz.cards['setupmanager'].on('validate', function(card) {
+          if (!$lobbyService.status.managerConnected) {
+            $.pnotify({
+              title: "Not Connected",
+              text: "The manager isn't connected / hasn't linked with your account properly. Please click troubleshooting if you're having issues.",
+              type: "error",
+              delay: 5000
+            });
+            return false;
+          }
+          return true;
+        });
+        return wiz.show();
+      });
+    }
   ]).controller("ModDetailCtrl", function($scope, $rootScope, $routeParams, $location, $sce) {
     var mod, modname;
     modname = $routeParams.modname;

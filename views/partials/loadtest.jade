@@ -1,0 +1,26 @@
+#fullHomeBack(style="background:url('http://www.bluewallpapers.net/wallpapers/1920x1080/baby-blue-black-smoke.jpg') no-repeat")
+.wizard#setup-wizard(data-title="D2Moddin Setup")
+  .wizard-card(data-cardname='setupmanager')
+    h3 Manager Setup
+    | First, let's get your D2Moddin manager running. The mod manager
+    | automatically sets up files needed to play the D2Moddin custom game modes.
+    | It also tells Dota 2 to connect to our servers. It is required to play on
+    | D2Moddin.
+    br(style="line-height:40px")
+    a.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()") Launch Manager
+    a.btn.btn-success(ng-if="status.managerConnected",disabled) Manager Ready
+    a.btn.btn-danger(ng-click="showTroubleshoot('manager')",style="margin-left:5px") Troubleshoot
+  .wizard-card(data-cardname='moddownload')
+    h3 Download Mod
+    | Let's download a small test custom game mode to make sure the manager has
+    | properly located your Dota 2 directory. Clicking this button will download
+    | the "checker" mod which simply tests if you can connect.
+    br(style="line-height:40px")
+    a.btn.btn-success(ng-click="startInstall()",ng-disabled="status.managerDownloading") Download Mod
+    a.btn.btn-danger(ng-click="showTroubleshoot('download')",style="margin-left:5px") Troubleshoot
+  .wizard-card(data-cardname='loadtest')
+    h3 Load Test
+    | Now, let's see if you can load into the game properly. Click the button to
+    | test if you can connect.
+    br(style="line-height:40px")
+    a.btn.btn-success.btn-lg(ng-click="startTest()") Start Test

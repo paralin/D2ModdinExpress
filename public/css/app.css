@@ -1867,3 +1867,8 @@ p, ol li, ul li {
 * {
   font-family: "Open Sans", sans-serif;
 }
+.modal {
+  position:absolute;
+  top:0;
+  left:0;
+}

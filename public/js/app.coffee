@@ -48,6 +48,10 @@ app = angular.module("d2mp", [
     $routeProvider.when '/invitequeue',
       templateUrl: '/partials/invitequeue'
       controller: 'InviteQueueCtrl'
+    
+    $routeProvider.when '/loadtest'
+      templateUrl: '/partials/loadtest'
+      controller: 'LoadTestCtrl'
 
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
@@ -93,6 +97,11 @@ app = angular.module("d2mp", [
       2: "Europe"
       3: "Australia"
       4: "Southeast Asia"
+    
+    $rootScope.LOBBYTYPES =
+      NORMAL: 0
+      PLAYERTEST: 1
+      MATCHMAKING: 2
 
     $.getJSON "/data/mods", (data) ->
       $rootScope.$apply ->

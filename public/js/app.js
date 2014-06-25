@@ -44,6 +44,10 @@
         templateUrl: '/partials/invitequeue',
         controller: 'InviteQueueCtrl'
       });
+      $routeProvider.when('/loadtest', {
+        templateUrl: '/partials/loadtest',
+        controller: 'LoadTestCtrl'
+      });
       $routeProvider.otherwise({
         redirectTo: "/"
       });
@@ -107,6 +111,11 @@
         2: "Europe",
         3: "Australia",
         4: "Southeast Asia"
+      };
+      $rootScope.LOBBYTYPES = {
+        NORMAL: 0,
+        PLAYERTEST: 1,
+        MATCHMAKING: 2
       };
       return $.getJSON("/data/mods", function(data) {
         return $rootScope.$apply(function() {
