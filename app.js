@@ -19,7 +19,7 @@ require('coffee-script/register');
 var _ = require('underscore');
 
 var cacheOpts = {
-    max:100,
+    max:25,
     maxAge:1000*60*2//cache for 2min
 };
 require('mongoose-cache').install(mongoose, cacheOpts);
@@ -30,9 +30,9 @@ var useCluster = process.env.USE_CLUSTER != null;
 //    console.log('Caught exception: ' + err);
 //});
 
-http.globalAgent.maxSockets = 100;
+http.globalAgent.maxSockets = 50;
 if(cluster.isMaster&&useCluster){
-  var cpuCount = 10;
+  var cpuCount = 5;
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
   }
@@ -41,12 +41,7 @@ if(cluster.isMaster&&useCluster){
     cluster.fork();
   });
 }else{
-  var mongooptions = {
-    db: { native_parser: true  },
-    server: { poolSize: 15  }
-  }
-  mongooptions.server.socketOptions = { keepAlive: 1  };
-  mongoose.connect(process.env.MONGO_URL, mongooptions, function(err){
+  mongoose.connect(process.env.MONGO_URL, function(err){
     if(err)
       console.log(err);
     InviteKey = require('./schema/invitekey');
@@ -73,7 +68,6 @@ if(cluster.isMaster&&useCluster){
       });
       InviteQueue.count({invited: true}, function(err, count){
         queueStats.totalInvites = count;
-	console.log("Total invites: "+count);
       });
     };
     updateQueueStats();
