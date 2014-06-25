@@ -49,8 +49,8 @@ app = angular.module("d2mp", [
       templateUrl: '/partials/invitequeue'
       controller: 'InviteQueueCtrl'
     
-    $routeProvider.when '/loadtest'
-      templateUrl: '/partials/loadtest'
+    $routeProvider.when '/setup'
+      templateUrl: '/partials/setup'
       controller: 'LoadTestCtrl'
 
     $routeProvider.otherwise redirectTo: "/"

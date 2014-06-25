@@ -355,10 +355,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
           safeApply $rootScope, ->
             $location.path('/lobbies')
     $rootScope.$on 'lobby:installres', (event, success)->
-      if success && $location.url().indexOf('loadtest') is -1
+      if success && $location.url().indexOf('setup') is -1
         $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->
-      if $location.url().indexOf('loadtest') != -1
+      if $location.url().indexOf('setup') != -1
         $pnotify
           title: "Install Needed"
           text: "You still need to install the #{mod} mod before you can start."
@@ -370,7 +370,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       window.FundRazr = undefined
       $("#fr_hovercard-outer").remove()
-      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newUrl.indexOf('loadtest') != -1 || newUrl.indexOf('installmod') != -1 || newUrl.indexOf('dotest') != -1)
+      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newUrl.indexOf('setup') != -1 || newUrl.indexOf('installmod') != -1 || newUrl.indexOf('dotest') != -1)
         event.preventDefault()
         return $timeout ->
           $location.url "/invitequeue"
