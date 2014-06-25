@@ -53,7 +53,7 @@ class LobbyService
     @hasAttemptedConnection = false
     @status =
       managerConnected: false
-      managerStatus: "Manager status unknown, checking..."
+      managerStatus: "Authenticating with the lobby server..."
       managerDownloading: false
     @colls =
       lobbies: @lobbies
