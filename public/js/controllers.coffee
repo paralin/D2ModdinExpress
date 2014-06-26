@@ -206,8 +206,6 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$lobbyService"
   ($scope, $lobbyService)->
     $scope.status = $lobbyService.status
-    $scope.startTest = ->
-      $lobbyService.startLoadTest()
     $scope.startInstall = ->
       $lobbyService.installMod 'checker'
     $scope.showTroubleshoot = (trouble)->
@@ -244,6 +242,9 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         progressBarCurrent: true
         contentHeight: 325
       wiz.setSubtitle "Set up and test your D2Moddin client."
+      wiz.on "submit", (wizard)->
+        wizard.close()
+        $lobbyService.startLoadTest()
 
       #Setup manager
       wiz.cards['setupmanager'].on 'validate', (card)->
@@ -257,6 +258,19 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         return true
 
       wiz.show()
+]).controller('DoTestCtrl', [
+  "$scope"
+  "$authService"
+  "$lobbyService"
+  "$location"
+  ($scope, $authService, $lobbyService, $location)->
+    if !$authService.isAuthed || $lobbyService.lobbies.length is 0
+      return $location.url('/setup')
+    lobby = $scope.lobby = $lobbyService.lobbies[0]
+    $scope.status = $lobbyService.status
+    $scope.isHost = $scope.lobby.creatorid is $authService.user._id
+    $scope.sendConnect = ->
+      $lobbyService.sendConnect()
 ]).controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
   modname = $routeParams.modname
   mod = _.findWhere($rootScope.mods,

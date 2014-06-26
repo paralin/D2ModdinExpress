@@ -1,5 +1,7 @@
 #!/bin/bash
 export PORT=80
-export ROOT_URL="http://172.250.79.95/"
+export ROOT_URL="http://dev.d2modd.in/"
 export MONGO_URL="mongodb://d2mpsys:aucCXtn7d8twSEm4C28G@internal.d2modd.in/d2moddin"
-nodemon ./app.js
+#export NODE_ENV=production
+#export USE_CLUSTER=true
+node ./app.js

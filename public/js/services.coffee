@@ -6,8 +6,8 @@ class QueueService
   constructor:($rootScope, @authService, @safeApply, @http)->
     @totalCount = 201150
     @inQueue = true
-    @myPos = 500
-    @invited = false
+    @myPos = 0
+    @invited = true
     $rootScope.$on "auth:data", (event,data)=>
       @safeApply $rootScope, =>
         if data.queue?
@@ -159,6 +159,8 @@ class LobbyService
         @scope.$broadcast 'lobby:chatMsg', data.message
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
+      when "testneeded"
+        @scope.$broadcast 'lobby:testNeeded', data.name
       when "installres"
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success
@@ -340,18 +342,18 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "safeApply"
   ($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply)->
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
-      if($lobbyService.lobbies[0].LobbyType == 1)
-        if $location.url().indexOf('dotest') == -1
-          $timeout =>
-            $location.url('/dotest')
-          return
       path = $location.path()
       if op in ['update', 'insert']
+        if($lobbyService.lobbies[0].LobbyType == 1)
+          if $location.url().indexOf('dotest') == -1
+            $timeout =>
+              $location.url('/dotest')
+            return
         if path.indexOf('lobby/') is -1 && $lobbyService.lobbies.length > 0
           safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
-        if path.indexOf('lobby/') isnt -1
+        if path.indexOf('lobby/') isnt -1 || path.indexOf('dotest') isnt -1
           safeApply $rootScope, ->
             $location.path('/lobbies')
     $rootScope.$on 'lobby:installres', (event, success)->
@@ -367,10 +369,13 @@ angular.module("d2mp.services", []).factory("safeApply", [
         return
       safeApply $rootScope, ->
         $location.url '/install/'+mod
+    $rootScope.$on 'lobby:testNeeded', (event, mod)->
+      safeApply $rootScope, ->
+        $location.url '/setup'
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       window.FundRazr = undefined
       $("#fr_hovercard-outer").remove()
-      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newUrl.indexOf('setup') != -1 || newUrl.indexOf('installmod') != -1 || newUrl.indexOf('dotest') != -1)
+      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newurl.indexOf('setup') != -1 || newurl.indexOf('installmod') != -1 || newurl.indexOf('dotest') != -1)
         event.preventDefault()
         return $timeout ->
           $location.url "/invitequeue"

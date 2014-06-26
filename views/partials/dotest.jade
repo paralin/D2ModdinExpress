@@ -1,0 +1,20 @@
+#wrapper
+  section.container.text-center(style="margin-top:30px")
+    h1.text-center
+      strong Test Game
+  .findDialog(style="margin-top:20px")
+    .dTitle
+      span(ng-if="lobby.status==0") Gathering test players...
+      span(ng-if="lobby.status==1") Finding a server...
+      span(ng-if="lobby.status==2") Server is launching...
+    .loadingBarContainer(ng-if="lobby.status<3")
+      .progress.progress-striped.active
+        .progress-bar(ng-class="lobby.status<2?'progress-bar-info':'progress-bar-warning'",role="progressbar",style="width:100%;padding-top:25px")
+    div(ng-if="lobby.status==3&&status.managerConnected")
+      span.ensureD2(style="padding-top:15px")
+        b Click this button only if your Dota 2 has not already connected.
+      button.btn.btn-success.connectBtn(ng-click="sendConnect()") Retry Connection
+    div(ng-if="lobby.status==3&&!status.managerConnected")
+      span.ensureD2(style="padding-top:15px")
+        b You need the mod manager running to connect.
+      button.btn.btn-primary.connectBtn(ng-click="launchManager()") Launch Manager
