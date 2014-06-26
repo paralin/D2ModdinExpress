@@ -344,7 +344,8 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
-        if($lobbyService.lobbies[0].LobbyType == 1)
+        console.log $lobbyService.lobbies
+        if($lobbyService.lobbies.length > 0 && $lobbyService.lobbies[0].LobbyType == 1)
           if $location.url().indexOf('dotest') == -1
             $timeout =>
               $location.url('/dotest')
