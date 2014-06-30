@@ -47,6 +47,7 @@ class LobbyService
     @lobbies = []
     @publicLobbies = []
     @socket = null
+    @isDuplicate = false
     @scope = $rootScope
     @auth = $authService
     @hasAuthed = false
@@ -201,10 +202,8 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
-    console.log "Would reconnect but it's disabled atm, refresh required"
-    return
-    if !@auth.isAuthed || !@queue.invited
-      console.log "Not re-connecting as we aren't logged in/not invited."
+    if !@auth.isAuthed || !@queue.invited || @isDuplicate
+      console.log "Not re-connecting as we aren't logged in/not invited/are a duplicate."
       return
     setTimeout(=>
       @connect()
@@ -212,9 +211,21 @@ class LobbyService
 
   connect: ->
     @disconnect()
+    if !@auth.isAuthed || !@queue.invited || @isDuplicate
+      console.log "Not connecting as we aren't logged in/not invited/are a duplicate."
+      return
     console.log "Attempting connection..."
     @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
     #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    so.on 'duplicate', (data)=>
+      @safeApply @scope, =>
+        @isDuplicate = true
+        $.pnotify
+          title: "Duplicate"
+          text: "You already have D2Moddin open in another browser window/tab. Please close all other open tabs of D2Moddin before refreshing this page."
+          type: "error"
+          hide: false
+        @status.managerStatus = "Already open in another tab. Refresh to re-try connection."
     so.on 'auth', (data)=>
       if data.status
         $.pnotify
@@ -243,10 +254,11 @@ class LobbyService
           @status.managerStatus = "Manager is not connected."
         @scope.$digest()
     so.on "close", =>
-      @status.managerConnected = false
-      @status.managerStatus = "You have lost connection with the lobby server..."
       @disconnect()
-      @scope.$digest()
+      @safeApply @scope, =>
+        @status.managerConnected = false
+        if !@isDuplicate
+          @status.managerStatus = "You have lost connection with the lobby server..."
       if !@hasAttemptedConnection
         @hasAttemptedConnection = true
         $.pnotify
