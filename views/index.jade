@@ -3,12 +3,14 @@ extends layout
 block body
   div(ng-view,style="width:100%;height:100%")
 
-  .div(ng-controller="BottomBarCtrl")
+  div(ng-controller="BottomBarCtrl")
     .statusBar(ng-if="auth.isAuthed")
       .left
         i.fa.fa-tachometer 
         span.status  {{status.managerStatus}}
       .rightButtons
+        a.btn.btn-danger(href="https://github.com/kidovate/d2moddinclient",target="_blank")
+          | Report Issues
         a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
           | Source
         button.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()")
