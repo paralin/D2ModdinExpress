@@ -79,7 +79,7 @@
           return count;
         };
         $rootScope.launchManager = function() {
-          window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPUpdater.exe");
+          window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/StartD2MP.exe");
           return $.pnotify({
             title: "Download Started",
             text: "Run the launcher (downloading now) to start joining lobbies.",

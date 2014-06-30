@@ -167,6 +167,7 @@ class LobbyService
       when "colupd"
         @safeApply @scope, =>
           for upd in data.ops
+            console.log JSON.stringify upd
             continue if !upd?
             coll = @colls[upd._c]
             _c = upd._c
@@ -200,6 +201,8 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
+    console.log "Would reconnect but it's disabled atm, refresh required"
+    return
     if !@auth.isAuthed || !@queue.invited
       console.log "Not re-connecting as we aren't logged in/not invited."
       return
@@ -210,8 +213,8 @@ class LobbyService
   connect: ->
     @disconnect()
     console.log "Attempting connection..."
-    #@socket = so = new XSockets.WebSocket 'ws://ddp2.d2modd.in:4502/BrowserController'
-    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'auth', (data)=>
       if data.status
         $.pnotify

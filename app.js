@@ -32,7 +32,7 @@ var useCluster = process.env.USE_CLUSTER != null;
 
 http.globalAgent.maxSockets = 50;
 if(cluster.isMaster&&useCluster){
-  var cpuCount = 5;
+  var cpuCount = 3;
   for (var i = 0; i < cpuCount; i += 1) {
     cluster.fork();
   }
