@@ -86,7 +86,9 @@
       this.safeApply = safeApply;
       this.lobbies = [];
       this.publicLobbies = [];
+      this.matchmake = [];
       this.socket = null;
+      this.isDuplicate = false;
       this.scope = $rootScope;
       this.auth = $authService;
       this.hasAuthed = false;
@@ -98,7 +100,8 @@
       };
       this.colls = {
         lobbies: this.lobbies,
-        publicLobbies: this.publicLobbies
+        publicLobbies: this.publicLobbies,
+        matchmake: this.matchmake
       };
     }
 
@@ -312,10 +315,8 @@
     };
 
     LobbyService.prototype.reconnect = function() {
-      console.log("Would reconnect but it's disabled atm, refresh required");
-      return;
-      if (!this.auth.isAuthed || !this.queue.invited) {
-        console.log("Not re-connecting as we aren't logged in/not invited.");
+      if (!this.auth.isAuthed || !this.queue.invited || this.isDuplicate) {
+        console.log("Not re-connecting as we aren't logged in/not invited/are a duplicate.");
         return;
       }
       return setTimeout((function(_this) {
@@ -328,8 +329,26 @@
     LobbyService.prototype.connect = function() {
       var so;
       this.disconnect();
+      if (!this.auth.isAuthed || !this.queue.invited || this.isDuplicate) {
+        console.log("Not connecting as we aren't logged in/not invited/are a duplicate.");
+        return;
+      }
       console.log("Attempting connection...");
       this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
+      so.on('duplicate', (function(_this) {
+        return function(data) {
+          return _this.safeApply(_this.scope, function() {
+            _this.isDuplicate = true;
+            $.pnotify({
+              title: "Duplicate",
+              text: "You already have D2Moddin open in another browser window/tab. Please close all other open tabs of D2Moddin before refreshing this page.",
+              type: "error",
+              hide: false
+            });
+            return _this.status.managerStatus = "Already open in another tab. Refresh to re-try connection.";
+          });
+        };
+      })(this));
       so.on('auth', (function(_this) {
         return function(data) {
           if (data.status) {
@@ -373,10 +392,13 @@
       })(this));
       so.on("close", (function(_this) {
         return function() {
-          _this.status.managerConnected = false;
-          _this.status.managerStatus = "You have lost connection with the lobby server...";
           _this.disconnect();
-          _this.scope.$digest();
+          _this.safeApply(_this.scope, function() {
+            _this.status.managerConnected = false;
+            if (!_this.isDuplicate) {
+              return _this.status.managerStatus = "You have lost connection with the lobby server...";
+            }
+          });
           if (!_this.hasAttemptedConnection) {
             _this.hasAttemptedConnection = true;
             $.pnotify({
