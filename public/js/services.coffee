@@ -163,7 +163,7 @@ class LobbyService
         @scope.$broadcast 'lobby:testNeeded', data.name
       when "installres"
         @status.managerDownloading = false
-        @scope.$broadcast 'lobby:installres', data.success
+        @scope.$broadcast 'lobby:installres', data.success, data.message
       when "colupd"
         @safeApply @scope, =>
           for upd in data.ops
@@ -360,7 +360,12 @@ angular.module("d2mp.services", []).factory("safeApply", [
         if path.indexOf('lobby/') isnt -1 || path.indexOf('dotest') isnt -1
           safeApply $rootScope, ->
             $location.path('/lobbies')
-    $rootScope.$on 'lobby:installres', (event, success)->
+    $rootScope.$on 'lobby:installres', (event, success, message)->
+      $.pnotify
+        title: "Install Result"
+        text: message
+        type: if success then "success" else "error"
+        delay: 5000
       if success && $location.url().indexOf('setup') is -1
         $location.url '/lobbies/'
     $rootScope.$on 'lobby:modNeeded', (event, mod)->

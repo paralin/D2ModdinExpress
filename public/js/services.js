@@ -246,7 +246,7 @@
           return this.scope.$broadcast('lobby:testNeeded', data.name);
         case "installres":
           this.status.managerDownloading = false;
-          return this.scope.$broadcast('lobby:installres', data.success);
+          return this.scope.$broadcast('lobby:installres', data.success, data.message);
         case "colupd":
           return this.safeApply(this.scope, (function(_this) {
             return function() {
@@ -505,7 +505,13 @@
           }
         }
       });
-      $rootScope.$on('lobby:installres', function(event, success) {
+      $rootScope.$on('lobby:installres', function(event, success, message) {
+        $.pnotify({
+          title: "Install Result",
+          text: message,
+          type: success ? "success" : "error",
+          delay: 5000
+        });
         if (success && $location.url().indexOf('setup') === -1) {
           return $location.url('/lobbies/');
         }
