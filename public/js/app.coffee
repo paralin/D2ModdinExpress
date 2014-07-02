@@ -57,6 +57,18 @@ app = angular.module("d2mp", [
       templateUrl: '/partials/dotest'
       controller: 'DoTestCtrl'
 
+    $routeProvider.when '/matchmake',
+      templateUrl: '/partials/matchmake'
+      controller: 'MatchmakeCtrl'
+
+    $routeProvider.when '/ranked',
+      templateUrl: '/partials/ranked'
+      controller: 'RankedCtrl'
+
+    $routeProvider.when '/profile/:id',
+      templateUrl: '/partials/profile'
+      controller: 'ProfileCtrl'
+
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
 ]).run([

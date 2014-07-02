@@ -306,6 +306,25 @@
         return $lobbyService.sendConnect();
       };
     }
+  ]).controller('MatchmakeCtrl', [
+    "$scope", "$authService", "$lobbyService", "$location", function($scope, $authService, $lobbyService, $location) {
+      var matchmake;
+      if (!$authService.isAuthed || $lobbyService.matchmake.length === 0) {
+        return $location.url('/ranked');
+      }
+      matchmake = $scope.matchmake = $lobbyService.matchmake[0];
+      $scope.status = $lobbyService.status;
+      return $scope.stopQueue = function() {
+        return $lobbyService.exitMatchmake();
+      };
+    }
+  ]).controller('ProfileCtrl', ["$scope", function($scope) {}]).controller('RankedCtrl', [
+    "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
+      $scope.auth = $authService;
+      return $scope.startQueue = function(mod) {
+        return $lobbyService.startMatchmake([mod]);
+      };
+    }
   ]).controller("ModDetailCtrl", function($scope, $rootScope, $routeParams, $location, $sce) {
     var mod, modname;
     modname = $routeParams.modname;

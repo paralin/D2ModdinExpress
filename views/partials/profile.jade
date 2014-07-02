@@ -1,0 +1,92 @@
+style
+  hr{margin-top:10px;margin-bottom:15px}
+  h4{margin-top:10px;margin-bottom:5px}
+#wrapper
+  #mods
+    header#page-title(style="margin-bottom:20px")
+      .container
+        h1 User Profile
+        ul.breadcrumb
+          li
+            a(href='/') Home
+          li.active {{user.profile.name}}
+    section.container
+      .row
+        .col-md-9
+          .row
+            .col-sm-2.col-md-2
+              img(src="http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/5c/5c82337faff6f3e87a3c1434cd0001afa7632c3e_full.jpg",style="width:164px;height:164px")
+              h3 Beta Queue
+              hr
+              h1(style="text-align:center") {{queue.totalCount|number}}
+              p(style="width:100%;text-align:center")
+                | Total Players
+              h1(style="text-align:center") {{queue.totalInvites|number}}
+              p(style="width:100%;text-align:center")
+                | Total Invitations
+              h1(ng-if="queue.inQueue&&auth.isAuthed",style="text-align:center") {{queue.originalPos|number}}
+              p(ng-if="queue.inQueue&&auth.isAuthed",style="width:100%;text-align:center")
+                | Original Queue Position
+              h1(ng-if="queue.inQueue&&auth.isAuthed&&!queue.invited",style="text-align:center") {{queue.myPos|number}}
+              p(ng-if="queue.inQueue&&auth.isAuthed&&!queue.invited",style="width:100%;text-align:center")
+                | Position in Queue
+              h1(ng-if="queue.inQueue&&queue.invited",style="text-align:center") Invited
+              p
+              a.btn.btn-success(href="/lobbies",style="width:100%",ng-if="auth.isAuthed&&queue.invited") Start Playing
+              button.btn.btn-success(style="width:100%",ng-if="!queue.inQueue&&auth.isAuthed",ng-click="queue.joinQueue()") Join the Queue
+              a.btn.btn-success(href="http://fundrazr.com/campaigns/2nfla/pay?perk=36yD7",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Skip the Queue
+              button.btn.btn-success(ng-click="startEnterKey()",style="width:100%",ng-if="auth.isAuthed&&queue.inQueue&&!queue.invited") Use Invite Key
+              button.btn.btn-success(ng-click="startSignin()",style="width:100%",ng-if="!auth.isAuthed") Signin w/ Steam
+            .col-sm-8.col-md-8
+              .desc
+                h4 IMPORTANT: GETTING AN INVITE
+                hr
+                p 
+                  | You can donate to support the project and skip the queue! The
+                  | first perk is at $2.50 and awards you an invite code
+                  | for D2Moddin.
+                p
+                  b PLEASE NOTE that we send out invites TWICE A DAY  
+                  | and that you must include your steam ID in the information form after the donation to prevent additional delays processing your donation.
+                h3.page-header(style="margin:10px 0 10px") What is D2Moddin 
+                p
+                  b Dota 2 
+                  | is a 2013 multiplayer online battle arena video game
+                  | and the stand-alone sequel to the Defense of the Ancients
+                  | (DotA) mod.
+                p
+                  b D2Moddin 
+                  | is an effort to return to the roots of Dota 2 as a
+                  | mod, allowing thousands of players to easily play unofficial
+                  | custom game modes created by the community.
+                p
+                  | Thousands of games are now hosted daily on D2Moddin's server
+                  | network, and with a queue of over 201,000 players, we are
+                  | constantly working to scale up our service and allow more
+                h4 The Game Modes
+                hr
+                p 
+                  | Currently we host four game modes on D2Moddin (and are
+                  | adding more as they are completed):
+                p 
+                  b Reflex (by BMD)
+                  | - a fast paced action game that excercises
+                  | hand-eye coordination and fast reflexes.
+                p
+                  b Hero Line Wars (by EinAlex)
+                  | - Fight against creeps sent by
+                  | the other team and send waves to quickly overwhelm the enemy
+                  | and increase your periodic income!
+                p
+                  b Pudge Wars (by Kobb and Aderum) 
+                  |  - The classic WC3 mod
+                  | re-created in Dota 2.
+                p
+                  b Fight or Flight
+                  |  (by MoD)  
+                  | - The first competitive Dota 2 mod.
+        aside.col-md-3
+          h3 Donations
+          hr
+          .fr-widget(data-type="badge",data-variant="tall",data-width="220",data-url="http://fnd.us/c/2nfla")
+script(type="text/javascript",src="//static.fundrazr.com/widgets/1957/widgets.js")

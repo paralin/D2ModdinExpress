@@ -1,0 +1,11 @@
+#wrapper
+  section.container.text-center(style="margin-top:30px")
+    h1.text-center
+      strong Matchmaking
+  .findDialog(style="margin-top:20px")
+    .dTitle Finding a match...
+    .loadingBarContainer
+      .progress.progress-striped.active
+        .progress-bar.progress-bar-info(role="progressbar",style="width:100%;padding-top:25px")
+    div(style="margin-top:40px")
+      button.btn.btn-danger.connectBtn(ng-click="stopQueue()") Exit Queue

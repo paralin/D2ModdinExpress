@@ -173,6 +173,16 @@
       return this.call("connectgame", null);
     };
 
+    LobbyService.prototype.exitMatchmake = function() {
+      return this.call("stopmatchmake", null);
+    };
+
+    LobbyService.prototype.startMatchmake = function(mods) {
+      return this.call("matchmake", {
+        mods: mods
+      });
+    };
+
     LobbyService.prototype.stopFinding = function() {
       return this.call("stopqueue", null);
     };
@@ -234,6 +244,7 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
+      console.log(_.clone(data));
       switch (data.msg) {
         case "error":
           return $.pnotify({
@@ -334,7 +345,7 @@
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502/BrowserController');
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {
@@ -499,6 +510,26 @@
     }
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$queueService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply) {
+      $rootScope.$on('lobbyUpdate:matchmake', function(event, op) {
+        var path;
+        path = $location.path();
+        if (op === 'update' || op === 'insert') {
+          console.log($lobbyService.matchmake);
+          if ($location.url().indexOf('matchmake') === -1) {
+            $timeout((function(_this) {
+              return function() {
+                return $location.url('/matchmake');
+              };
+            })(this));
+          }
+        } else {
+          if (path.indexOf('matchmake') !== -1) {
+            return safeApply($rootScope, function() {
+              return $location.path('/ranked');
+            });
+          }
+        }
+      });
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
         var path;
         path = $location.path();
@@ -554,13 +585,21 @@
       return $rootScope.$on('$locationChangeStart', function(event, newurl, oldurl) {
         window.FundRazr = void 0;
         $("#fr_hovercard-outer").remove();
-        if (!$queueService.invited && (newurl.indexOf('lobb') !== -1 || newurl.indexOf('setup') !== -1 || newurl.indexOf('installmod') !== -1 || newurl.indexOf('dotest') !== -1)) {
+        if (!$queueService.invited && (newurl.indexOf('lobb') !== -1 || newurl.indexOf('setup') !== -1 || newurl.indexOf('installmod') !== -1 || newurl.indexOf('ranked') !== -1 || newurl.indexOf('dotest') !== -1)) {
           event.preventDefault();
           return $timeout(function() {
             return $location.url("/invitequeue");
           });
         }
-        if ($lobbyService.lobbies.length > 0) {
+        if ($lobbyService.matchmake.length > 0) {
+          if (newurl.indexOf('matchmake') !== -1) {
+            return;
+          }
+          event.preventDefault();
+          if (oldurl.indexOf('matchmake') === -1) {
+            return $location.url('/matchmake');
+          }
+        } else if ($lobbyService.lobbies.length > 0) {
           if ($lobbyService.lobbies[0].LobbyType === 1) {
             if (newurl.indexOf('dotest') !== -1) {
               return;

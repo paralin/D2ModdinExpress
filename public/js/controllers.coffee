@@ -271,6 +271,29 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.isHost = $scope.lobby.creatorid is $authService.user._id
     $scope.sendConnect = ->
       $lobbyService.sendConnect()
+]).controller('MatchmakeCtrl', [
+  "$scope"
+  "$authService"
+  "$lobbyService"
+  "$location"
+  ($scope, $authService, $lobbyService, $location)->
+    if !$authService.isAuthed || $lobbyService.matchmake.length is 0
+      return $location.url('/ranked')
+    matchmake = $scope.matchmake = $lobbyService.matchmake[0]
+    $scope.status = $lobbyService.status
+    $scope.stopQueue = ->
+      $lobbyService.exitMatchmake()
+]).controller('ProfileCtrl', [
+  "$scope"
+  ($scope)->
+]).controller('RankedCtrl', [
+  "$scope"
+  "$authService"
+  "$lobbyService"
+  ($scope, $authService, $lobbyService)->
+    $scope.auth = $authService
+    $scope.startQueue = (mod)->
+      $lobbyService.startMatchmake [mod]
 ]).controller "ModDetailCtrl", ($scope, $rootScope, $routeParams, $location, $sce) ->
   modname = $routeParams.modname
   mod = _.findWhere($rootScope.mods,

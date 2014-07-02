@@ -52,6 +52,10 @@ html.no-js(ng-app="d2mp",lang="en")
                 a(href="/mods") Mods
               li(ng-if="queue.invited")
                 a(href="/lobbies") Lobbies
+              li(ng-if="queue.invited")
+                a(href="/ranked") Ranked
+              li(ng-if="queue.invited")
+                a(href="/leaderboards") Leaderboards
               li(ng-if="!queue.invited")
                 a(href="/invitequeue") Invites
               li

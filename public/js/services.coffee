@@ -109,6 +109,13 @@ class LobbyService
   sendConnect: ->
     @call "connectgame", null
 
+  exitMatchmake: ->
+    @call "stopmatchmake", null
+
+  startMatchmake: (mods)->
+    @call "matchmake",
+      mods: mods
+
   stopFinding: ->
     @call "stopqueue", null
 
@@ -152,6 +159,7 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
+    console.log _.clone data
     switch data.msg
       when "error"
         $.pnotify
@@ -217,8 +225,8 @@ class LobbyService
       console.log "Not connecting as we aren't logged in/not invited/are a duplicate."
       return
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
         @isDuplicate = true
@@ -358,6 +366,18 @@ angular.module("d2mp.services", []).factory("safeApply", [
   '$timeout'
   "safeApply"
   ($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply)->
+    $rootScope.$on 'lobbyUpdate:matchmake', (event, op)->
+      path = $location.path()
+      if op in ['update', 'insert']
+        console.log $lobbyService.matchmake
+        if $location.url().indexOf('matchmake') == -1
+          $timeout =>
+            $location.url('/matchmake')
+          return
+      else
+        if path.indexOf('matchmake') isnt -1
+          safeApply $rootScope, ->
+            $location.path('/ranked')
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
@@ -393,11 +413,17 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       window.FundRazr = undefined
       $("#fr_hovercard-outer").remove()
-      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newurl.indexOf('setup') != -1 || newurl.indexOf('installmod') != -1 || newurl.indexOf('dotest') != -1)
+      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newurl.indexOf('setup') != -1 || newurl.indexOf('installmod') != -1 || newurl.indexOf('ranked') != -1 || newurl.indexOf('dotest') != -1)
         event.preventDefault()
         return $timeout ->
           $location.url "/invitequeue"
-      if $lobbyService.lobbies.length > 0
+      if $lobbyService.matchmake.length > 0
+        if newurl.indexOf('matchmake') != -1
+          return
+        event.preventDefault()
+        if oldurl.indexOf('matchmake') == -1
+          $location.url '/matchmake'
+      else if $lobbyService.lobbies.length > 0
         if $lobbyService.lobbies[0].LobbyType == 1
           if newurl.indexOf('dotest') != -1
             return

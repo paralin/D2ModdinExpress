@@ -1,0 +1,14 @@
+#fullHomeBack(style="background:url('http://i.imgur.com/Sp3elDj.jpg') no-repeat")
+.container.titleContainer
+  .row-fluid
+    .span12
+      .description-texts
+        h1.site-slogan
+          span(style="line-height:5px") Ranked Matchmaking
+        p.app-description
+          .feature
+            span(style="font-size:21px") Reflex MMR: 
+              b {{auth.user.profile.mmr.g4ciPxf5qpywA5Hqq}}
+            br
+            a.btn.btn-success(ng-click="startQueue('g4ciPxf5qpywA5Hqq')") Queue
+            a.btn.btn-info Leaderboards
