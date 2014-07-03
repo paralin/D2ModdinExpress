@@ -471,7 +471,7 @@
       authService = {};
       authService.update = updateAuth;
       updateAuth();
-      $interval(updateAuth, 15000);
+      $interval(updateAuth, 60000);
       return authService;
     }
   ]).factory("$lobbyService", [
