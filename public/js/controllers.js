@@ -97,9 +97,10 @@
       };
     }
   ]).controller("BottomBarCtrl", [
-    "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
+    "$scope", "$authService", "$lobbyService", "$queueService", function($scope, $authService, $lobbyService, $queueService) {
       $scope.auth = $authService;
-      return $scope.status = $lobbyService.status;
+      $scope.status = $lobbyService.status;
+      return $scope.queue = $queueService;
     }
   ]).controller('LobbyCtrl', [
     "$scope", "$authService", "$lobbyService", "$location", "$rootScope", function($scope, $authService, $lobbyService, $location, $rootScope) {

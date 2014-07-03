@@ -105,9 +105,11 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$scope"
   "$authService"
   "$lobbyService"
-  ($scope, $authService, $lobbyService)->
+  "$queueService"
+  ($scope, $authService, $lobbyService,$queueService)->
     $scope.auth = $authService
     $scope.status = $lobbyService.status
+    $scope.queue = $queueService
 ]).controller('LobbyCtrl', [
   "$scope"
   "$authService"
