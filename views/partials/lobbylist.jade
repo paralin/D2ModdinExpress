@@ -20,7 +20,7 @@
               th Teams
               th(style="width:70px")
           tbody
-            tr(ng-repeat="lobby in lobbies | orderBy:totalPlayerCount:true | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}")
+            tr(ng-repeat="lobby in lobbies | orderBy:totalPlayerCount:true | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}",ng-click="joinLobby(lobby)",style="cursor:pointer")
               td(style="padding:5px")
                 img(ng-src="{{getModThumbnail(lobby.mod)}}",style="width:35px;height:35px")
               td ({{totalPlayerCount(lobby)}}/10) {{lobby.name}}

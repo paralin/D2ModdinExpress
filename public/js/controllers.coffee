@@ -22,6 +22,11 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     publicLobbies = $lobbyService.publicLobbies
     $scope.hasMod = $routeParams.modname?
     $scope.lobbyFilter = {}
+    $.pnotify
+      title: "Click Lobbies"
+      text: "You can now click on lobby rows to join the lobby. You don't need to use the button anymore!"
+      type: "info"
+      delay: 5000
     modName = null
     mod = null
     if $scope.hasMod
@@ -48,7 +53,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.getModThumbnail = (modid) ->
       mod = _.findWhere($rootScope.mods, _id: modid)
       if mod?
-        mod.thumbnail
+        mod.thumbsmall
       else
         ""
 ]).controller("AuthCtrl", [

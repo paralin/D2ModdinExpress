@@ -331,6 +331,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "safeApply"
   ($interval, $log, $authService, $queueService, $rootScope, safeApply)->
     service = new LobbyService $rootScope, $authService, $queueService, safeApply
+    $(window).unload service.disconnect
     $rootScope.$on "auth:data", (event,data)->
       if $authService.isAuthed
         service.sendAuth()

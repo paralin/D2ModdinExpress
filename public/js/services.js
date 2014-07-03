@@ -478,6 +478,7 @@
     "$interval", "$log", "$authService", "$queueService", "$rootScope", "safeApply", function($interval, $log, $authService, $queueService, $rootScope, safeApply) {
       var service;
       service = new LobbyService($rootScope, $authService, $queueService, safeApply);
+      $(window).unload(service.disconnect);
       $rootScope.$on("auth:data", function(event, data) {
         if ($authService.isAuthed) {
           return service.sendAuth();
