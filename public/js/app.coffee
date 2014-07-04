@@ -87,16 +87,16 @@ app = angular.module("d2mp", [
       UNKNOWN: 0
       NA: 1
       EU: 2
-      AUS: 3
       CN: 4
+    # AUS: 3
 
     $rootScope.REGIONSK = _.invert($rootScope.REGIONS)
     $rootScope.REGIONSH =
       0: "All Regions"
       1: "North America"
       2: "Europe"
-      3: "Australia"
       4: "Southeast Asia"
+    # 3: "Australia"
     
     $rootScope.LOBBYTYPES =
       NORMAL: 0

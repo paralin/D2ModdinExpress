@@ -56,9 +56,10 @@ class LobbyService
   startQueue: ->
     @call "startqueue", null
 
-  joinLobby: (id)->
+  joinLobby: _.debounce((id)->
     @call "joinlobby",
       LobbyID: id
+  , 1000, true)
 
   changeRegion: (region)->
     @call "setregion",

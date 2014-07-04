@@ -79,11 +79,11 @@
       return this.call("startqueue", null);
     };
 
-    LobbyService.prototype.joinLobby = function(id) {
+    LobbyService.prototype.joinLobby = _.debounce(function(id) {
       return this.call("joinlobby", {
         LobbyID: id
       });
-    };
+    }, 1000, true);
 
     LobbyService.prototype.changeRegion = function(region) {
       return this.call("setregion", {
