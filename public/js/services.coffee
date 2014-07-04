@@ -2,48 +2,8 @@
 
 global = @
 
-class QueueService
-  constructor:($rootScope, @authService, @safeApply, @http)->
-    @totalCount = 201150
-    @inQueue = true
-    @myPos = 0
-    @invited = true
-    $rootScope.$on "auth:data", (event,data)=>
-      @safeApply $rootScope, =>
-        if data.queue?
-          @totalCount = data.queue.totalCount
-          @inQueue = data.queue.inQueue
-          @invited = data.queue.invited
-          @myPos = (data.queue.queueID+1)-data.queue.totalInvited
-          @totalInvited = data.queue.totalInvited
-          @totalInvites = data.queue.totalInvites
-          @originalPos = data.queue.queueID+1
-  joinQueue: ->
-    @http({method: 'POST', url: '/queue/joinQueue'})
-      .success (data, status, headers, config)=>
-        if(data.error)
-          $.pnotify
-            title: "Queue Error"
-            text: data.error
-            type: "error"
-        @authService.update()
-  tryUseKey: (key)->
-    @http({method: 'POST', url: '/queue/tryUseKey', data: {key: key}})
-      .success (data, status, headers, config)=>
-        if(data.error)
-          $.pnotify
-            title: "Key Error"
-            text: data.error
-            type: "error"
-        else
-          $.pnotify
-            title: "Key Claimed"
-            text: "That key has been claimed!"
-            type: "success"
-        @authService.update()
-
 class LobbyService
-  constructor:($rootScope, $authService, @queue, @safeApply)->
+  constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
     @publicLobbies = []
     @socket = null
@@ -136,8 +96,8 @@ class LobbyService
       mod: modid
 
   sendAuth: ()->
-    if !@auth.isAuthed || !@queue.invited
-      console.log "Not authed or not invited, not sending auth."
+    if !@auth.isAuthed
+      console.log "Not authed, not sending auth."
       @disconnect()
     else
       if !@hasAuthed
@@ -202,8 +162,8 @@ class LobbyService
             @scope.$broadcast eve, op
 
   reconnect: ->
-    if !@auth.isAuthed || !@queue.invited || @isDuplicate
-      console.log "Not re-connecting as we aren't logged in/not invited/are a duplicate."
+    if !@auth.isAuthed || @isDuplicate
+      console.log "Not re-connecting as we aren't logged in/are a duplicate."
       return
     setTimeout(=>
       @connect()
@@ -211,8 +171,8 @@ class LobbyService
 
   connect: ->
     @disconnect()
-    if !@auth.isAuthed || !@queue.invited || @isDuplicate
-      console.log "Not connecting as we aren't logged in/not invited/are a duplicate."
+    if !@auth.isAuthed || @isDuplicate
+      console.log "Not connecting as we aren't logged in/are a duplicate."
       return
     console.log "Attempting connection..."
     @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
@@ -326,11 +286,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$interval"
   "$log"
   "$authService"
-  "$queueService"
   "$rootScope"
   "safeApply"
-  ($interval, $log, $authService, $queueService, $rootScope, safeApply)->
-    service = new LobbyService $rootScope, $authService, $queueService, safeApply
+  ($interval, $log, $authService, $rootScope, safeApply)->
+    service = new LobbyService $rootScope, $authService, safeApply
     $(window).unload service.disconnect
     $rootScope.$on "auth:data", (event,data)->
       if $authService.isAuthed
@@ -339,24 +298,14 @@ angular.module("d2mp.services", []).factory("safeApply", [
         service.disconnect()
     global.service = service
     service
-]).factory("$queueService", [
-  "$authService"
-  "$rootScope"
-  "safeApply"
-  "$http"
-  ($authService, $rootScope, safeApply, $http)->
-    service = new QueueService $rootScope, $authService, safeApply, $http
-    global.queue = service
-    service
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'
   '$lobbyService'
   '$authService'
-  '$queueService'
   '$timeout'
   "safeApply"
-  ($rootScope, $location, $lobbyService, $authService, $queueService, $timeout, safeApply)->
+  ($rootScope, $location, $lobbyService, $authService, $timeout, safeApply)->
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
@@ -397,10 +346,6 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on '$locationChangeStart', (event, newurl, oldurl)->
       window.FundRazr = undefined
       $("#fr_hovercard-outer").remove()
-      if !$queueService.invited && (newurl.indexOf('lobb') != -1 || newurl.indexOf('setup') != -1 || newurl.indexOf('installmod') != -1 || newurl.indexOf('dotest') != -1)
-        event.preventDefault()
-        return $timeout ->
-          $location.url "/invitequeue"
       if $lobbyService.lobbies.length > 0
         if $lobbyService.lobbies[0].LobbyType == 1
           if newurl.indexOf('dotest') != -1

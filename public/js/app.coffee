@@ -45,10 +45,6 @@ app = angular.module("d2mp", [
       templateUrl: "/partials/lobby"
       controller: "LobbyCtrl"
 
-    $routeProvider.when '/invitequeue',
-      templateUrl: '/partials/invitequeue'
-      controller: 'InviteQueueCtrl'
-    
     $routeProvider.when '/setup',
       templateUrl: '/partials/setup'
       controller: 'LoadTestCtrl'

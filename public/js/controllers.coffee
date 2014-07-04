@@ -105,11 +105,9 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$scope"
   "$authService"
   "$lobbyService"
-  "$queueService"
-  ($scope, $authService, $lobbyService,$queueService)->
+  ($scope, $authService, $lobbyService)->
     $scope.auth = $authService
     $scope.status = $lobbyService.status
-    $scope.queue = $queueService
 ]).controller('LobbyCtrl', [
   "$scope"
   "$authService"
@@ -188,25 +186,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.$on "$destroy", ->
       for l in list
         l()
-]).controller("InviteQueueCtrl", [
-  "$scope"
-  "$queueService"
-  "$authService"
-  ($scope, $queueService, $authService)->
-    $scope.auth = $authService
-    $scope.startSignin = ->
-      window.location.href = "/auth/steam"
-    $scope.startEnterKey = ->
-      bootbox.prompt "Enter your invite key:", (res)->
-        return if !res?
-        $queueService.tryUseKey res.replace(/\s/g, "")
-    $scope.queue = $queueService
 ]).controller("NavCtrl", [
   "$scope"
-  "$queueService"
   "$authService"
-  ($scope, $queueService, $authService)->
-    $scope.queue = $queueService
+  ($scope, $authService)->
     $scope.auth = $authService
 ]).controller("LoadTestCtrl", [
   "$scope"

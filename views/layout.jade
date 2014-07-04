@@ -50,10 +50,8 @@ html.no-js(ng-app="d2mp",lang="en")
             ul.nav.nav-pills.nav-main.scroll-menu#topMain
               li
                 a(href="/mods") Mods
-              li(ng-if="queue.invited")
+              li
                 a(href="/lobbies") Lobbies
-              li(ng-if="!queue.invited")
-                a(href="/invitequeue") Invites
               li
                 a(href="/about") About 
     span#header_shadow(style="pointer-events:none")

@@ -97,10 +97,9 @@
       };
     }
   ]).controller("BottomBarCtrl", [
-    "$scope", "$authService", "$lobbyService", "$queueService", function($scope, $authService, $lobbyService, $queueService) {
+    "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
       $scope.auth = $authService;
-      $scope.status = $lobbyService.status;
-      return $scope.queue = $queueService;
+      return $scope.status = $lobbyService.status;
     }
   ]).controller('LobbyCtrl', [
     "$scope", "$authService", "$lobbyService", "$location", "$rootScope", function($scope, $authService, $lobbyService, $location, $rootScope) {
@@ -219,25 +218,8 @@
         return _results;
       });
     }
-  ]).controller("InviteQueueCtrl", [
-    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
-      $scope.auth = $authService;
-      $scope.startSignin = function() {
-        return window.location.href = "/auth/steam";
-      };
-      $scope.startEnterKey = function() {
-        return bootbox.prompt("Enter your invite key:", function(res) {
-          if (res == null) {
-            return;
-          }
-          return $queueService.tryUseKey(res.replace(/\s/g, ""));
-        });
-      };
-      return $scope.queue = $queueService;
-    }
   ]).controller("NavCtrl", [
-    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
-      $scope.queue = $queueService;
+    "$scope", "$authService", function($scope, $authService) {
       return $scope.auth = $authService;
     }
   ]).controller("LoadTestCtrl", [
