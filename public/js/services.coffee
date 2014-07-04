@@ -203,6 +203,9 @@ class LobbyService
           text: "You are no longer authed with the lobby server."
           type: "error"
         @hasAuthed = false
+    so.on 'publicLobbies', (msg)=>
+      @handleMsg msg
+
     so.on 'lobby', (msg)=>
       @handleMsg msg
     so.on 'manager', (msg)=>

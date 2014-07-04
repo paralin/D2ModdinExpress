@@ -293,6 +293,11 @@
           }
         };
       })(this));
+      so.on('publicLobbies', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
+        };
+      })(this));
       so.on('lobby', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
