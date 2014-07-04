@@ -2,10 +2,11 @@
 (function() {
   "use strict";
   angular.module("d2mp.controllers", []).controller("HomeCtrl", ["$scope", function($scope) {}]).controller("AboutCtrl", ["$scope", function($scope) {}]).controller("ModsCtrl", ["$scope", function($scope) {}]).controller("LobbyListCtrl", [
-    "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", function($scope, $location, $routeParams, $rootScope, $lobbyService) {
+    "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", "$authService", function($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) {
       var mod, modName, publicLobbies;
       publicLobbies = $lobbyService.publicLobbies;
       $scope.hasMod = $routeParams.modname != null;
+      $scope.auth = $authService;
       $scope.lobbyFilter = {};
       $.pnotify({
         title: "Click Lobbies",

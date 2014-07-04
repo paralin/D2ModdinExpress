@@ -18,9 +18,11 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$routeParams"
   "$rootScope"
   "$lobbyService"
-  ($scope, $location, $routeParams, $rootScope, $lobbyService) ->
+  "$authService"
+  ($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) ->
     publicLobbies = $lobbyService.publicLobbies
     $scope.hasMod = $routeParams.modname?
+    $scope.auth = $authService
     $scope.lobbyFilter = {}
     $.pnotify
       title: "Click Lobbies"

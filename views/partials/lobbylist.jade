@@ -1,4 +1,9 @@
-#wrapper
+#wrapper(ng-if="!auth.isAuthed")
+  .panel.panel-success.entryPanel
+    .panel-heading Sign in
+    .panel-body(style="font-weight:bold;text-align:center;text-size:20px")
+      | You must be signed in (top right of the page) to see lobbies.
+#wrapper(ng-if="auth.isAuthed")
   section.container.text-container(style="margin-top:30px")
     h1.text-center
       strong Lobbies
