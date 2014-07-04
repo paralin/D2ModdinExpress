@@ -220,6 +220,8 @@ class LobbyService
     so.on "close", =>
       @disconnect()
       @safeApply @scope, =>
+        @lobbies.length = 0
+        @publicLobbies.length = 0
         @status.managerConnected = false
         if !@isDuplicate
           @status.managerStatus = "You have lost connection with the lobby server..."

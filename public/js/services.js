@@ -321,6 +321,8 @@
         return function() {
           _this.disconnect();
           _this.safeApply(_this.scope, function() {
+            _this.lobbies.length = 0;
+            _this.publicLobbies.length = 0;
             _this.status.managerConnected = false;
             if (!_this.isDuplicate) {
               return _this.status.managerStatus = "You have lost connection with the lobby server...";
