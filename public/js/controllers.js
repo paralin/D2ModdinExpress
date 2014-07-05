@@ -2,11 +2,18 @@
 (function() {
   "use strict";
   angular.module("d2mp.controllers", []).controller("HomeCtrl", ["$scope", function($scope) {}]).controller("AboutCtrl", ["$scope", function($scope) {}]).controller("ModsCtrl", ["$scope", function($scope) {}]).controller("LobbyListCtrl", [
-    "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", function($scope, $location, $routeParams, $rootScope, $lobbyService) {
+    "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", "$authService", function($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) {
       var mod, modName, publicLobbies;
       publicLobbies = $lobbyService.publicLobbies;
       $scope.hasMod = $routeParams.modname != null;
+      $scope.auth = $authService;
       $scope.lobbyFilter = {};
+      $.pnotify({
+        title: "Click Lobbies",
+        text: "You can now click on lobby rows to join the lobby. You don't need to use the button anymore!",
+        type: "info",
+        delay: 5000
+      });
       modName = null;
       mod = null;
       if ($scope.hasMod) {
@@ -40,7 +47,7 @@
           _id: modid
         });
         if (mod != null) {
-          return mod.thumbnail;
+          return mod.thumbsmall;
         } else {
           return "";
         }
@@ -212,25 +219,8 @@
         return _results;
       });
     }
-  ]).controller("InviteQueueCtrl", [
-    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
-      $scope.auth = $authService;
-      $scope.startSignin = function() {
-        return window.location.href = "/auth/steam";
-      };
-      $scope.startEnterKey = function() {
-        return bootbox.prompt("Enter your invite key:", function(res) {
-          if (res == null) {
-            return;
-          }
-          return $queueService.tryUseKey(res.replace(/\s/g, ""));
-        });
-      };
-      return $scope.queue = $queueService;
-    }
   ]).controller("NavCtrl", [
-    "$scope", "$queueService", "$authService", function($scope, $queueService, $authService) {
-      $scope.queue = $queueService;
+    "$scope", "$authService", function($scope, $authService) {
       return $scope.auth = $authService;
     }
   ]).controller("LoadTestCtrl", [

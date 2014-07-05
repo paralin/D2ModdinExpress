@@ -18,10 +18,17 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$routeParams"
   "$rootScope"
   "$lobbyService"
-  ($scope, $location, $routeParams, $rootScope, $lobbyService) ->
+  "$authService"
+  ($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) ->
     publicLobbies = $lobbyService.publicLobbies
     $scope.hasMod = $routeParams.modname?
+    $scope.auth = $authService
     $scope.lobbyFilter = {}
+    $.pnotify
+      title: "Click Lobbies"
+      text: "You can now click on lobby rows to join the lobby. You don't need to use the button anymore!"
+      type: "info"
+      delay: 5000
     modName = null
     mod = null
     if $scope.hasMod
@@ -48,7 +55,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.getModThumbnail = (modid) ->
       mod = _.findWhere($rootScope.mods, _id: modid)
       if mod?
-        mod.thumbnail
+        mod.thumbsmall
       else
         ""
 ]).controller("AuthCtrl", [
@@ -181,25 +188,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.$on "$destroy", ->
       for l in list
         l()
-]).controller("InviteQueueCtrl", [
-  "$scope"
-  "$queueService"
-  "$authService"
-  ($scope, $queueService, $authService)->
-    $scope.auth = $authService
-    $scope.startSignin = ->
-      window.location.href = "/auth/steam"
-    $scope.startEnterKey = ->
-      bootbox.prompt "Enter your invite key:", (res)->
-        return if !res?
-        $queueService.tryUseKey res.replace(/\s/g, "")
-    $scope.queue = $queueService
 ]).controller("NavCtrl", [
   "$scope"
-  "$queueService"
   "$authService"
-  ($scope, $queueService, $authService)->
-    $scope.queue = $queueService
+  ($scope, $authService)->
     $scope.auth = $authService
 ]).controller("LoadTestCtrl", [
   "$scope"

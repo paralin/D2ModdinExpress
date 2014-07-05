@@ -1030,19 +1030,8 @@ header#topNav a.logo {
   .item-box.fixed-box .item-box-desc p {
     height:98px;
   }
-  .item-box-desc h4 {
-    padding:0; margin:0;
-  }
-  .item-box .item-box-desc small {
-    display:block;
-  }
-
-  .item-box.fixed-box .item-box-desc {
-    height:256px;
-  }
-
   .item-box.fixed-box figure {
-    max-height:263px;
+    max-height:400px;
   }
   .item-box .socials {
     border-top:#eee 1px solid;
@@ -1681,34 +1670,6 @@ h1 span.subtitle, h2 span.subtitle, h3 span.subtitle {
 	line-height:50px;
 }
 
-
-#mods .item-box-desc h4 {
-	font-size:18px;
-	letter-spacing:-1px;
-	max-height:54px;
-	overflow:hidden;
-  margin-top: 4px;
-}
-#mods .item-box figure {
-	height:260px;
-}
-	#mods .item-box figure img {
-		width:inherit;
-		height:100%;
-		margin:auto;
-	}
-#mods .item-box-desc {
-	height:100px;
-}
-#mods .item-box-desc small {
-	font-size:16px;
-	margin-bottom:0;
-}
-#mods .item-box-desc small span {
-	color:#999;
-	font-size:14px;
-	text-decoration: line-through;
-}
 
 
 #mods .item-box a {
