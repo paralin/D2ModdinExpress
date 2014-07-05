@@ -186,8 +186,8 @@ class LobbyService
       console.log "Not connecting as we aren't logged in/are a duplicate."
       return
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
         @isDuplicate = true
@@ -322,6 +322,18 @@ angular.module("d2mp.services", []).factory("safeApply", [
   '$timeout'
   "safeApply"
   ($rootScope, $location, $lobbyService, $authService, $timeout, safeApply)->
+    $rootScope.$on 'lobbyUpdate:matchmake', (event, op)->
+      path = $location.path()
+      if op in ['update', 'insert']
+        if($lobbyService.matchmake.length > 0)
+          if $location.url().indexOf('matchmake') == -1
+            $timeout =>
+              $location.url('/matchmake')
+            return
+      else
+        if path.indexOf('matchmake') isnt -1
+          safeApply $rootScope, ->
+            $location.path('/ranked')
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
@@ -367,7 +379,8 @@ angular.module("d2mp.services", []).factory("safeApply", [
           return
         event.preventDefault()
         if oldurl.indexOf('matchmake') == -1
-          $location.url '/matchmake'
+          safeApply $rootScope, ->
+            $location.url '/matchmake'
       else if $lobbyService.lobbies.length > 0
         if $lobbyService.lobbies[0].LobbyType == 1
           if newurl.indexOf('dotest') != -1

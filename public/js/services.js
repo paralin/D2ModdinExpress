@@ -269,7 +269,7 @@
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502/BrowserController');
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {
@@ -435,6 +435,27 @@
     }
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {
+      $rootScope.$on('lobbyUpdate:matchmake', function(event, op) {
+        var path;
+        path = $location.path();
+        if (op === 'update' || op === 'insert') {
+          if ($lobbyService.matchmake.length > 0) {
+            if ($location.url().indexOf('matchmake') === -1) {
+              $timeout((function(_this) {
+                return function() {
+                  return $location.url('/matchmake');
+                };
+              })(this));
+            }
+          }
+        } else {
+          if (path.indexOf('matchmake') !== -1) {
+            return safeApply($rootScope, function() {
+              return $location.path('/ranked');
+            });
+          }
+        }
+      });
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
         var path;
         path = $location.path();
@@ -502,7 +523,9 @@
           }
           event.preventDefault();
           if (oldurl.indexOf('matchmake') === -1) {
-            return $location.url('/matchmake');
+            return safeApply($rootScope, function() {
+              return $location.url('/matchmake');
+            });
           }
         } else if ($lobbyService.lobbies.length > 0) {
           if ($lobbyService.lobbies[0].LobbyType === 1) {

@@ -6,9 +6,9 @@
         h1.site-slogan
           span(style="line-height:5px") Ranked Matchmaking
         p.app-description
-          .feature
+          .feature(ng-repeat="mod in mods | filter:{ranked:true}")
             span(style="font-size:21px") Reflex MMR: 
-              b {{auth.user.profile.mmr.g4ciPxf5qpywA5Hqq}}
+              b {{auth.user.profile.mmr[mod._id]}}
             br
-            a.btn.btn-success(ng-click="startQueue('g4ciPxf5qpywA5Hqq')") Queue
+            a.btn.btn-success(ng-click="startQueue(mod._id)") Queue
             a.btn.btn-info Leaderboards
