@@ -260,10 +260,12 @@
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {
+            _this.lobbies.length = 0;
+            _this.publicLobbies.length = 0;
             _this.isDuplicate = true;
             $.pnotify({
               title: "Duplicate",
-              text: "You already have D2Moddin open in another browser window/tab. Please close all other open tabs of D2Moddin before refreshing this page.",
+              text: "You have opened a new D2Moddin browser window/tab, and disconnected this session. Refresh to re-connect this browser tab.",
               type: "error",
               hide: false
             });

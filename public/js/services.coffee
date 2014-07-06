@@ -180,10 +180,12 @@ class LobbyService
     #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
+        @lobbies.length = 0
+        @publicLobbies.length = 0
         @isDuplicate = true
         $.pnotify
           title: "Duplicate"
-          text: "You already have D2Moddin open in another browser window/tab. Please close all other open tabs of D2Moddin before refreshing this page."
+          text: "You have opened a new D2Moddin browser window/tab, and disconnected this session. Refresh to re-connect this browser tab."
           type: "error"
           hide: false
         @status.managerStatus = "Already open in another tab. Refresh to re-try connection."

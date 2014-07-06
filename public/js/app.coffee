@@ -103,7 +103,7 @@ app = angular.module("d2mp", [
     
     $rootScope.playReadySound = _.debounce(->
       window.readysound.play()
-    , 3000)
+    , 3000, true)
 
     $rootScope.LOBBYTYPES =
       NORMAL: 0

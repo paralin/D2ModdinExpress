@@ -113,7 +113,7 @@
         };
         $rootScope.playReadySound = _.debounce(function() {
           return window.readysound.play();
-        }, 3000);
+        }, 3000, true);
         $rootScope.LOBBYTYPES = {
           NORMAL: 0,
           PLAYERTEST: 1,
