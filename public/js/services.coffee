@@ -321,10 +321,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
             $timeout =>
               $location.url('/dotest')
             return
+        lobby = $lobbyService.lobbies[0]
+        if lobby.radiant.length+lobby.dire.length==10 && lobby.creatorid is $authService.user._id
+          $rootScope.playReadySound()
         if path.indexOf('lobby/') is -1 && $lobbyService.lobbies.length > 0
-          lobby = $lobbyService.lobbies[0]
-          if lobby.radiant.length+lobby.dire.length==10 && lobby.creatorid is $authService.user._id
-            $rootScope.playReadySound()
           safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id
       else
