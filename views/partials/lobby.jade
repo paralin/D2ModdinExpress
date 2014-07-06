@@ -34,7 +34,7 @@
       table.table.table-striped
         tbody
           tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}")
-            td(ng-class="{hostRow:player.isHost,adminRow:player.icon}")
+            td(ng-class="{hostStyl:player.isHost,adminStyl:player.icon}")
               i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
               i.fa(ng-if="player.icon",class="{{player.icon}}")
               |  {{player.name}}
