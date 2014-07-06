@@ -3,6 +3,8 @@
   "use strict";
   var app;
 
+  window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg");
+
   app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
@@ -109,6 +111,9 @@
           2: "Europe",
           4: "Southeast Asia"
         };
+        $rootScope.playReadySound = _.debounce(function() {
+          return window.readysound.play();
+        }, 3000);
         $rootScope.LOBBYTYPES = {
           NORMAL: 0,
           PLAYERTEST: 1,

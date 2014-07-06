@@ -423,7 +423,7 @@
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
-        var path;
+        var lobby, path;
         path = $location.path();
         if (op === 'update' || op === 'insert') {
           console.log($lobbyService.lobbies);
@@ -438,6 +438,10 @@
             }
           }
           if (path.indexOf('lobby/') === -1 && $lobbyService.lobbies.length > 0) {
+            lobby = $lobbyService.lobbies[0];
+            if (lobby.radiant.length + lobby.dire.length === 10 && lobby.creatorid === $authService.user._id) {
+              $rootScope.playReadySound();
+            }
             return safeApply($rootScope, function() {
               return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
             });

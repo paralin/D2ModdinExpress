@@ -1,4 +1,7 @@
 "use strict"
+
+window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg")
+
 app = angular.module("d2mp", [
   "ngRoute"
   "d2mp.controllers"
@@ -98,6 +101,10 @@ app = angular.module("d2mp", [
       4: "Southeast Asia"
     # 3: "Australia"
     
+    $rootScope.playReadySound = _.debounce(->
+      window.readysound.play()
+    , 3000)
+
     $rootScope.LOBBYTYPES =
       NORMAL: 0
       PLAYERTEST: 1
