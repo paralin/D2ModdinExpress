@@ -34,9 +34,10 @@
       table.table.table-striped
         tbody
           tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}")
-            td
-              i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
-              | {{player.name}}
+            td(ng-class="{hostRow:player.isHost,adminRow:player.icon}")
+              i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
+              i.fa(ng-if="player.icon",class="{{player.icon}}")
+              |  {{player.name}}
           tr(ng-repeat="slot in radiantSlots track by $index")
             td
               button.btn.btn-link(style="padding:0",ng-click="takeSlot(true)") Take Slot
