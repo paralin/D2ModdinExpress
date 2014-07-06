@@ -37,7 +37,7 @@
                       img(ng-src="{{player.avatar}}",ng-hide="player==null")
                       |  {{player.name}}
                   p
-                    span.avi(ng-repeat="player in lobby.dire track by $index")
+                    span.avi(ng-repeat="player in lobby.dire track by $index",ng-class="{adminStyl:player.icon}")
                       img(ng-src="{{player.avatar}}",ng-hide="player==null")
                       |  {{player.name}}
               td
