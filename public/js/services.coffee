@@ -129,7 +129,6 @@ class LobbyService
       when "colupd"
         @safeApply @scope, =>
           for upd in data.ops
-            console.log JSON.stringify upd
             continue if !upd?
             coll = @colls[upd._c]
             _c = upd._c
@@ -235,7 +234,6 @@ class LobbyService
           type: "error"
       @reconnect()
     so.on "open", (clientinfo)=>
-      console.log "OnOpen"
       @hasAttemptedConnection = false
       $.pnotify
         title: "Connected"
@@ -317,7 +315,6 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
-        console.log $lobbyService.lobbies
         if($lobbyService.lobbies.length > 0 && $lobbyService.lobbies[0].LobbyType == 1)
           if $location.url().indexOf('dotest') == -1
             $timeout =>

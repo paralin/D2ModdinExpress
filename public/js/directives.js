@@ -24,10 +24,13 @@
           return;
         }
         placement = attrs.placement || "left";
-        return element.tooltip({
+        element.tooltip({
           title: tool,
           placement: placement,
           container: 'body'
+        });
+        return element.bind('destroyed', function() {
+          return $(".tooltip").remove();
         });
       }
     };

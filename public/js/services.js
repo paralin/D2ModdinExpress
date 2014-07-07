@@ -180,7 +180,6 @@
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 upd = _ref[_i];
-                console.log(JSON.stringify(upd));
                 if (upd == null) {
                   continue;
                 }
@@ -343,7 +342,6 @@
       })(this));
       return so.on("open", (function(_this) {
         return function(clientinfo) {
-          console.log("OnOpen");
           _this.hasAttemptedConnection = false;
           $.pnotify({
             title: "Connected",
@@ -428,7 +426,6 @@
         var lobby, path;
         path = $location.path();
         if (op === 'update' || op === 'insert') {
-          console.log($lobbyService.lobbies);
           if ($lobbyService.lobbies.length > 0 && $lobbyService.lobbies[0].LobbyType === 1) {
             if ($location.url().indexOf('dotest') === -1) {
               $timeout((function(_this) {

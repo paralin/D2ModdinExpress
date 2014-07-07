@@ -17,6 +17,8 @@ angular.module("d2mp.directives", []).directive("modthumbnail", ->
       title: tool
       placement: placement
       container: 'body'
+    element.bind 'destroyed', ->
+      $(".tooltip").remove()
 ).directive "inlineteams", ->
   templateUrl: "/partials/inlineteams"
   replace: true
