@@ -16,6 +16,7 @@
     "method-override": "^1.0.2",
     "mongoose": "^3.8.12",
     "mongoose-cache": "^0.1.1",
+    "mongoose-long": "0.0.2",
     "morgan": "^1.1.1",
     "nib": "^1.0.2",
     "passport": "^0.2.0",

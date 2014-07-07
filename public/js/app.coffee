@@ -56,6 +56,13 @@ app = angular.module("d2mp", [
       templateUrl: '/partials/dotest'
       controller: 'DoTestCtrl'
 
+    $routeProvider.when '/results/:page',
+      templateUrl: '/partials/resultlist'
+      controller: 'ResultListCtrl'
+
+    $routeProvider.when '/results',
+      redirectTo: '/results/1'
+
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
 ]).run([

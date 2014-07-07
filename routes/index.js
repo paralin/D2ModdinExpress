@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var modSchema = require('../schema/mod');
+var mods = require('../schema/mod');
+var matchResults = require('../schema/result')
 
-var mods = mongoose.model('mods', modSchema);
 
 exports.index = function(req, res){
   res.render('index');
@@ -16,4 +16,24 @@ exports.modList = function(req,res){
   mods.find({isPublic: true}, function(err, modL){
     res.json(modL); 
   });
+};
+
+exports.results = function(req,res){
+  var output = {};
+  var firstOne = (parseInt(req.params.page)-1)*10;
+  res.count = matchResults.count({}, function(err, count){
+    if(err) res.send(500, err)
+    else
+    {
+      output.count = count;
+      matchResults.find().sort({date: -1}).skip(firstOne).limit(10).exec(function(err, results){
+        if(err) res.send(500, err);
+        else
+          {
+            output.results = results;
+            res.json(output);
+          }
+      });
+    }
+  })
 };

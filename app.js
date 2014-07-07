@@ -104,6 +104,8 @@ if(cluster.isMaster&&useCluster){
       res.redirect('/');
     });
 
+    app.get('/data/results/:page', routes.results);
+
     app.get('/data/authStatus', function(req, res){
       var resp = {};
       resp.isAuthed = req.user != null;

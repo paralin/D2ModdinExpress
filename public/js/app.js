@@ -48,6 +48,13 @@
         templateUrl: '/partials/dotest',
         controller: 'DoTestCtrl'
       });
+      $routeProvider.when('/results/:page', {
+        templateUrl: '/partials/resultlist',
+        controller: 'ResultListCtrl'
+      });
+      $routeProvider.when('/results', {
+        redirectTo: '/results/1'
+      });
       $routeProvider.otherwise({
         redirectTo: "/"
       });
