@@ -178,3 +178,9 @@ html {
 .adminRow button {
   margin: 2px;
 }
+.adminStyl {
+  color: #d80000;
+}
+.hostStyl {
+  font-weight: bold;
+}

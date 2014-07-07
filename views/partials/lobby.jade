@@ -33,7 +33,7 @@
       .tileTitle Radiant
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}")
+          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}",boot-tooltip="{{player.contribDesc}}",data-toggle="tooltip",data-placement="left")
             td(ng-class="{hostStyl:player.isHost,adminStyl:player.icon}")
               i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
               i.fa(ng-if="player.icon",class="{{player.icon}}")
@@ -45,7 +45,7 @@
       .tileTitle Dire
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.dire",ng-class="{danger:player.failedConnect}")
+          tr(ng-repeat="player in lobby.dire",ng-class="{danger:player.failedConnect}",boot-tooltip="{{player.contribDesc}}",data-toggle="tooltip",data-placement="right")
             td(ng-class="{hostStyl:player.isHost,adminStyl:player.icon}")
               i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
               i.fa(ng-if="player.icon",class="{{player.icon}}")
