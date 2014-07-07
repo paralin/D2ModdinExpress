@@ -58,6 +58,21 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         mod.thumbsmall
       else
         ""
+]).controller("ResultListCtrl", [
+  "$scope"
+  "$location"
+  "$routeParams"
+  "$rootScope"
+  "$resultService"
+  ($scope, $location, $routeParams, $rootScope, $resultService) ->
+    $resultService.fetch(parseInt($routeParams.page))
+    $scope.results = $resultServices.results
+    $scope.getModThumbnailN = (modid) ->
+      mod = _.findWhere($rootScope.mods, name: modid)
+      if mod?
+        mod.thumbsmall
+      else
+        ""
 ]).controller("AuthCtrl", [
   "$scope"
   "$authService"
@@ -196,7 +211,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("LoadTestCtrl", [
   "$scope"
   "$lobbyService"
-  ($scope, $lobbyService)->
+  "$rootScope"
+  ($scope, $lobbyService, $rootScope)->
     $scope.status = $lobbyService.status
     $scope.startInstall = ->
       $lobbyService.installMod 'checker'
@@ -233,9 +249,23 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         showClose: false
         progressBarCurrent: true
         contentHeight: 325
+        buttons:
+          cancelText: "Cancel"
+          nextText: "Next"
+          backText: "Back"
+          submitText: "Start Test"
+          submittingText: "Starting..."
+      cb = $rootScope.$on('lobby:error', ->
+        console.log "lobby error"
+        wiz.submitFailure()
+        wiz.changeNextButton("Try Again", "btn-success")
+        wiz.reset()
+      )
+      $scope.$on '$destroy', ->
+        cb()
+        wiz.close()
       wiz.setSubtitle "Set up and test your D2Moddin client."
-      wiz.on "submit", (wizard)->
-        wizard.close()
+      wiz.on "submit", ->
         $lobbyService.startLoadTest()
 
       #Setup manager

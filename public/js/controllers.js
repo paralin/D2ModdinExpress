@@ -53,6 +53,22 @@
         }
       };
     }
+  ]).controller("ResultListCtrl", [
+    "$scope", "$location", "$routeParams", "$rootScope", "$resultService", function($scope, $location, $routeParams, $rootScope, $resultService) {
+      $resultService.fetch(parseInt($routeParams.page));
+      $scope.results = $resultServices.results;
+      return $scope.getModThumbnailN = function(modid) {
+        var mod;
+        mod = _.findWhere($rootScope.mods, {
+          name: modid
+        });
+        if (mod != null) {
+          return mod.thumbsmall;
+        } else {
+          return "";
+        }
+      };
+    }
   ]).controller("AuthCtrl", [
     "$scope", "$authService", function($scope, $authService) {
       $scope.auth = $authService;
@@ -224,7 +240,7 @@
       return $scope.auth = $authService;
     }
   ]).controller("LoadTestCtrl", [
-    "$scope", "$lobbyService", function($scope, $lobbyService) {
+    "$scope", "$lobbyService", "$rootScope", function($scope, $lobbyService, $rootScope) {
       $scope.status = $lobbyService.status;
       $scope.startInstall = function() {
         return $lobbyService.installMod('checker');
@@ -254,18 +270,34 @@
         });
       };
       return $scope.$watch('$viewContentLoaded', function() {
-        var wiz;
+        var cb, wiz;
         window.wiz = wiz = $("#setup-wizard").wizard({
           keyboard: false,
           backdrop: false,
           showCancel: false,
           showClose: false,
           progressBarCurrent: true,
-          contentHeight: 325
+          contentHeight: 325,
+          buttons: {
+            cancelText: "Cancel",
+            nextText: "Next",
+            backText: "Back",
+            submitText: "Start Test",
+            submittingText: "Starting..."
+          }
+        });
+        cb = $rootScope.$on('lobby:error', function() {
+          console.log("lobby error");
+          wiz.submitFailure();
+          wiz.changeNextButton("Try Again", "btn-success");
+          return wiz.reset();
+        });
+        $scope.$on('$destroy', function() {
+          cb();
+          return wiz.close();
         });
         wiz.setSubtitle("Set up and test your D2Moddin client.");
-        wiz.on("submit", function(wizard) {
-          wizard.close();
+        wiz.on("submit", function() {
           return $lobbyService.startLoadTest();
         });
         wiz.cards['setupmanager'].on('validate', function(card) {
