@@ -2,6 +2,34 @@
 
 global = @
 
+class NotService
+  constructor: (@http)->
+    @notifications = []
+    @pnots = []
+  clear: ->
+    for noti in @pnots
+      if noti? and noti.remove?
+        noti.remove()
+    @pnots.length = 0
+  render: ->
+    for noti in @notifications
+      opts =
+        hide: false
+        buttons:
+          closer: true
+          sticker: false
+        nonblock:
+          nonblock: false
+        stack: {"dir1": "right", "dir2": "up", "push": "top"}
+        addclass: "stack-bottomleft"
+      _.extend opts, noti
+      @pnots.push $.pnotify opts
+  fetch: ->
+    @http.get('/data/nots')
+      .success (data, status)=>
+        @notifications = data
+        @clear()
+        @render()
 class ResultService
   constructor:(@scope, @safeApply, @http)->
     @results = []
@@ -310,6 +338,10 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$http"
   ($rootScope, safeApply)->
     new ResultService $rootScope, safeApply, $http
+]).factory("$notService", [
+  "$http"
+  ($http)->
+    new NotService $http
 ]).factory("$lobbyService", [
   "$interval"
   "$log"

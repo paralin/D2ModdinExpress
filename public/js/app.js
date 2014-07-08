@@ -54,8 +54,8 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService) {
         $rootScope.mods = [];
         $rootScope.totalPlayerCount = function(lobby) {
           var count, plyr, _i, _j, _len, _len1, _ref, _ref1;
@@ -119,6 +119,7 @@
           PLAYERTEST: 1,
           MATCHMAKING: 2
         };
+        $notService.fetch();
         return $.getJSON("/data/mods", function(data) {
           return $rootScope.$apply(function() {
             window.rootScope = $rootScope;
