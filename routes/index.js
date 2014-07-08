@@ -19,7 +19,7 @@ exports.modList = function(req,res){
 };
 
 exports.notList = function(req, res){
-  nots.find({}).cache().exec(function(err, data){
+  nots.find({}).exec(function(err, data){
     res.json(data);
   });
 };
