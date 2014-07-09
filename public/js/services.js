@@ -537,7 +537,7 @@
             }
           }
           lobby = $lobbyService.lobbies[0];
-          if (lobby.radiant.length + lobby.dire.length === 10 && lobby.creatorid === $authService.user._id) {
+          if (lobby.radiant.length + lobby.dire.length === 10 && lobby.creatorid === $authService.user._id && lobby.status === 0) {
             $rootScope.playReadySound();
           }
           if (path.indexOf('lobby/') === -1 && $lobbyService.lobbies.length > 0) {
