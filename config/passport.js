@@ -37,7 +37,7 @@ module.exports = function(passport){
         if(err)
           return done(err);
         if(user){
-          user.steam = identifier;
+          user.steam = profile;
           user.profile.name = profile.personaname;
           user.save(function(error){
             if(error)
