@@ -101,15 +101,13 @@
         $rootScope.REGIONS = {
           UNKNOWN: 0,
           NA: 1,
-          EU: 2,
-          AUS: 3
+          EU: 2
         };
         $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
         $rootScope.REGIONSH = {
           0: "All Regions",
           1: "North America",
-          2: "Europe",
-          3: "Australia"
+          2: "Europe"
         };
         $rootScope.playReadySound = _.debounce(function() {
           return window.readysound.play();
