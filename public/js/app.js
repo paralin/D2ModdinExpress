@@ -102,14 +102,14 @@
           UNKNOWN: 0,
           NA: 1,
           EU: 2,
-          CN: 4
+          AUS: 3
         };
         $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
         $rootScope.REGIONSH = {
           0: "All Regions",
           1: "North America",
           2: "Europe",
-          4: "Southeast Asia"
+          3: "Australia"
         };
         $rootScope.playReadySound = _.debounce(function() {
           return window.readysound.play();
