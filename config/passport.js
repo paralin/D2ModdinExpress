@@ -39,7 +39,11 @@ module.exports = function(passport){
         if(user){
           user.steam = identifier;
           user.profile.name = profile.personaname;
-          return done(null, user);
+          user.save(function(error){
+            if(error)
+              throw error;
+            return done(null, user);
+          });
         }else{
           require('crypto').randomBytes(12, function(ex, buf){
             var newUser = new User();
