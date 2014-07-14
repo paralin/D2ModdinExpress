@@ -56,6 +56,7 @@ html {
 }
 .ilteams p {
   margin: 0;
+  height: 20px;
 }
 .installDialog {
   width: 30%;
@@ -183,4 +184,42 @@ html {
 }
 .hostStyl {
   font-weight: bold;
+}
+.llrow,
+tr {
+  overflow: hidden;
+  display: block;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  height: 50px;
+  width: 100%;
+}
+.llrow td {
+  height: 100% !important;
+}
+.llrow.ng-enter {
+  transition: all ease-in 1s;
+  height: 0 !important;
+  max-height: 0 !important;
+  opacity: 0;
+}
+.llrow.ng-move {
+  transition: all ease-in 1s;
+}
+.llrow.ng-enter-active {
+  height: 51px !important;
+  max-height: 0 !important;
+  opacity: 1;
+}
+.llrow.ng-leave {
+  transition: all ease-in 1s;
+  height: 51px !important;
+  max-height: 51px !important;
+  opacity: 1;
+}
+.llrow.ng-leave-active {
+  height: 0 !important;
+  max-height: 51px !important;
+  opacity: 0;
 }

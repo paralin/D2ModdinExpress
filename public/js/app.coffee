@@ -10,6 +10,7 @@ app = angular.module("d2mp", [
   "d2mp.directives"
   'angulartics'
   'angulartics.google.analytics'
+  'ngAnimate'
 ]).config([
   "$routeProvider"
   "$locationProvider"
