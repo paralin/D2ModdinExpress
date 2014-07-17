@@ -39,6 +39,37 @@
       templateUrl: "/partials/inlineteams",
       replace: true
     };
+  }).directive("customsort", function() {
+    return {
+      restrict: 'A',
+      transclude: true,
+      scope: {
+        order: '=',
+        sort: '='
+      },
+      templateUrl: "/partials/lobbylistheader",
+      link: function(scope) {
+        scope.sort_by = function(newOrder) {
+          var sort;
+          sort = scope.sort;
+          sort.reverse = sort.order === newOrder ? !sort.reverse : false;
+          return sort.order = newOrder;
+        };
+        return scope.selectedCls = function(column) {
+          var sort;
+          sort = scope.sort;
+          if (column === sort.order) {
+            if (sort.reverse) {
+              return 'fa-sort-down';
+            } else {
+              return 'fa-sort-up';
+            }
+          } else {
+            return 'fa-sort';
+          }
+        };
+      }
+    };
   });
 
 }).call(this);

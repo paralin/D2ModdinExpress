@@ -8,6 +8,10 @@
       $scope.hasMod = $routeParams.modname != null;
       $scope.auth = $authService;
       $scope.lobbyFilter = {};
+      $scope.sort = {
+        order: $scope.totalPlayerCount,
+        reverse: true
+      };
       modName = null;
       mod = null;
       if ($scope.hasMod) {

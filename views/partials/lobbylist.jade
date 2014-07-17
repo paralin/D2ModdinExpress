@@ -19,15 +19,17 @@
         table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
           thead
             tr(style="min-width: 100%;height:39px")
-              th(style="min-width:50px") Mod
-              th(style="min-width:250px") Name
-              th(style="min-width:140px") Region
+              th(customsort,style="min-width:50px",order="'mod'",sort="sort") Mod
+              th(customsort,style="min-width:50px",order="totalPlayerCount",sort="sort") #
+              th(customsort,style="min-width:250px",order="'name'",sort="sort") Name
+              th(customsort,style="min-width:140px",order="'region'",sort="sort") Region
               th(style="width:100%") Teams
           tbody
-            tr.llrow(ng-repeat="lobby in lobbies | orderBy:totalPlayerCount:true | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}",ng-click="joinLobby(lobby)",style="cursor:pointer")
+            tr.llrow(ng-repeat="lobby in lobbies | orderBy:sort.order:sort.reverse | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}",ng-click="joinLobby(lobby)",style="cursor:pointer")
               td(style="padding:5px;min-width:50px;max-width:50px")
                 img(ng-src="{{getModThumbnail(lobby.mod)}}",style="width:35px;height:35px")
-              td(style="min-width:250px") ({{totalPlayerCount(lobby)}}/10) {{lobby.name | limitTo: 25}}
+              td {{totalPlayerCount(lobby)}}/10
+              td(style="min-width:250px") {{lobby.name | limitTo: 25}}
               td(style="min-width:140px") {{REGIONSH[lobby.region]}}
               td(style="margin:0;padding:0;width:100%")
                 .ilteams

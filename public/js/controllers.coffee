@@ -24,6 +24,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.hasMod = $routeParams.modname?
     $scope.auth = $authService
     $scope.lobbyFilter = {}
+    $scope.sort = { order:$scope.totalPlayerCount, reverse:true }
     modName = null
     mod = null
     if $scope.hasMod
