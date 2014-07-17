@@ -185,14 +185,11 @@ html {
 .hostStyl {
   font-weight: bold;
 }
-.llrow,
-tr {
+.llrow {
   overflow: hidden;
-  display: block;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  height: 50px;
   width: 100%;
 }
 .llrow td {

@@ -12,6 +12,7 @@ app = angular.module("d2mp", [
   'angulartics.google.analytics'
   'ngAnimate'
   'angular-loading-bar'
+  'ngSanitize'
 ]).config([
   "$routeProvider"
   "$locationProvider"

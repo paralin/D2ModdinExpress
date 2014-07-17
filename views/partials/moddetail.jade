@@ -6,7 +6,7 @@
           span(style="line-height:5px") {{mod.fullname}}
         p.app-description
           .feature(ng-repeat="feature in mod.features")
-            span {{feature}}
+            span(ng-bind-html="feature | linky:'_blank'")
         a.btn.btn-info(href="{{mod.website}}",target="_blank") Author Website
         a.btn.btn-success(ng-class="{{btnClass}}",href="/lobbies/{{mod.name}}",style="margin-left:15px")
           div(ng-if="mod.playable == true")  Play Now
