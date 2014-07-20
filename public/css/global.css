@@ -110,6 +110,12 @@ html {
 .joinBtn {
   cursor: pointer;
 }
+.sortBtn {
+  cursor: pointer;
+}
+.sortBtn span {
+  margin-right: 2px;
+}
 .connectDialog .dTitle {
   font-weight: bold;
   text-align: center;

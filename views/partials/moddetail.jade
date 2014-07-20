@@ -8,7 +8,7 @@
           .feature(ng-repeat="feature in mod.features")
             span(ng-bind-html="feature | linky:'_blank'")
         a.btn.btn-info(href="{{mod.website}}",target="_blank") Author Website
-        a.btn.btn-success(ng-class="{{btnClass}}",href="/lobbies/{{mod.name}}",style="margin-left:15px")
+        a.btn.btn-success(ng-disabled="!mod.playable",href="/lobbies/{{mod.name}}",style="margin-left:15px")
           div(ng-if="mod.playable == true")  Play Now
           div(ng-if="mod.playable == false") Not Available
 video#modDetail(ng-if="mod.spreadvideo",src="{{mod.spreadvideo}}",style="background:url('{{mod.spreadimage}}') no-repeat;z-index:-5000",autoplay,loop)
