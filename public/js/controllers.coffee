@@ -106,10 +106,12 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$scope"
   "$location"
   "$lobbyService"
+  "$rootScope"
   "$authService"
-  ($scope, $location, $lobbyService, $authService)->
+  ($scope, $location, $lobbyService, $rootScope, $authService)->
     $scope.isAuthed = $authService.isAuthed
     $scope.user = $authService.user
+    $scope.mods = _.findWhere $rootScope.mods, {playable: true}
     $scope.selectMod = (mod)->
       name = $("#lobbyName").val()
       name = if name is "" then null else name

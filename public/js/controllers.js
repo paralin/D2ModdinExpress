@@ -101,9 +101,12 @@
       };
     }
   ]).controller("CreateLobbyCtrl", [
-    "$scope", "$location", "$lobbyService", "$authService", function($scope, $location, $lobbyService, $authService) {
+    "$scope", "$location", "$lobbyService", "$rootScope", "$authService", function($scope, $location, $lobbyService, $rootScope, $authService) {
       $scope.isAuthed = $authService.isAuthed;
       $scope.user = $authService.user;
+      $scope.mods = _.findWhere($rootScope.mods, {
+        playable: true
+      });
       return $scope.selectMod = function(mod) {
         var name;
         name = $("#lobbyName").val();
