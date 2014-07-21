@@ -15,8 +15,8 @@
       .row
         div.lobbyFilter(style="max-width: 1000px;margin-left:auto;margin-right:auto")
           span.combo
-            label Mod:
-            select(ng-model="mod",ng-options="obj.fullname for obj in mods",ng-change="updateFilter('mod',mod._id)")
+            label Game Mode:
+            select(ng-model="mod",ng-options="obj.fullname for obj in mods | filter:{playable:true}",ng-change="updateFilter('mod',mod._id)")
               option(value="") Any
           span.combo
             label Region:
