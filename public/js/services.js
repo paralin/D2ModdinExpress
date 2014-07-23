@@ -247,6 +247,7 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
+      console.log(data.msg);
       switch (data.msg) {
         case "error":
           $.pnotify({

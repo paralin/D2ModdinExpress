@@ -154,6 +154,7 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
+    console.log data.msg
     switch data.msg
       when "error"
         $.pnotify
