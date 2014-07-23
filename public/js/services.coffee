@@ -167,6 +167,8 @@ class LobbyService
         @scope.$broadcast 'lobby:modNeeded', data.name
       when "testneeded"
         @scope.$broadcast 'lobby:testNeeded', data.name
+      when "updatemods"
+        @scope.$broadcast 'mods:updated'
       when "installres"
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success, data.message
@@ -248,6 +250,10 @@ class LobbyService
           text: "You are no longer authed with the lobby server."
           type: "error"
         @hasAuthed = false
+
+    so.on 'updatemods', (msg)=>
+      @handleMsg msg
+
     so.on 'publicLobbies', (msg)=>
       @handleMsg msg
 

@@ -66,7 +66,8 @@ app = angular.module("d2mp", [
   "$lobbyService"
   "$forceLobbyPage"
   "$notService"
-  ($rootScope, $lobbyService, $forceLobbyPage, $notService) =>
+  "safeApply"
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply) =>
     $rootScope.mods = []
 
     $rootScope.totalPlayerCount = (lobby)->
@@ -115,9 +116,13 @@ app = angular.module("d2mp", [
       MATCHMAKING: 2
 
     $notService.fetch()
-    $.getJSON "/data/mods", (data) ->
-      $rootScope.$apply ->
-        window.rootScope = $rootScope
-        window.mods = $rootScope.mods = data
+    updateMods = =>
+      $.getJSON "/data/mods", (data) ->
+        safeApply $rootScope, ->
+          window.rootScope = $rootScope
+          window.mods = $rootScope.mods = data
+    $rootScope.$on "mods:updated", =>
+      updateMods()
+    updateMods()
 ])
 return

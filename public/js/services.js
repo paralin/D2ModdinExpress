@@ -261,6 +261,8 @@
           return this.scope.$broadcast('lobby:modNeeded', data.name);
         case "testneeded":
           return this.scope.$broadcast('lobby:testNeeded', data.name);
+        case "updatemods":
+          return this.scope.$broadcast('mods:updated');
         case "installres":
           this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success, data.message);
@@ -384,6 +386,11 @@
             });
             return _this.hasAuthed = false;
           }
+        };
+      })(this));
+      so.on('updatemods', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
         };
       })(this));
       so.on('publicLobbies', (function(_this) {
