@@ -109,7 +109,7 @@
       this.hasAttemptedConnection = false;
       this.status = {
         managerConnected: false,
-        managerStatus: "Authenticating with the lobby server...",
+        managerStatus: "Connecting the lobby server...",
         managerDownloading: false
       };
       this.colls = {
