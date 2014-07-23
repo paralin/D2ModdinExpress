@@ -219,9 +219,10 @@ class LobbyService
       console.log "Not connecting as we aren't logged in/are a duplicate."
       return
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
-    so.on 'duplicate', (data)=>
+    @socket = con = new XSockets.WebSocket 'ws://net1.d2modd.in:4502', ['BrowserController']
+    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502', ['BrowserController']
+    @cont = so = @socket.controller('BrowserController')
+    so.duplicate = =>
       @safeApply @scope, =>
         @lobbies.length = 0
         @publicLobbies.length = 0
@@ -232,7 +233,7 @@ class LobbyService
           type: "error"
           hide: false
         @status.managerStatus = "Already open in another tab. Refresh to re-try connection."
-    so.on 'auth', (data)=>
+    so.auth = (data)=>
       if data.status
         $.pnotify
           title: "Authenticated"
@@ -240,29 +241,29 @@ class LobbyService
           type: "success"
         @hasAuthed = true
       else
-        @lobbies.length = 0
-        @publicLobbies.length = 0
-        @scope.$digest()
-        $.pnotify
-          title: "Deauthed"
-          text: "You are no longer authed with the lobby server."
-          type: "error"
-        @hasAuthed = false
-    so.on 'publicLobbies', (msg)=>
+        @safeApply @scope, =>
+          @lobbies.length = 0
+          @publicLobbies.length = 0
+          $.pnotify
+            title: "Deauthed"
+            text: "You are no longer authed with the lobby server."
+            type: "error"
+          @hasAuthed = false
+    so.publicLobbies = (msg)=>
       @handleMsg msg
 
-    so.on 'lobby', (msg)=>
+    so.lobby = (msg)=>
       @handleMsg msg
-    so.on 'manager', (msg)=>
-      if msg.msg is 'status'
-        if msg.status
-          @status.managerConnected = true
-          @status.managerStatus = "Manager running and ready."
-        else
-          @status.managerConnected = false
-          @status.managerStatus = "Manager is not connected."
-        @scope.$digest()
-    so.on "close", =>
+    so.manager = (msg)=>
+      @safeApply @scope, =>
+        if msg.msg is 'status'
+          if msg.status
+            @status.managerConnected = true
+            @status.managerStatus = "Manager running and ready."
+          else
+            @status.managerConnected = false
+            @status.managerStatus = "Manager is not connected."
+    so.onclose =>
       @disconnect()
       @safeApply @scope, =>
         @lobbies.length = 0
@@ -277,17 +278,16 @@ class LobbyService
           text: "Disconnected from the lobby server."
           type: "error"
       @reconnect()
-    so.on "open", (clientinfo)=>
-      @hasAttemptedConnection = false
-      $.pnotify
-        title: "Connected"
-        text: "Connected to the lobby server"
-        type: "success"
-      @lobbies.length = 0
-      @publicLobbies.length = 0
-      @scope.$digest()
-      @sendAuth()
-    
+    so.onopen = (clientinfo)=>
+      @safeApply @scope, =>
+        @hasAttemptedConnection = false
+        $.pnotify
+          title: "Connected"
+          text: "Connected to the lobby server"
+          type: "success"
+        @lobbies.length = 0
+        @publicLobbies.length = 0
+        @sendAuth()
 angular.module("d2mp.services", []).factory("safeApply", [
   "$rootScope"
   ($rootScope) ->

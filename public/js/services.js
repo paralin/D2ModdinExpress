@@ -340,16 +340,17 @@
     };
 
     LobbyService.prototype.connect = function() {
-      var so;
+      var con, so;
       this.disconnect();
       if (!this.auth.isAuthed || this.isDuplicate) {
         console.log("Not connecting as we aren't logged in/are a duplicate.");
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
-      so.on('duplicate', (function(_this) {
-        return function(data) {
+      this.socket = con = new XSockets.WebSocket('ws://net1.d2modd.in:4502', ['BrowserController']);
+      this.cont = so = this.socket.controller('BrowserController');
+      so.duplicate = (function(_this) {
+        return function() {
           return _this.safeApply(_this.scope, function() {
             _this.lobbies.length = 0;
             _this.publicLobbies.length = 0;
@@ -363,8 +364,8 @@
             return _this.status.managerStatus = "Already open in another tab. Refresh to re-try connection.";
           });
         };
-      })(this));
-      so.on('auth', (function(_this) {
+      })(this);
+      so.auth = (function(_this) {
         return function(data) {
           if (data.status) {
             $.pnotify({
@@ -374,43 +375,45 @@
             });
             return _this.hasAuthed = true;
           } else {
-            _this.lobbies.length = 0;
-            _this.publicLobbies.length = 0;
-            _this.scope.$digest();
-            $.pnotify({
-              title: "Deauthed",
-              text: "You are no longer authed with the lobby server.",
-              type: "error"
+            return _this.safeApply(_this.scope, function() {
+              _this.lobbies.length = 0;
+              _this.publicLobbies.length = 0;
+              $.pnotify({
+                title: "Deauthed",
+                text: "You are no longer authed with the lobby server.",
+                type: "error"
+              });
+              return _this.hasAuthed = false;
             });
-            return _this.hasAuthed = false;
           }
         };
-      })(this));
-      so.on('publicLobbies', (function(_this) {
+      })(this);
+      so.publicLobbies = (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };
-      })(this));
-      so.on('lobby', (function(_this) {
+      })(this);
+      so.lobby = (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };
-      })(this));
-      so.on('manager', (function(_this) {
+      })(this);
+      so.manager = (function(_this) {
         return function(msg) {
-          if (msg.msg === 'status') {
-            if (msg.status) {
-              _this.status.managerConnected = true;
-              _this.status.managerStatus = "Manager running and ready.";
-            } else {
-              _this.status.managerConnected = false;
-              _this.status.managerStatus = "Manager is not connected.";
+          return _this.safeApply(_this.scope, function() {
+            if (msg.msg === 'status') {
+              if (msg.status) {
+                _this.status.managerConnected = true;
+                return _this.status.managerStatus = "Manager running and ready.";
+              } else {
+                _this.status.managerConnected = false;
+                return _this.status.managerStatus = "Manager is not connected.";
+              }
             }
-            return _this.scope.$digest();
-          }
+          });
         };
-      })(this));
-      so.on("close", (function(_this) {
+      })(this);
+      so.onclose((function(_this) {
         return function() {
           _this.disconnect();
           _this.safeApply(_this.scope, function() {
@@ -432,20 +435,21 @@
           return _this.reconnect();
         };
       })(this));
-      return so.on("open", (function(_this) {
+      return so.onopen = (function(_this) {
         return function(clientinfo) {
-          _this.hasAttemptedConnection = false;
-          $.pnotify({
-            title: "Connected",
-            text: "Connected to the lobby server",
-            type: "success"
+          return _this.safeApply(_this.scope, function() {
+            _this.hasAttemptedConnection = false;
+            $.pnotify({
+              title: "Connected",
+              text: "Connected to the lobby server",
+              type: "success"
+            });
+            _this.lobbies.length = 0;
+            _this.publicLobbies.length = 0;
+            return _this.sendAuth();
           });
-          _this.lobbies.length = 0;
-          _this.publicLobbies.length = 0;
-          _this.scope.$digest();
-          return _this.sendAuth();
         };
-      })(this));
+      })(this);
     };
 
     return LobbyService;
