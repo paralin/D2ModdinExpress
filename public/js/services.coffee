@@ -49,6 +49,7 @@ class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
     @publicLobbies = []
+    @friends = []
     @socket = null
     @isDuplicate = false
     @scope = $rootScope
@@ -59,10 +60,11 @@ class LobbyService
       managerConnected: false
       managerStatus: "Authenticating with the lobby server..."
       managerDownloading: false
+    @friendstatus = "Loading..."
     @colls =
       lobbies: @lobbies
       publicLobbies: @publicLobbies
-  
+      friends: @friends
   disconnect: ->
     if @socket != null
       @socket.close()
@@ -70,6 +72,7 @@ class LobbyService
     @hasAuthed = false
     @lobbies.length = 0
     @publicLobbies.length = 0
+    @friends.length = 0
     console.log "Disconnected."
 
   send: (data)->
@@ -203,6 +206,9 @@ class LobbyService
               for lobby in @lobbies
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
+            if _c is "friends"
+                @friendstatus = _.where @friends, {status:1|2|3|4|5}
+                .length + " Online"
             @scope.$broadcast eve, op
 
   reconnect: ->
@@ -219,8 +225,9 @@ class LobbyService
       console.log "Not connecting as we aren't logged in/are a duplicate."
       return
     console.log "Attempting connection..."
-    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
     #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://localhost:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
         @lobbies.length = 0
@@ -242,6 +249,7 @@ class LobbyService
       else
         @lobbies.length = 0
         @publicLobbies.length = 0
+        @friends.length = 0
         @scope.$digest()
         $.pnotify
           title: "Deauthed"
@@ -253,6 +261,10 @@ class LobbyService
 
     so.on 'lobby', (msg)=>
       @handleMsg msg
+      
+    so.on 'friend', (msg)=>
+      @handleMsg msg
+      
     so.on 'manager', (msg)=>
       if msg.msg is 'status'
         if msg.status

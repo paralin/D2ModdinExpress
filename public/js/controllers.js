@@ -77,6 +77,15 @@
         window.location.href = "/logout";
       };
     }
+  ]).controller("FriendCtrl", [
+    "$scope", "$lobbyService", "$rootScope", "$authService", function($scope, $lobbyService, $rootScope, $authService) {
+      $scope.auth = $authService;
+      $scope.friends = $lobbyService.friends;
+      $scope.friendstatus = $lobbyService.friendstatus;
+      return $rootScope.$on('lobbyUpdate:friends', function() {
+        return $scope.friendstatus = $lobbyService.friendstatus;
+      });
+    }
   ]).controller("InstallModCtrl", [
     "$scope", "$lobbyService", "$routeParams", "$rootScope", "$location", function($scope, $lobbyService, $routeParams, $rootScope, $location) {
       var mod, modname;

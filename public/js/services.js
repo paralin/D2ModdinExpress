@@ -101,6 +101,7 @@
       this.safeApply = safeApply;
       this.lobbies = [];
       this.publicLobbies = [];
+      this.friends = [];
       this.socket = null;
       this.isDuplicate = false;
       this.scope = $rootScope;
@@ -112,9 +113,11 @@
         managerStatus: "Authenticating with the lobby server...",
         managerDownloading: false
       };
+      this.friendstatus = "Loading...";
       this.colls = {
         lobbies: this.lobbies,
-        publicLobbies: this.publicLobbies
+        publicLobbies: this.publicLobbies,
+        friends: this.friends
       };
     }
 
@@ -126,6 +129,7 @@
       this.hasAuthed = false;
       this.lobbies.length = 0;
       this.publicLobbies.length = 0;
+      this.friends.length = 0;
       return console.log("Disconnected.");
     };
 
@@ -319,6 +323,11 @@
                     lobby.radiant = _.without(lobby.radiant, null);
                   }
                 }
+                if (_c === "friends") {
+                  _this.friendstatus = _.where(_this.friends, {
+                    status: 1 | 2 | 3 | 4 | 5
+                  }).length + " Online";
+                }
                 _results.push(_this.scope.$broadcast(eve, op));
               }
               return _results;
@@ -347,7 +356,7 @@
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://localhost:4502/BrowserController');
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {
@@ -376,6 +385,7 @@
           } else {
             _this.lobbies.length = 0;
             _this.publicLobbies.length = 0;
+            _this.friends.length = 0;
             _this.scope.$digest();
             $.pnotify({
               title: "Deauthed",
@@ -392,6 +402,11 @@
         };
       })(this));
       so.on('lobby', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
+        };
+      })(this));
+      so.on('friend', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };

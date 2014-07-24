@@ -1,0 +1,13 @@
+#friend-dropdown-list .dropdown-menu {
+  width: 300px;
+  padding: 15px;
+}
+.friendControlContainer {
+  position: fixed;
+  top: 15px;
+  right: 100px;
+  width: 120px;
+  height: 60px;
+  color: #808080;
+  z-index: 5000;
+}

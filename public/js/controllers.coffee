@@ -81,6 +81,18 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.signOut = ->
       window.location.href = "/logout"
       return
+]).controller("FriendCtrl", [
+  "$scope"
+  "$lobbyService"
+  "$rootScope"
+  "$authService"
+  ($scope, $lobbyService, $rootScope, $authService) ->
+    $scope.auth = $authService
+    $scope.friends = $lobbyService.friends
+    $scope.friendstatus = $lobbyService.friendstatus
+    $rootScope.$on('lobbyUpdate:friends', ->
+        $scope.friendstatus = $lobbyService.friendstatus
+    )
 ]).controller("InstallModCtrl", [
   "$scope"
   "$lobbyService"
