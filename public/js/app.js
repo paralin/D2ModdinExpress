@@ -3,7 +3,9 @@
   "use strict";
   var app;
 
-  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics']).config([
+  window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg");
+
+  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
       $routeProvider.when("/", {
@@ -64,8 +66,9 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply) {
+        var updateMods;
         $rootScope.mods = [];
         $rootScope.totalPlayerCount = function(lobby) {
           var count, plyr, _i, _j, _len, _len1, _ref, _ref1;
@@ -87,7 +90,7 @@
           return count;
         };
         $rootScope.launchManager = function() {
-          window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/StartD2MP.exe");
+          window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe");
           return $.pnotify({
             title: "Download Started",
             text: "Run the launcher (downloading now) to start joining lobbies.",
@@ -111,27 +114,35 @@
         $rootScope.REGIONS = {
           UNKNOWN: 0,
           NA: 1,
-          EU: 2,
-          CN: 4
+          EU: 2
         };
         $rootScope.REGIONSK = _.invert($rootScope.REGIONS);
         $rootScope.REGIONSH = {
           0: "All Regions",
           1: "North America",
-          2: "Europe",
-          4: "Southeast Asia"
+          2: "Europe"
         };
+        $rootScope.playReadySound = _.debounce(function() {
+          return window.readysound.play();
+        }, 3000, true);
         $rootScope.LOBBYTYPES = {
           NORMAL: 0,
           PLAYERTEST: 1,
           MATCHMAKING: 2
         };
-        return $.getJSON("/data/mods", function(data) {
-          return $rootScope.$apply(function() {
-            window.rootScope = $rootScope;
-            return window.mods = $rootScope.mods = data;
+        $notService.fetch();
+        updateMods = function() {
+          return $.getJSON("/data/mods", function(data) {
+            return safeApply($rootScope, function() {
+              window.rootScope = $rootScope;
+              return window.mods = $rootScope.mods = data;
+            });
           });
+        };
+        $rootScope.$on("mods:updated", function() {
+          return updateMods();
         });
+        return updateMods();
       };
     })(this)
   ]);

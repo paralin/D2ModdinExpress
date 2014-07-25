@@ -1,7 +1,7 @@
 extends layout
 
 block body
-  div(ng-view,style="width:100%;height:100%")
+  .fade(ng-view,style="width:100%;height:100%")
 
   div(ng-controller="BottomBarCtrl")
     .statusBar(ng-if="auth.isAuthed")
@@ -20,11 +20,15 @@ block body
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
   script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js')
   script(src='//cdn.jsdelivr.net/pnotify/2.0.0/pnotify.all.min.js')
+  script(src='//cdn.jsdelivr.net/buzz/1.1.0/buzz.min.js')
   script(src="/js/lib/wizard/bootstrap-wizard.js")
   script(src='/js/fixpnotify.js')
   script(src='/js/lib/xsockets/xsockets.min.js')
   script(src='/js/lib/angular/angular.min.js')
   script(src='/js/lib/angular/angular-route.min.js')
+  script(src='/js/lib/angular/angular-animate.min.js')
+  script(src='/js/lib/angular/angular-sanitize.min.js')
+  script(src="/js/lib/loading-bar.min.js")
   script(src='/js/analytics.js')
   script(src='/js/lib/angularitics/angulartics.min.js')
   script(src='/js/lib/angularitics/angulartics-ga.min.js')

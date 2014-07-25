@@ -93,6 +93,7 @@ if(cluster.isMaster&&useCluster){
     app.get('/', routes.index);
     app.get('/partials/:name', routes.partials);
     app.get('/data/mods', routes.modList);
+    app.get('/data/nots', routes.notList);
 
     //Auth
     app.get('/auth/steam', passport.authenticate('steam', {failureRedirect: '/'}), function(req, res){ res.redirect('/'); });

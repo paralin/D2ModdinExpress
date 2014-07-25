@@ -10,3 +10,11 @@ PNotify.prototype.options.closer = false;
 PNotify.prototype.options.sticker = false;
 PNotify.prototype.options.hide = true;
 PNotify.prototype.options.delay = 2000;
+
+$.event.special.destroyed = {
+  remove: function(o){
+    if(o.handler){
+      o.handler();
+    }
+  }
+}

@@ -56,6 +56,7 @@ html {
 }
 .ilteams p {
   margin: 0;
+  height: 20px;
 }
 .installDialog {
   width: 30%;
@@ -108,6 +109,12 @@ html {
 }
 .joinBtn {
   cursor: pointer;
+}
+.sortBtn {
+  cursor: pointer;
+}
+.sortBtn span {
+  margin-right: 2px;
 }
 .connectDialog .dTitle {
   font-weight: bold;
@@ -177,4 +184,69 @@ html {
 }
 .adminRow button {
   margin: 2px;
+}
+.adminStyl {
+  color: #d80000;
+}
+.hostStyl {
+  font-weight: bold;
+}
+.llrow {
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+.llrow td {
+  height: 100% !important;
+}
+.llrow.ng-enter {
+  transition: all ease-in 1s;
+  height: 0 !important;
+  max-height: 0 !important;
+  opacity: 0;
+}
+.llrow.ng-move {
+  transition: all ease-in 1s;
+}
+.llrow.ng-enter-active {
+  height: 51px !important;
+  max-height: 0 !important;
+  opacity: 1;
+}
+.llrow.ng-leave {
+  transition: all ease-in 1s;
+  height: 51px !important;
+  max-height: 51px !important;
+  opacity: 1;
+}
+.llrow.ng-leave-active {
+  height: 0 !important;
+  max-height: 51px !important;
+  opacity: 0;
+}
+.fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  opacity: 1;
+}
+.fade.ng-enter,
+.fade.ng-leave {
+  transition: all 0.3s ease;
+}
+.fade.ng-enter {
+  opacity: 0;
+}
+.fade.ng-enter-active {
+  opacity: 1;
+}
+.fade.ng-leave {
+  opacity: 1;
+}
+.fade.ng-leave-active {
+  opacity: 0;
 }

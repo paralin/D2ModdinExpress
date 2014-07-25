@@ -24,11 +24,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.hasMod = $routeParams.modname?
     $scope.auth = $authService
     $scope.lobbyFilter = {}
-    $.pnotify
-      title: "Click Lobbies"
-      text: "You can now click on lobby rows to join the lobby. You don't need to use the button anymore!"
-      type: "info"
-      delay: 5000
+    $scope.sort = { order:$scope.totalPlayerCount, reverse:true }
     modName = null
     mod = null
     if $scope.hasMod
@@ -54,6 +50,21 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 
     $scope.getModThumbnail = (modid) ->
       mod = _.findWhere($rootScope.mods, _id: modid)
+      if mod?
+        mod.thumbsmall
+      else
+        ""
+]).controller("ResultListCtrl", [
+  "$scope"
+  "$location"
+  "$routeParams"
+  "$rootScope"
+  "$resultService"
+  ($scope, $location, $routeParams, $rootScope, $resultService) ->
+    $resultService.fetch(parseInt($routeParams.page))
+    $scope.results = $resultServices.results
+    $scope.getModThumbnailN = (modid) ->
+      mod = _.findWhere($rootScope.mods, name: modid)
       if mod?
         mod.thumbsmall
       else
@@ -196,7 +207,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("LoadTestCtrl", [
   "$scope"
   "$lobbyService"
-  ($scope, $lobbyService)->
+  "$rootScope"
+  ($scope, $lobbyService, $rootScope)->
     $scope.status = $lobbyService.status
     $scope.startInstall = ->
       $lobbyService.installMod 'checker'
@@ -233,9 +245,23 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         showClose: false
         progressBarCurrent: true
         contentHeight: 325
+        buttons:
+          cancelText: "Cancel"
+          nextText: "Next"
+          backText: "Back"
+          submitText: "Start Test"
+          submittingText: "Starting..."
+      cb = $rootScope.$on('lobby:error', ->
+        console.log "lobby error"
+        wiz.submitFailure()
+        wiz.changeNextButton("Try Again", "btn-success")
+        wiz.reset()
+      )
+      $scope.$on '$destroy', ->
+        cb()
+        wiz.close()
       wiz.setSubtitle "Set up and test your D2Moddin client."
-      wiz.on "submit", (wizard)->
-        wizard.close()
+      wiz.on "submit", ->
         $lobbyService.startLoadTest()
 
       #Setup manager

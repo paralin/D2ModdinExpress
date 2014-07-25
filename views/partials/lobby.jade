@@ -13,7 +13,7 @@
     button.btn.btn-danger(ng-click="leaveLobby()") Leave Lobby
   .findDialog(style="margin-top:20px",ng-if="lobby.status>0")
     .dTitle
-      span(ng-if="lobby.status==1") Finding a server...
+      span(ng-if="lobby.status==1") Waiting for a server slot...
       span(ng-if="lobby.status==2") Server is launching...
     .loadingBarContainer(ng-if="lobby.status<3")
       .progress.progress-striped.active
@@ -33,10 +33,11 @@
       .tileTitle Radiant
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}")
-            td
-              i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
-              | {{player.name}}
+          tr(ng-repeat="player in lobby.radiant",ng-class="{danger:player.failedConnect}",boot-tooltip="{{player.contribDesc}}",data-toggle="tooltip",data-placement="left")
+            td(ng-class="{hostStyl:player.isHost,adminStyl:player.icon}")
+              i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
+              i.fa(ng-if="player.icon",class="{{player.icon}}")
+              |  {{player.name}}
           tr(ng-repeat="slot in radiantSlots track by $index")
             td
               button.btn.btn-link(style="padding:0",ng-click="takeSlot(true)") Take Slot
@@ -44,12 +45,13 @@
       .tileTitle Dire
       table.table.table-striped
         tbody
-          tr(ng-repeat="player in lobby.dire",ng-class="{danger:player.failedConnect}")
-            td
-              i.fa.fa-ban(ng-if="isHost",ng-click="kickPlayer(player)")
-              | {{player.name}}
+          tr(ng-repeat="player in lobby.dire",ng-class="{danger:player.failedConnect}",boot-tooltip="{{player.contribDesc}}",data-toggle="tooltip",data-placement="right")
+            td(ng-class="{hostStyl:player.isHost,adminStyl:player.icon}")
+              i.fa.fa-ban(ng-if="isHost&&!player.icon",ng-click="kickPlayer(player)")
+              i.fa(ng-if="player.icon",class="{{player.icon}}")
+              |  {{player.name}}
           tr(ng-repeat="slot in direSlots track by $index")
-            td 
+            td
               button.btn.btn-link(style="padding:0",ng-click="takeSlot(false)") Take Slot
     .col-sm-6.hostCol.niceShadow
       .tileTitle Chat

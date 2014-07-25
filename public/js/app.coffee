@@ -1,4 +1,7 @@
 "use strict"
+
+window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg")
+
 app = angular.module("d2mp", [
   "ngRoute"
   "d2mp.controllers"
@@ -7,6 +10,9 @@ app = angular.module("d2mp", [
   "d2mp.directives"
   'angulartics'
   'angulartics.google.analytics'
+  'ngAnimate'
+  'angular-loading-bar'
+  'ngSanitize'
 ]).config([
   "$routeProvider"
   "$locationProvider"
@@ -71,7 +77,9 @@ app = angular.module("d2mp", [
   "$rootScope"
   "$lobbyService"
   "$forceLobbyPage"
-  ($rootScope, $lobbyService, $forceLobbyPage) =>
+  "$notService"
+  "safeApply"
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply) =>
     $rootScope.mods = []
 
     $rootScope.totalPlayerCount = (lobby)->
@@ -83,7 +91,7 @@ app = angular.module("d2mp", [
       count
 
     $rootScope.launchManager = ->
-      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/StartD2MP.exe"
+      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"
       $.pnotify
         title: "Download Started"
         text: "Run the launcher (downloading now) to start joining lobbies."
@@ -99,25 +107,34 @@ app = angular.module("d2mp", [
       UNKNOWN: 0
       NA: 1
       EU: 2
-      CN: 4
-    # AUS: 3
+   #  CN: 4
+   #  AUS: 3
 
     $rootScope.REGIONSK = _.invert($rootScope.REGIONS)
     $rootScope.REGIONSH =
       0: "All Regions"
       1: "North America"
       2: "Europe"
-      4: "Southeast Asia"
+    # 4: "Southeast Asia"
     # 3: "Australia"
     
+    $rootScope.playReadySound = _.debounce(->
+      window.readysound.play()
+    , 3000, true)
+
     $rootScope.LOBBYTYPES =
       NORMAL: 0
       PLAYERTEST: 1
       MATCHMAKING: 2
 
-    $.getJSON "/data/mods", (data) ->
-      $rootScope.$apply ->
-        window.rootScope = $rootScope
-        window.mods = $rootScope.mods = data
+    $notService.fetch()
+    updateMods = =>
+      $.getJSON "/data/mods", (data) ->
+        safeApply $rootScope, ->
+          window.rootScope = $rootScope
+          window.mods = $rootScope.mods = data
+    $rootScope.$on "mods:updated", =>
+      updateMods()
+    updateMods()
 ])
 return

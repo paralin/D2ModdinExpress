@@ -2,6 +2,49 @@
 
 global = @
 
+class NotService
+  constructor: (@http)->
+    @notifications = []
+    @pnots = []
+  clear: ->
+    for noti in @pnots
+      if noti? and noti.remove?
+        noti.remove()
+    @pnots.length = 0
+  render: ->
+    for noti in @notifications
+      opts =
+        hide: false
+        buttons:
+          closer: true
+          sticker: false
+        nonblock:
+          nonblock: false
+        stack: {"dir1": "right", "dir2": "up", "push": "top"}
+        addclass: "stack-bottomleft"
+      _.extend opts, noti
+      @pnots.push $.pnotify opts
+  fetch: ->
+    @http.get('/data/nots')
+      .success (data, status)=>
+        @notifications = data
+        @clear()
+        @render()
+class ResultService
+  constructor:(@scope, @safeApply, @http)->
+    @results = []
+    @totalCount = 10
+  fetch: (page)->
+    @http.get('/data/results/'+page)
+      .success (data, status)=>
+        @results = data.results
+        @totalCount = data.count
+      .error (data, status)=>
+        $.pnotify
+          title: "Fetch Failed"
+          text: "Sorry, we can't download match results right now."
+          type: "error"
+
 class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
@@ -15,7 +58,7 @@ class LobbyService
     @hasAttemptedConnection = false
     @status =
       managerConnected: false
-      managerStatus: "Authenticating with the lobby server..."
+      managerStatus: "Connecting the lobby server..."
       managerDownloading: false
     @colls =
       lobbies: @lobbies
@@ -120,26 +163,27 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
-    console.log _.clone data
     switch data.msg
       when "error"
         $.pnotify
           title: "Lobby Error"
           text: data.reason
           type: "error"
+        @scope.$broadcast 'lobby:error', data.reason
       when "chat"
         @scope.$broadcast 'lobby:chatMsg', data.message
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
       when "testneeded"
         @scope.$broadcast 'lobby:testNeeded', data.name
+      when "updatemods"
+        @scope.$broadcast 'mods:updated'
       when "installres"
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success, data.message
       when "colupd"
         @safeApply @scope, =>
           for upd in data.ops
-            console.log JSON.stringify upd
             continue if !upd?
             coll = @colls[upd._c]
             _c = upd._c
@@ -190,10 +234,12 @@ class LobbyService
     @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
+        @lobbies.length = 0
+        @publicLobbies.length = 0
         @isDuplicate = true
         $.pnotify
           title: "Duplicate"
-          text: "You already have D2Moddin open in another browser window/tab. Please close all other open tabs of D2Moddin before refreshing this page."
+          text: "You have opened a new D2Moddin browser window/tab, and disconnected this session. Refresh to re-connect this browser tab."
           type: "error"
           hide: false
         @status.managerStatus = "Already open in another tab. Refresh to re-try connection."
@@ -213,6 +259,10 @@ class LobbyService
           text: "You are no longer authed with the lobby server."
           type: "error"
         @hasAuthed = false
+
+    so.on 'updatemods', (msg)=>
+      @handleMsg msg
+
     so.on 'publicLobbies', (msg)=>
       @handleMsg msg
 
@@ -243,7 +293,6 @@ class LobbyService
           type: "error"
       @reconnect()
     so.on "open", (clientinfo)=>
-      console.log "OnOpen"
       @hasAttemptedConnection = false
       $.pnotify
         title: "Connected"
@@ -298,6 +347,16 @@ angular.module("d2mp.services", []).factory("safeApply", [
     updateAuth()
     $interval updateAuth, 60000
     return authService
+]).factory("$resultService", [
+  "$rootScope"
+  "safeApply"
+  "$http"
+  ($rootScope, safeApply)->
+    new ResultService $rootScope, safeApply, $http
+]).factory("$notService", [
+  "$http"
+  ($http)->
+    new NotService $http
 ]).factory("$lobbyService", [
   "$interval"
   "$log"
@@ -337,12 +396,14 @@ angular.module("d2mp.services", []).factory("safeApply", [
     $rootScope.$on 'lobbyUpdate:lobbies', (event, op)->
       path = $location.path()
       if op in ['update', 'insert']
-        console.log $lobbyService.lobbies
         if($lobbyService.lobbies.length > 0 && $lobbyService.lobbies[0].LobbyType == 1)
           if $location.url().indexOf('dotest') == -1
             $timeout =>
               $location.url('/dotest')
             return
+        lobby = $lobbyService.lobbies[0]
+        if lobby.radiant.length+lobby.dire.length==10 && lobby.creatorid is $authService.user._id && lobby.status == 0
+          $rootScope.playReadySound()
         if path.indexOf('lobby/') is -1 && $lobbyService.lobbies.length > 0
           safeApply $rootScope, ->
             $location.url "/lobby/"+$lobbyService.lobbies[0]._id

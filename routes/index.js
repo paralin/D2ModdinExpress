@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
-var modSchema = require('../schema/mod');
+var mods = require('../schema/mod');
+var nots = require('../schema/not');
 
-var mods = mongoose.model('mods', modSchema);
 
 exports.index = function(req, res){
   res.render('index');
@@ -15,5 +15,11 @@ exports.partials = function (req, res) {
 exports.modList = function(req,res){
   mods.find({isPublic: true}, function(err, modL){
     res.json(modL); 
+  });
+};
+
+exports.notList = function(req, res){
+  nots.find({}).exec(function(err, data){
+    res.json(data);
   });
 };
