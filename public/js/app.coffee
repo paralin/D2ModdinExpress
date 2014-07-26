@@ -91,7 +91,7 @@ app = angular.module("d2mp", [
       count
 
     $rootScope.launchManager = ->
-      window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"
+      window.open "https://mega.co.nz/#!MxlBCRKD!ggSb9TagedoS0HVT6o8NC_mK0Yazh8eJYSiZiYloxA8"
       $.pnotify
         title: "Download Started"
         text: "Run the launcher (downloading now) to start joining lobbies."

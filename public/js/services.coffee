@@ -163,6 +163,7 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
+    console.log _.clone data
     switch data.msg
       when "error"
         $.pnotify

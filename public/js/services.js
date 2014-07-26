@@ -259,6 +259,7 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
+      console.log(_.clone(data));
       switch (data.msg) {
         case "error":
           $.pnotify({

@@ -297,7 +297,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   ($scope, $authService, $lobbyService, $location)->
     if !$authService.isAuthed || $lobbyService.matchmake.length is 0
       return $location.url('/ranked')
-    matchmake = $scope.matchmake = $lobbyService.matchmake[0]
+    matchmake = $scope.matchmake = $lobbyService.matchmake
     $scope.status = $lobbyService.status
     $scope.stopQueue = ->
       $lobbyService.exitMatchmake()

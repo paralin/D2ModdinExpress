@@ -332,7 +332,7 @@
       if (!$authService.isAuthed || $lobbyService.matchmake.length === 0) {
         return $location.url('/ranked');
       }
-      matchmake = $scope.matchmake = $lobbyService.matchmake[0];
+      matchmake = $scope.matchmake = $lobbyService.matchmake;
       $scope.status = $lobbyService.status;
       return $scope.stopQueue = function() {
         return $lobbyService.exitMatchmake();

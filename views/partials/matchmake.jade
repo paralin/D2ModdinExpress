@@ -3,7 +3,8 @@
     h1.text-center
       strong Matchmaking
   .findDialog(style="margin-top:20px")
-    .dTitle Finding a match...
+    .dTitle(ng-if="matchmake[0].Status==0") Creating a team, {{matchmake[0].UserCount}}/3.
+    .dTitle(ng-if="matchmake[0].Status==1") Finding an opponent team.
     .loadingBarContainer
       .progress.progress-striped.active
         .progress-bar.progress-bar-info(role="progressbar",style="width:100%;padding-top:25px")
