@@ -2,6 +2,9 @@
   width: 300px;
   padding: 15px;
 }
+#friend-dropdown-list a {
+  cursor: pointer;
+}
 .friendControlContainer {
   position: fixed;
   top: 15px;
@@ -10,4 +13,8 @@
   height: 60px;
   color: #808080;
   z-index: 5000;
+}
+.avatar {
+  width: 32px;
+  height: 32px;
 }

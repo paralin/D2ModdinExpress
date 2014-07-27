@@ -53,6 +53,14 @@ html.no-js(ng-app="d2mp",lang="en")
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
             i.fa.fa-user
             |  {{friendstatus}}
+          .dropdown-menu(ng-if="auth.isAuthed")
+            table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
+              tr(ng-repeat="friend in friends | orderBy:'status':true")
+                td.avatar
+                    img(ng-src="{{friend.avatar}}")
+                td {{friend.name}}
+                td {{getStatusText(friend.status)}}
+            
     header#topNav(ng-controller="NavCtrl")
       .container
         a(href="/").logo

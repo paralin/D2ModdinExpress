@@ -210,7 +210,7 @@ class LobbyService
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
             if _c is "friends"
-                @friendstatus = _.where @friends, {status:1|2|3|4|5}
+                @friendstatus = _.where @friends, {status:2|3|4|5|6}
                 .length + " Online"
             @scope.$broadcast eve, op
 
