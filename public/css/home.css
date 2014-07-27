@@ -3,6 +3,10 @@
   background-size: cover !important;
   background-position: center center !important;
   pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 #fullHomeBack:after {
   box-shadow: inset 0 0 25em #000;
