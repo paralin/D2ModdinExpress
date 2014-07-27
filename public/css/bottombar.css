@@ -3,30 +3,42 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 40px;
-  background-color: #00a3ff;
-  box-shadow: 0 0 30px 0px rgba(0,204,255,0.46);
+  height: 35px;
+  background-color: #232323;
+  box-shadow: 0 0 5px 0px rgba(0,0,0,0.63);
   line-height: 40px;
-  z-index: 99999;
+  z-index: 9999;
 }
 .statusBar .left {
-  width: 50%;
-  height: 40px;
-  font-size: 2.5em;
-  color: #fff;
-  margin-left: 10px;
+  margin: -7px 10px 8px 15px;
+  padding: 0;
 }
-.statusBar .left .status {
-  font-size: 20px;
+.statusBar .left li a {
+  font-style: normal;
+  line-height: 20px;
+  color: #9c9c9c;
+  font-weight: 100;
   position: relative;
-  bottom: 3px;
-  font-weight: 400;
+  font-size: 1.1em;
 }
-.statusBar .rightButtons {
-  text-align: right;
-  height: 40px;
+.statusBar .left li a:hover {
+  text-decoration: none;
+  background-color: transparent;
+}
+.statusBar .right {
+  font-style: normal;
+  height: 34px;
+  line-height: 34px;
+  color: #c0d3d6;
+  font-weight: 100;
   position: absolute;
-  right: 5px;
-  line-height: 40px;
-  bottom: 0;
+  right: 15px;
+  display: block;
+  font-size: 19px;
+}
+.statusBar .right button {
+  background-color: #002b42;
+  border: none;
+  right: -15px;
+  position: relative;
 }

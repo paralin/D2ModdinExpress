@@ -222,22 +222,19 @@ header#topNav.topHead {
 }
 header#topNav {
   background:#fff;
-  padding:16px 0;
+  padding:11px 0;
   position:fixed;
   top: 0; left:0; right:0;
   width:100%;
-  z-index:100; /* always on top */
+  z-index:100;
+  opacity: 0.85;
 
   border-bottom:#F4F5F7 1px solid;
-  box-shadow:#eee 0 0 8px;
-  height: 75px;
+  box-shadow:rgba(0,0,0,0.67) 0 0 13px;
+  height: 60px;
 }
 header#topNav.hasTopHead {
   top:40px !important;
-}
-
-header#topNav div.nav-main-collapse {
-  z-index:300;
 }
 
 .navActiveB{
@@ -245,34 +242,9 @@ header#topNav div.nav-main-collapse {
   color: black;
 }
 
-header#topNav div.nav-main-collapse,
-header#topNav div.nav-main-collapse.in {
-  overflow-y: visible;
-}
-
-header#topNav div.nav-main-collapse.in {
-  overflow-y: visible;
-  float: none;
-  margin: 0;
-}
-
 header#topNav nav ul.nav-main {
   margin: -7px 10px 8px 0;
   z-index:300;
-}
-
-header#topNav nav ul.nav-main i.icon-caret-down {
-  background: transparent;
-  border-radius: 100%;
-  color: #ADB0AD;
-  display: inline-block;
-  font-size: 12px;
-  height: 14px;
-  line-height: 15px;
-  position: relative;
-  text-align: center;
-  top: -1px;
-  width: 14px;
 }
 
 header#topNav nav ul.nav-main > li + li {
@@ -354,7 +326,6 @@ header#topNav a.logo {
   font-size:35px;
   display:inline-block;
   margin-left: 20px;
-  margin-top: 5px;
   height:60px; line-height:25px;
   font-weight:600;
   letter-spacing:-2px;
@@ -1270,56 +1241,12 @@ header#topNav a.logo {
     background-position:0 -247px;
   }	
 @media (max-width: 100px) {
-	/* Navigation */
-	header#topNav div.nav-main-collapse,
-	header#topNav div.nav-main-collapse.in {
-		width: 100%;
-		overflow: hidden;
-		overflow-y: hidden;
-		overflow-x: hidden;
-	}
-
-	header#topNav div.nav-main-collapse {
-		float: none;
-		margin: 0;
-	}
 
 	header#topNav nav.nav-main ul.nav-main {
 		float: none;
 		position: static;
 		margin: 8px 0;
 		overflow-x:hidden;
-	}
-
-	header#topNav div.nav-main-collapse.collapse {
-		display: none !important;
-	}
-
-	header#topNav div.nav-main-collapse {
-		top: 8px;
-		position: relative;
-	}
-
-	header#topNav div.nav-main-collapse.in {
-		display: block !important;
-	}
-
-	header#topNav div.nav-collapse div.container nav.nav-main {
-		float: left;
-		width: 100%;
-	}
-
-	header#topNav div.nav-main-collapse {
-		background: #2D343E;
-		max-height: none;
-		margin: 0 -15px !important;
-		max-height: none;
-		-webkit-box-sizing: content-box;
-		-moz-box-sizing: content-box;
-		box-sizing: content-box;
-	}
-	header#topNav div.nav-main-collapse.topFix {
-		margin-top:-18px !important;
 	}
 
 	header > div.container {
