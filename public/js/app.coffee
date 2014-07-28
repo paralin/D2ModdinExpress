@@ -66,9 +66,10 @@ app = angular.module("d2mp", [
   "$lobbyService"
   "$forceLobbyPage"
   "$notService"
+  "safeApply"
   "$route"
   "$location"
-  ($rootScope, $lobbyService, $forceLobbyPage, $notService, $route, $location) =>
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) =>
     $rootScope.mods = []
 
     $rootScope.locationPath = $location.path;
@@ -126,9 +127,13 @@ app = angular.module("d2mp", [
       MATCHMAKING: 2
 
     $notService.fetch()
-    $.getJSON "/data/mods", (data) ->
-      $rootScope.$apply ->
-        window.rootScope = $rootScope
-        window.mods = $rootScope.mods = data
+    updateMods = =>
+      $.getJSON "/data/mods", (data) ->
+        safeApply $rootScope, ->
+          window.rootScope = $rootScope
+          window.mods = $rootScope.mods = data
+    $rootScope.$on "mods:updated", =>
+      updateMods()
+    updateMods()
 ])
 return

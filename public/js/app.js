@@ -54,8 +54,9 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "$route", "$location", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, $route, $location) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) {
+        var updateMods;
         $rootScope.mods = [];
         $rootScope.locationPath = $location.path;
         $location.path = function(path, reload) {
@@ -130,12 +131,18 @@
           MATCHMAKING: 2
         };
         $notService.fetch();
-        return $.getJSON("/data/mods", function(data) {
-          return $rootScope.$apply(function() {
-            window.rootScope = $rootScope;
-            return window.mods = $rootScope.mods = data;
+        updateMods = function() {
+          return $.getJSON("/data/mods", function(data) {
+            return safeApply($rootScope, function() {
+              window.rootScope = $rootScope;
+              return window.mods = $rootScope.mods = data;
+            });
           });
+        };
+        $rootScope.$on("mods:updated", function() {
+          return updateMods();
         });
+        return updateMods();
       };
     })(this)
   ]);
