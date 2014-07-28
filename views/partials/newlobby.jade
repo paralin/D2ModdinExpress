@@ -15,5 +15,5 @@
           label.col-sm-2.control-label(style="width:100%;text-align:center")
             | Choose a Mod 
         .form-group
-          div(ng-click="selectMod(mod)",ng-repeat="mod in mods",style="margin-left:auto;margin-right:auto;width:251px")
+          div(ng-click="selectMod(mod)",ng-repeat="mod in mods | filter:{playable:true}",style="margin-left:auto;margin-right:auto;width:251px")
             div(modthumbnail)
