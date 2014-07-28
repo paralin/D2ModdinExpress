@@ -37,9 +37,9 @@ html.no-js(ng-app="d2mp",lang="en")
                 #login-buttons-image-steam.login-image
                 span.text-besides-image.sign-in-text-steam
                   | Sign Out
-          .dropdown-menu(ng-if="auth.isAuthed==false")
+          .dropdown-menu(ng-if="!auth.isAuthed")
             .login-text-and-button
-              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-info(ng-click="startLogin()")
+              #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-primary(ng-click="startLogin()")
                 #login-buttons-image-steam.login-image
                 span.text-besides-image.sign-in-text-steam
                   | Sign in with Steam
