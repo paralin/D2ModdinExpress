@@ -240,6 +240,18 @@
       });
     };
 
+    LobbyService.prototype.inviteFriend = function(steamid) {
+      return this.call('invitefriend', {
+        steamid: steamid
+      });
+    };
+
+    LobbyService.prototype.joinFriendLobby = function(steamid) {
+      return this.call('joinfriendlobby', {
+        steamid: steamid
+      });
+    };
+
     LobbyService.prototype.sendAuth = function() {
       if (!this.auth.isAuthed) {
         console.log("Not authed, not sending auth.");

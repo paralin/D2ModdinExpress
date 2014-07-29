@@ -1,5 +1,5 @@
 !!!5
-html.no-js(ng-app="d2mp",lang="en")
+html.no-js(data-ng-app="d2mp",lang="en")
   head
     meta(charset='utf8')
     base(href='/')
@@ -26,7 +26,7 @@ html.no-js(ng-app="d2mp",lang="en")
     link(rel="icon",type="image/png",href="/images/favicon.png")
     link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,700,800')
   body
-    .loginButtonContainer(ng-controller="AuthCtrl",style="font-weight:100")
+    .loginButtonContainer(data-ng-controller="AuthCtrl",style="font-weight:100")
       ul.nav.navbar-nav.navbar-right
         #login-buttons.login-buttons-dropdown-align-right
         li#login-dropdown-list.dropdown
@@ -49,14 +49,21 @@ html.no-js(ng-app="d2mp",lang="en")
         li#friend-dropdown-list.dropdown
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
             i.fa.fa-user
-            |  {{friendstatus}}
-          .dropdown-menu(ng-if="auth.isAuthed")
-            table.table(style="margin-left:auto;margin-right:auto")
-              tr(ng-repeat="friend in friends | orderBy:'status':true")
+            |  
+            span(ng-bind="friendstatus")
+          .dropdown-menu(ng-if="auth.isAuthed", ng-if="friends.length > 0")
+            table.table-condensed(style="margin-left:auto;margin-right:auto")
+              tr(ng-repeat="friend in friends | orderBy:'status':true", context-menu, data-target="friendMenu{{ $index }}")
                 td.avatar
                     img(ng-src="{{friend.avatar}}", ng-class="{offline: friend.status == statusenum.Offline, online: friend.status != statusenum.Offline && friend.status != statusenum.NotRegistered}")
-                td {{friend.name}}
+                td {{friend.name}} 
                 td {{getStatusText(friend.status)}}
+                td.dropdown.position-fixed(id="friendMenu{{ $index }}")
+                  ul.dropdown-menu(role='menu',style="padding:5px;border-radius:0px")
+                    li
+                      a.pointer(role='menuitem', tabindex='1', ng-click="joinFriendLobby(friend._id)") Join Lobby
+                    li
+                      a.pointer(role='menuitem', tabindex='2', ng-click="inviteFriend(friend._id)") Invite Friend
     header#topNav(ng-controller="NavCtrl")
       .container
         a(href="/").logo

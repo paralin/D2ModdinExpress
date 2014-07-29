@@ -13,6 +13,7 @@ app = angular.module("d2mp", [
   'ngAnimate'
   'angular-loading-bar'
   'ngSanitize'
+  'ng-context-menu'
 ]).config([
   "$routeProvider"
   "$locationProvider"

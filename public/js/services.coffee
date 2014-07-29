@@ -151,6 +151,13 @@ class LobbyService
       name: name
       mod: modid
 
+  inviteFriend: (steamid)->
+    @call 'invitefriend',
+      steamid: steamid
+
+  joinFriendLobby: (steamid)->
+    @call 'joinfriendlobby',
+      steamid: steamid
   sendAuth: ()->
     if !@auth.isAuthed
       console.log "Not authed, not sending auth."

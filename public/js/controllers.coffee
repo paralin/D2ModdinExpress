@@ -100,6 +100,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.auth = $authService
     $scope.friends = $lobbyService.friends
     $scope.friendstatus = $lobbyService.friendstatus
+    $scope.inviteFriend = (steamid) ->
+      $lobbyService.inviteFriend steamid
+    $scope.joinFriendLobby = (steamid) ->
+      $lobbyService.joinFriendLobby steamid
     $rootScope.$on('lobbyUpdate:friends', ->
         $scope.friendstatus = $lobbyService.friendstatus
     )

@@ -1,6 +1,6 @@
 #friend-dropdown-list .dropdown-menu {
-  width: 300px;
-  height: 500px;
+  min-width: 200px;
+  max-height: 500px;
   overflow: auto;
   padding: 15px;
 }
@@ -32,4 +32,13 @@
 }
 .online {
   border: 2px solid #008000;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.position-fixed {
+  position: fixed;
+}
+.pointer {
+  cursor: pointer;
 }
