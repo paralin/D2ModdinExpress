@@ -79,34 +79,25 @@
     }
   ]).controller("FriendCtrl", [
     "$scope", "$lobbyService", "$rootScope", "$authService", function($scope, $lobbyService, $rootScope, $authService) {
-      var STATUS;
-      STATUS = {
-        NotRegistered: 0,
-        Offline: 1,
-        Online: 2,
-        Idle: 3,
-        InLobby: 4,
-        Spectating: 5,
-        InGame: 6
-      };
       $scope.getStatusText = function(s) {
         switch (s) {
-          case STATUS.NotRegistered:
+          case $lobbyService.FRIENDSTATUS.NotRegistered:
             return "Not registered";
-          case STATUS.Offline:
+          case $lobbyService.FRIENDSTATUS.Offline:
             return "Offline";
-          case STATUS.Online:
+          case $lobbyService.FRIENDSTATUS.Online:
             return "Online";
-          case STATUS.Idle:
+          case $lobbyService.FRIENDSTATUS.Idle:
             return "Idle";
-          case STATUS.InLobby:
+          case $lobbyService.FRIENDSTATUS.InLobby:
             return "In Lobby";
-          case STATUS.Spectating:
+          case $lobbyService.FRIENDSTATUS.Spectating:
             return "Spectating";
-          case STATUS.InGame:
+          case $lobbyService.FRIENDSTATUS.InGame:
             return "In Game";
         }
       };
+      $scope.statusenum = $lobbyService.FRIENDSTATUS;
       $scope.auth = $authService;
       $scope.friends = $lobbyService.friends;
       $scope.friendstatus = $lobbyService.friendstatus;

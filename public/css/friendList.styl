@@ -5,7 +5,13 @@
 //
 #friend-dropdown-list .dropdown-menu
   width:	300px;
+  height:   500px;
+  overflow: auto;
   padding: 15px;
+#friend-dropdown-list .table>tbody>tr:first-child>td
+  border-top: none;
+#friend-dropdown-list .table>tbody>tr:first-child>td
+  vertical-align: middle 
 #friend-dropdown-list a
 	cursor: pointer;
 .friendControlContainer
@@ -16,6 +22,11 @@
   height: 60px;
   color: #808080;
   z-index: 5000;
-.avatar
+.avatar img
   width: 32px;
   height: 32px;
+  border-radius: 30%
+.offline
+  border:   2px solid grey;
+.online
+  border:   2px solid green;

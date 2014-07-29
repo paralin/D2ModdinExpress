@@ -113,6 +113,15 @@
         managerStatus: "Connecting to the lobby server...",
         managerDownloading: false
       };
+      this.FRIENDSTATUS = {
+        NotRegistered: 0,
+        Offline: 1,
+        Online: 2,
+        Idle: 3,
+        InLobby: 4,
+        Spectating: 5,
+        InGame: 6
+      };
       this.friendstatus = "Loading...";
       this.colls = {
         lobbies: this.lobbies,
@@ -328,7 +337,7 @@
                 }
                 if (_c === "friends") {
                   _this.friendstatus = _.where(_this.friends, {
-                    status: 1 | 2 | 3 | 4 | 5
+                    status: _this.FRIENDSTATUS.Online | _this.FRIENDSTATUS.Idle | _this.FRIENDSTATUS.InLobby | _this.FRIENDSTATUS.Spectating | _this.FRIENDSTATUS.InGame
                   }).length + " Online";
                 }
                 _results.push(_this.scope.$broadcast(eve, op));

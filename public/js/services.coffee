@@ -60,6 +60,15 @@ class LobbyService
       managerConnected: false
       managerStatus: "Connecting to the lobby server..."
       managerDownloading: false
+    @FRIENDSTATUS = {
+        NotRegistered:0,
+        Offline:1,
+        Online:2,
+        Idle:3,
+        InLobby:4,
+        Spectating:5,
+        InGame:6
+    }
     @friendstatus = "Loading..."
     @colls =
       lobbies: @lobbies
@@ -210,7 +219,7 @@ class LobbyService
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
             if _c is "friends"
-                @friendstatus = _.where @friends, {status:2|3|4|5|6}
+                @friendstatus = _.where @friends, {status:@FRIENDSTATUS.Online|@FRIENDSTATUS.Idle|@FRIENDSTATUS.InLobby|@FRIENDSTATUS.Spectating|@FRIENDSTATUS.InGame}
                 .length + " Online"
             @scope.$broadcast eve, op
 

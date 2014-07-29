@@ -45,22 +45,18 @@ html.no-js(ng-app="d2mp",lang="en")
                 span.text-besides-image.sign-in-text-steam
                   | Sign in with Steam
     .friendControlContainer(ng-controller="FriendCtrl",style="font-weight:100")
-      ul.nav.navbar-nav.navbar-right
+      ul.nav.navbar-nav.navbar-right(ng-if="auth.isAuthed")
         li#friend-dropdown-list.dropdown
-          a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed==false")
-            i.fa.fa-user 
-            | 0 Online
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
             i.fa.fa-user
             |  {{friendstatus}}
           .dropdown-menu(ng-if="auth.isAuthed")
-            table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
+            table.table(style="margin-left:auto;margin-right:auto")
               tr(ng-repeat="friend in friends | orderBy:'status':true")
                 td.avatar
-                    img(ng-src="{{friend.avatar}}")
+                    img(ng-src="{{friend.avatar}}", ng-class="{offline: friend.status == statusenum.Offline, online: friend.status != statusenum.Offline && friend.status != statusenum.NotRegistered}")
                 td {{friend.name}}
                 td {{getStatusText(friend.status)}}
-            
     header#topNav(ng-controller="NavCtrl")
       .container
         a(href="/").logo

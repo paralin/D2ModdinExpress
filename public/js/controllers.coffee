@@ -87,25 +87,16 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$rootScope"
   "$authService"
   ($scope, $lobbyService, $rootScope, $authService) ->
-    STATUS = {
-        NotRegistered:0,
-        Offline:1,
-        Online:2,
-        Idle:3,
-        InLobby:4,
-        Spectating:5,
-        InGame:6
-    }
     $scope.getStatusText = (s) ->
         switch (s)
-            when STATUS.NotRegistered then "Not registered"
-            when STATUS.Offline then "Offline"
-            when STATUS.Online then "Online"
-            when STATUS.Idle then "Idle"
-            when STATUS.InLobby then "In Lobby"
-            when STATUS.Spectating then "Spectating"
-            when STATUS.InGame then "In Game"
-
+            when $lobbyService.FRIENDSTATUS.NotRegistered then "Not registered"
+            when $lobbyService.FRIENDSTATUS.Offline then "Offline"
+            when $lobbyService.FRIENDSTATUS.Online then "Online"
+            when $lobbyService.FRIENDSTATUS.Idle then "Idle"
+            when $lobbyService.FRIENDSTATUS.InLobby then "In Lobby"
+            when $lobbyService.FRIENDSTATUS.Spectating then "Spectating"
+            when $lobbyService.FRIENDSTATUS.InGame then "In Game"
+    $scope.statusenum = $lobbyService.FRIENDSTATUS
     $scope.auth = $authService
     $scope.friends = $lobbyService.friends
     $scope.friendstatus = $lobbyService.friendstatus
