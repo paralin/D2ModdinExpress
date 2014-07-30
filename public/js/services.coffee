@@ -185,6 +185,10 @@ class LobbyService
         @scope.$broadcast 'lobby:chatMsg', data.message
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
+      when "invite"
+        @scope.$broadcast 'friend:invite',
+          steam: data.source
+          modname: data.mod
       when "testneeded"
         @scope.$broadcast 'lobby:testNeeded', data.name
       when "updatemods"
@@ -277,6 +281,9 @@ class LobbyService
       @handleMsg msg
 
     so.on 'publicLobbies', (msg)=>
+      @handleMsg msg
+
+    so.on 'invite', (msg)=>
       @handleMsg msg
 
     so.on 'lobby', (msg)=>

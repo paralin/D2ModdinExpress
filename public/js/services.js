@@ -285,6 +285,11 @@
           return this.scope.$broadcast('lobby:chatMsg', data.message);
         case "modneeded":
           return this.scope.$broadcast('lobby:modNeeded', data.name);
+        case "invite":
+          return this.scope.$broadcast('friend:invite', {
+            steam: data.source,
+            modname: data.mod
+          });
         case "testneeded":
           return this.scope.$broadcast('lobby:testNeeded', data.name);
         case "updatemods":
@@ -421,6 +426,11 @@
         };
       })(this));
       so.on('publicLobbies', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
+        };
+      })(this));
+      so.on('invite', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };
