@@ -1,18 +1,27 @@
-#wrapper
-  section.container.text-center(style="margin-top:30px")
-    h1.text-center
-      strong Available 
+#fullHomeBack(style="background:url('http://i.imgur.com/kY2hcmB.jpg') no-repeat")
+#wrapper(style="max-width:1000px;margin-left:auto;margin-right:auto")
+  section.container.text-center(style="margin-top:30px;")
+    h1.text-center(style="color:white")
+      strong(style="font-weight:400") Available 
       | Mods
       span.subtitle PICK A GAME MODE
-  #mods
+  #mods(style="margin-top:15px")
     section.container
       .row
-        .col-sm-6.col-md-4(style="width:400px",ng-repeat="mod in mods")
-          .item-box.fixed-box
-            figure
-              a.item-hover(href="/mods/{{mod.name}}")
-                span.overlay.color2
-                  a.btn.btn-primary.go_to_mod(ng-if="mod.playable",href="/lobbies/{{mod.name}}")
-                    i.fa.fa-search
-                    | FIND A GAME
-              img.img-responsive(src="{{mod.thumbnail}}",style="width:400px;height:400px")
+        .col-sm-6.col-md-6.mod-box(ng-repeat="mod in mods")
+          .mod-thumbn(style="background:url('{{mod.thumbnail}}')")
+            .mod-name-spacer
+            .mod-name 
+              | {{mod.fullname | uppercase}}
+              .mod-author-img
+                .author-name {{mod.author}}
+                img(ng-src="{{mod.authorimage}}")
+          .mod-descrip
+            p(ng-repeat="feature in mod.features") {{feature}}
+          .mod-buttons
+            a.btn.btn-success(style="margin-right:10px",href="/mods/{{mod.name}}") ABOUT
+            a.btn.btn-primary(href="/lobbies/{{mod.name}}") FIND GAME
+
+
+
+              //img.img-responsive(src="{{mod.thumbnail}}",style="width:400px;height:400px")

@@ -250,3 +250,45 @@ html {
 .fade.ng-leave-active {
   opacity: 0;
 }
+.btn {
+  border-color: #fff;
+  border-width: 2px;
+  border-radius: 1px;
+  background-color: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.btn:hover {
+  background-color: rgba(255,255,255,0.25);
+  color: #fff;
+}
+.btn-link {
+  color: #000;
+}
+.btn-link:hover {
+  color: #000;
+  background-color: rgba(255,255,255,0.5);
+}
+.btn-success {
+  color: #008000;
+  border-color: #008000;
+}
+.btn-success:hover {
+  color: #008000;
+  border-color: #008000;
+}
+.btn-primary {
+  color: #52d0fd;
+  border-color: #52d0fd;
+}
+.btn-primary:hover {
+  color: #52d0fd;
+  border-color: #52d0fd;
+}
+.btn-danger {
+  color: #d9534f;
+  border-color: #d9534f;
+}
+.btn-danger:hover {
+  color: #d9534f;
+  border-color: #d9534f;
+}
