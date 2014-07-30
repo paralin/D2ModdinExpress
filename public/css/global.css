@@ -47,6 +47,16 @@ html {
   margin: 0;
   line-height: 15px;
 }
+.lobbyFilter span {
+  display: inline-block;
+  margin-right: 10px;
+}
+.lobbyFilter span.combo label {
+  display: block;
+}
+.lobbyFilter span.check label {
+  margin-left: 2px;
+}
 .avi {
   margin-right: 10px;
 }

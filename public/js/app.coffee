@@ -68,16 +68,27 @@ app = angular.module("d2mp", [
   "$forceLobbyPage"
   "$notService"
   "safeApply"
-  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply) =>
+  "$route"
+  "$location"
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) =>
     $rootScope.mods = []
 
+    $rootScope.locationPath = $location.path;
+    $location.path = (path, reload) ->
+      if reload is false
+        lastRoute = $route.current
+        un = $rootScope.$on '$locationChangeSuccess', ->
+          $route.current = lastRoute
+          un()
+      $rootScope.locationPath.apply($location, [path])
+
     $rootScope.totalPlayerCount = (lobby)->
-      count = 0
+      lobby.count = 0
       for plyr in lobby.dire
-        count+=1 if plyr?
+        lobby.count+=1 if plyr?
       for plyr in lobby.radiant
-        count+=1 if plyr?
-      count
+        lobby.count+=1 if plyr?
+      lobby.count
 
     $rootScope.launchManager = ->
       window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"

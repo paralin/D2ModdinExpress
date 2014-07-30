@@ -3,31 +3,24 @@
   "use strict";
   angular.module("d2mp.controllers", []).controller("HomeCtrl", ["$scope", function($scope) {}]).controller("AboutCtrl", ["$scope", function($scope) {}]).controller("ModsCtrl", ["$scope", function($scope) {}]).controller("LobbyListCtrl", [
     "$scope", "$location", "$routeParams", "$rootScope", "$lobbyService", "$authService", function($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) {
-      var mod, modName, publicLobbies;
-      publicLobbies = $lobbyService.publicLobbies;
-      $scope.hasMod = $routeParams.modname != null;
+      var mod;
+      $scope.lobbies = $lobbyService.publicLobbies;
       $scope.auth = $authService;
       $scope.lobbyFilter = {};
+      $scope.fullFilter = true;
       $scope.sort = {
         order: $scope.totalPlayerCount,
         reverse: true
       };
-      modName = null;
-      mod = null;
-      if ($scope.hasMod) {
-        modName = $routeParams.modname;
+      if ($routeParams.modname != null) {
         $scope.mod = mod = _.findWhere($rootScope.mods, {
-          name: modName
+          name: $routeParams.modname
         });
         $scope.lobbyFilter.mod = mod._id;
+        $location.path('/lobbies', false);
       }
-      $scope.lobbies = publicLobbies;
       $scope.createLobby = function() {
-        if ($scope.hasMod) {
-          return $lobbyService.createLobby(null, mod._id);
-        } else {
-          return $location.url('/newlobby');
-        }
+        return $location.url('/newlobby');
       };
       $scope.joinLobby = function(lobby) {
         return $lobbyService.joinLobby(lobby._id);
@@ -40,7 +33,7 @@
           return $lobbyService.usePassword(pass);
         });
       };
-      return $scope.getModThumbnail = function(modid) {
+      $scope.getModThumbnail = function(modid) {
         mod = _.findWhere($rootScope.mods, {
           _id: modid
         });
@@ -48,6 +41,20 @@
           return mod.thumbsmall;
         } else {
           return "";
+        }
+      };
+      $scope.updateFilter = function(prop, value) {
+        if (value === null) {
+          return delete $scope.lobbyFilter[prop];
+        } else {
+          return $scope.lobbyFilter[prop] = value;
+        }
+      };
+      return $scope.showFullLobbies = function(value) {
+        if (value === true) {
+          return delete $scope.lobbyFilter['count'];
+        } else {
+          return $scope.lobbyFilter.count = "!10";
         }
       };
     }
@@ -135,7 +142,7 @@
       };
     }
   ]).controller("CreateLobbyCtrl", [
-    "$scope", "$location", "$lobbyService", "$authService", function($scope, $location, $lobbyService, $authService) {
+    "$scope", "$location", "$lobbyService", "$rootScope", "$authService", function($scope, $location, $lobbyService, $rootScope, $authService) {
       $scope.isAuthed = $authService.isAuthed;
       $scope.user = $authService.user;
       return $scope.selectMod = function(mod) {
