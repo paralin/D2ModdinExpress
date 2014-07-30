@@ -526,6 +526,19 @@
           $rootScope.$broadcast("auth:data", data);
           authService.user = data.user;
           authService.token = data.token;
+          if (data.version !== window.d2version) {
+            $.pnotify({
+              title: "Out of Date",
+              text: "Your browser will refresh in a few seconds to download the new web app.",
+              type: "info",
+              close: false
+            });
+            window.setTimeout((function(_this) {
+              return function() {
+                return window.location.reload(true);
+              };
+            })(this), 5000);
+          }
         }).error(function(data, status, headers, config) {
           $log.log("Error fetching auth status: " + data);
         });

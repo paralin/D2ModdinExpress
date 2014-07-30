@@ -353,6 +353,15 @@ angular.module("d2mp.services", []).factory("safeApply", [
         $rootScope.$broadcast "auth:data", data
         authService.user = data.user
         authService.token = data.token
+        if data.version isnt window.d2version
+          $.pnotify
+            title: "Out of Date"
+            text: "Your browser will refresh in a few seconds to download the new web app."
+            type: "info"
+            close: false
+          window.setTimeout =>
+            window.location.reload(true)
+          , 5000
         return
       ).error (data, status, headers, config) ->
         $log.log "Error fetching auth status: " + data
