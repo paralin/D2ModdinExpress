@@ -107,16 +107,15 @@
       $scope.statusenum = $lobbyService.FRIENDSTATUS;
       $scope.auth = $authService;
       $scope.friends = $lobbyService.friends;
-      $scope.friendstatus = $lobbyService.friendstatus;
       $scope.inviteFriend = function(steamid) {
         return $lobbyService.inviteFriend(steamid);
       };
       $scope.joinFriendLobby = function(steamid) {
         return $lobbyService.joinFriendLobby(steamid);
       };
-      return $rootScope.$on('lobbyUpdate:friends', function() {
-        return $scope.friendstatus = $lobbyService.friendstatus;
-      });
+      return $rootScope.friendsOnline = function(friend) {
+        return friend.status >= 2;
+      };
     }
   ]).controller("InstallModCtrl", [
     "$scope", "$lobbyService", "$routeParams", "$rootScope", "$location", function($scope, $lobbyService, $routeParams, $rootScope, $location) {

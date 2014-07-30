@@ -50,7 +50,7 @@ html.no-js(data-ng-app="d2mp",lang="en")
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
             i.fa.fa-user
             |  
-            span(ng-bind="friendstatus")
+            span {{(friends|filter:friendsOnline).length}} Online
           .dropdown-menu(ng-if="auth.isAuthed", ng-if="friends.length > 0")
             table.table-condensed(style="margin-left:auto;margin-right:auto")
               tr(ng-repeat="friend in friends | orderBy:'status':true", context-menu, data-target="friendMenu{{ $index }}")

@@ -347,11 +347,6 @@
                     lobby.radiant = _.without(lobby.radiant, null);
                   }
                 }
-                if (_c === "friends") {
-                  _this.friendstatus = _.where(_this.friends, {
-                    status: _this.FRIENDSTATUS.Online | _this.FRIENDSTATUS.Idle | _this.FRIENDSTATUS.InLobby | _this.FRIENDSTATUS.Spectating | _this.FRIENDSTATUS.InGame
-                  }).length + " Online";
-                }
                 _results.push(_this.scope.$broadcast(eve, op));
               }
               return _results;

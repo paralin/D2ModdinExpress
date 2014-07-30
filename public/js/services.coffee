@@ -225,9 +225,6 @@ class LobbyService
               for lobby in @lobbies
                 lobby.dire = _.without lobby.dire, null
                 lobby.radiant = _.without lobby.radiant, null
-            if _c is "friends"
-                @friendstatus = _.where @friends, {status:@FRIENDSTATUS.Online|@FRIENDSTATUS.Idle|@FRIENDSTATUS.InLobby|@FRIENDSTATUS.Spectating|@FRIENDSTATUS.InGame}
-                .length + " Online"
             @scope.$broadcast eve, op
 
   reconnect: ->

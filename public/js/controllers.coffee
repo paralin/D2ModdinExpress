@@ -107,14 +107,15 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.statusenum = $lobbyService.FRIENDSTATUS
     $scope.auth = $authService
     $scope.friends = $lobbyService.friends
-    $scope.friendstatus = $lobbyService.friendstatus
+
     $scope.inviteFriend = (steamid) ->
       $lobbyService.inviteFriend steamid
+
     $scope.joinFriendLobby = (steamid) ->
       $lobbyService.joinFriendLobby steamid
-    $rootScope.$on('lobbyUpdate:friends', ->
-        $scope.friendstatus = $lobbyService.friendstatus
-    )
+
+    $rootScope.friendsOnline = (friend) ->
+      friend.status >= 2
 ]).controller("InstallModCtrl", [
   "$scope"
   "$lobbyService"
