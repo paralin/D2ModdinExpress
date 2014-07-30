@@ -294,3 +294,11 @@ html {
   color: #52d0fd;
   border-color: #52d0fd;
 }
+.btn-danger {
+  color: #d9534f;
+  border-color: #d9534f;
+}
+.btn-danger:hover {
+  color: #d9534f;
+  border-color: #d9534f;
+}
