@@ -191,6 +191,7 @@ class LobbyService
         @scope.$broadcast 'friend:invite',
           steam: data.source
           modname: data.mod
+        window.invitesound.play()
       when "testneeded"
         @scope.$broadcast 'lobby:testNeeded', data.name
       when "updatemods"

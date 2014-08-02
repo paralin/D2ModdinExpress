@@ -287,10 +287,11 @@
           return this.scope.$broadcast('lobby:modNeeded', data.name);
         case "invite":
           console.log("Invite received, " + data.source + ", " + data.mod);
-          return this.scope.$broadcast('friend:invite', {
+          this.scope.$broadcast('friend:invite', {
             steam: data.source,
             modname: data.mod
           });
+          return window.invitesound.play();
         case "testneeded":
           return this.scope.$broadcast('lobby:testNeeded', data.name);
         case "updatemods":

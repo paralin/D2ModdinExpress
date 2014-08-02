@@ -1,6 +1,7 @@
 "use strict"
 
 window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg")
+window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3")
 
 app = angular.module("d2mp", [
   "ngRoute"
