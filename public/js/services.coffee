@@ -187,6 +187,7 @@ class LobbyService
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
       when "invite"
+        console.log "Invite received, #{data.source}, #{data.mod}"
         @scope.$broadcast 'friend:invite',
           steam: data.source
           modname: data.mod
@@ -247,8 +248,7 @@ class LobbyService
       return
     console.log "Attempting connection..."
     #@socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
-    @socket = so = new XSockets.WebSocket 'ws://localhost:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
         @lobbies.length = 0
@@ -409,6 +409,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
     service
 ]).factory('$handleInvites', [
   "$rootScope"
+  "$lobbyService"
   ($rootScope, $lobbyService)->
     $rootScope.$on "friend:invite", (event, data)->
       friend = _.findWhere $lobbyService.friends, {_id: data.steam}
@@ -420,7 +421,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
           delay: 5000
       else
         bootbox.dialog
-          message: "#{friend.name} has invited you to join their #{data.mod} lobby."
+          message: "#{friend.name} has invited you to join their #{data.modname} lobby."
           title: "Invite"
           buttons:
             decline:

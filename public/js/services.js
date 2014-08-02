@@ -286,6 +286,7 @@
         case "modneeded":
           return this.scope.$broadcast('lobby:modNeeded', data.name);
         case "invite":
+          console.log("Invite received, " + data.source + ", " + data.mod);
           return this.scope.$broadcast('friend:invite', {
             steam: data.source,
             modname: data.mod
@@ -380,7 +381,7 @@
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://localhost:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502/BrowserController');
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {
@@ -583,7 +584,7 @@
       return service;
     }
   ]).factory('$handleInvites', [
-    "$rootScope", function($rootScope, $lobbyService) {
+    "$rootScope", "$lobbyService", function($rootScope, $lobbyService) {
       return $rootScope.$on("friend:invite", function(event, data) {
         var friend;
         friend = _.findWhere($lobbyService.friends, {
@@ -598,7 +599,7 @@
           });
         } else {
           return bootbox.dialog({
-            message: "" + friend.name + " has invited you to join their " + data.mod + " lobby.",
+            message: "" + friend.name + " has invited you to join their " + data.modname + " lobby.",
             title: "Invite",
             buttons: {
               decline: {
