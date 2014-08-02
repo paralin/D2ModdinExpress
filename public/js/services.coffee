@@ -248,8 +248,8 @@ class LobbyService
       console.log "Not connecting as we aren't logged in/are a duplicate."
       return
     console.log "Attempting connection..."
-    #@socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
-    @socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
+    @socket = so = new XSockets.WebSocket 'ws://net1.d2modd.in:4502/BrowserController'
+    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502/BrowserController'
     so.on 'duplicate', (data)=>
       @safeApply @scope, =>
         @lobbies.length = 0
