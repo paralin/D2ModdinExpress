@@ -158,6 +158,7 @@ class LobbyService
   joinFriendLobby: (steamid)->
     @call 'joinfriendlobby',
       steamid: steamid
+
   sendAuth: ()->
     if !@auth.isAuthed
       console.log "Not authed, not sending auth."
@@ -406,6 +407,35 @@ angular.module("d2mp.services", []).factory("safeApply", [
         service.disconnect()
     global.service = service
     service
+]).factory('$handleInvites', [
+  "$rootScope"
+  ($rootScope, $lobbyService)->
+    $rootScope.$on "friend:invite", (event, data)->
+      friend = _.findWhere $lobbyService.friends, {_id: data.steam}
+      if !friend?
+        $.pnotify
+          title: "Invite Failed"
+          text: "An unknown friend (#{data.steam}) has sent you an invite to a lobby."
+          type: "error"
+          delay: 5000
+      else
+        bootbox.dialog
+          message: "#{friend.name} has invited you to join their #{data.mod} lobby."
+          title: "Invite"
+          buttons:
+            decline:
+              label: "Ignore"
+              className: "btn-danger"
+              callback: ->
+                $.pnotify
+                  title: "Invite Declined"
+                  text: "Invite from #{friend.name} has been declined."
+                  type: "info"
+            accept:
+              label: "Accept & Join"
+              className: "btn-success"
+              callback: ->
+                service.joinFriendLobby data.steam
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'

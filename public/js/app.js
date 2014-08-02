@@ -54,8 +54,8 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", "$handleInvites", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location, $handleInvites) {
         var updateMods;
         $rootScope.mods = [];
         $rootScope.locationPath = $location.path;

@@ -582,6 +582,48 @@
       global.service = service;
       return service;
     }
+  ]).factory('$handleInvites', [
+    "$rootScope", function($rootScope, $lobbyService) {
+      return $rootScope.$on("friend:invite", function(event, data) {
+        var friend;
+        friend = _.findWhere($lobbyService.friends, {
+          _id: data.steam
+        });
+        if (friend == null) {
+          return $.pnotify({
+            title: "Invite Failed",
+            text: "An unknown friend (" + data.steam + ") has sent you an invite to a lobby.",
+            type: "error",
+            delay: 5000
+          });
+        } else {
+          return bootbox.dialog({
+            message: "" + friend.name + " has invited you to join their " + data.mod + " lobby.",
+            title: "Invite",
+            buttons: {
+              decline: {
+                label: "Ignore",
+                className: "btn-danger",
+                callback: function() {
+                  return $.pnotify({
+                    title: "Invite Declined",
+                    text: "Invite from " + friend.name + " has been declined.",
+                    type: "info"
+                  });
+                }
+              },
+              accept: {
+                label: "Accept & Join",
+                className: "btn-success",
+                callback: function() {
+                  return service.joinFriendLobby(data.steam);
+                }
+              }
+            }
+          });
+        }
+      });
+    }
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {
       $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {

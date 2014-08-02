@@ -70,7 +70,8 @@ app = angular.module("d2mp", [
   "safeApply"
   "$route"
   "$location"
-  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) =>
+  "$handleInvites"
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location, $handleInvites) =>
     $rootScope.mods = []
 
     $rootScope.locationPath = $location.path;
