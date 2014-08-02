@@ -5,7 +5,9 @@
 
   window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg");
 
-  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize']).config([
+  window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3");
+
+  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ng-context-menu']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
       $routeProvider.when("/", {
@@ -66,28 +68,40 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", "$handleInvites", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location, $handleInvites) {
         var updateMods;
         $rootScope.mods = [];
+        $rootScope.locationPath = $location.path;
+        $location.path = function(path, reload) {
+          var lastRoute, un;
+          if (reload === false) {
+            lastRoute = $route.current;
+            un = $rootScope.$on('$locationChangeSuccess', function() {
+              $route.current = lastRoute;
+              return un();
+            });
+          }
+          return $rootScope.locationPath.apply($location, [path]);
+        };
         $rootScope.totalPlayerCount = function(lobby) {
-          var count, plyr, _i, _j, _len, _len1, _ref, _ref1;
-          count = 0;
+          var plyr, _i, _j, _len, _len1, _ref, _ref1;
+          lobby.count = 0;
           _ref = lobby.dire;
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
             plyr = _ref[_i];
             if (plyr != null) {
-              count += 1;
+              lobby.count += 1;
             }
           }
           _ref1 = lobby.radiant;
           for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
             plyr = _ref1[_j];
             if (plyr != null) {
-              count += 1;
+              lobby.count += 1;
             }
           }
-          return count;
+          return lobby.count;
         };
         $rootScope.launchManager = function() {
           window.open("https://mega.co.nz/#!MxlBCRKD!ggSb9TagedoS0HVT6o8NC_mK0Yazh8eJYSiZiYloxA8");

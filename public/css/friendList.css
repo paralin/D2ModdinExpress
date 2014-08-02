@@ -1,0 +1,45 @@
+#friend-dropdown-list .dropdown-menu {
+  min-width: 200px;
+  max-height: 500px;
+  overflow: auto;
+  padding: 15px;
+  white-space: nowrap;
+}
+#friend-dropdown-list .table>tbody>tr:first-child>td {
+  border-top: none;
+}
+#friend-dropdown-list .table>tbody>tr:first-child>td {
+  vertical-align: middle;
+}
+#friend-dropdown-list a {
+  cursor: pointer;
+}
+.friendControlContainer {
+  position: fixed;
+  top: 4px;
+  right: 115px;
+  width: 120px;
+  height: 60px;
+  color: #808080;
+  z-index: 5000;
+}
+.avatar img {
+  width: 32px;
+  height: 32px;
+  border-radius: 30%;
+}
+.offline {
+  border: 2px solid #808080;
+}
+.online {
+  border: 2px solid #008000;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.position-fixed {
+  position: fixed;
+}
+.pointer {
+  cursor: pointer;
+}

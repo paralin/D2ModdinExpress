@@ -27,6 +27,8 @@ block body
           button.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()")
             | Download Launcher
 
+  script
+    window.d2version = "#{version}";
   script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
   script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js')
@@ -46,6 +48,7 @@ block body
   script(src='/js/lib/angularitics/angulartics.min.js')
   script(src='/js/lib/angularitics/angulartics-ga.min.js')
   script(src='/js/lib/bootbox/bootbox.min.js')
+  script(src='/js/lib/contextmenu/ng-context-menu.js')
   script(src='/js/app.js')
   script(src='/js/services.js')
   script(src='/js/controllers.js')

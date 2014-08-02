@@ -1,9 +1,12 @@
 var mongoose = require('mongoose');
 var mods = require('../schema/mod');
 var nots = require('../schema/not');
+var version = require('../version')
 
 
+console.log("Version: "+version);
 exports.index = function(req, res){
+  res.locals.version = version;
   res.render('index');
 };
 
