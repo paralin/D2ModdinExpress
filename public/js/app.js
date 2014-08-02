@@ -5,7 +5,9 @@
 
   window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg");
 
-  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize']).config([
+  window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3");
+
+  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ng-context-menu']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
       $routeProvider.when("/", {
@@ -54,8 +56,8 @@
       return $locationProvider.html5Mode(true);
     }
   ]).run([
-    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", (function(_this) {
-      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location) {
+    "$rootScope", "$lobbyService", "$forceLobbyPage", "$notService", "safeApply", "$route", "$location", "$handleInvites", (function(_this) {
+      return function($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location, $handleInvites) {
         var updateMods;
         $rootScope.mods = [];
         $rootScope.locationPath = $location.path;

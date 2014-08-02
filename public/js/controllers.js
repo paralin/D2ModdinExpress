@@ -84,6 +84,39 @@
         window.location.href = "/logout";
       };
     }
+  ]).controller("FriendCtrl", [
+    "$scope", "$lobbyService", "$rootScope", "$authService", function($scope, $lobbyService, $rootScope, $authService) {
+      $scope.getStatusText = function(s) {
+        switch (s) {
+          case $lobbyService.FRIENDSTATUS.NotRegistered:
+            return "Not registered";
+          case $lobbyService.FRIENDSTATUS.Offline:
+            return "Offline";
+          case $lobbyService.FRIENDSTATUS.Online:
+            return "Online";
+          case $lobbyService.FRIENDSTATUS.Idle:
+            return "Idle";
+          case $lobbyService.FRIENDSTATUS.InLobby:
+            return "In Lobby";
+          case $lobbyService.FRIENDSTATUS.Spectating:
+            return "Spectating";
+          case $lobbyService.FRIENDSTATUS.InGame:
+            return "In Game";
+        }
+      };
+      $scope.statusenum = $lobbyService.FRIENDSTATUS;
+      $scope.auth = $authService;
+      $scope.friends = $lobbyService.friends;
+      $scope.inviteFriend = function(steamid) {
+        return $lobbyService.inviteFriend(steamid);
+      };
+      $scope.joinFriendLobby = function(steamid) {
+        return $lobbyService.joinFriendLobby(steamid);
+      };
+      return $rootScope.friendsOnline = function(friend) {
+        return friend.status >= 2;
+      };
+    }
   ]).controller("InstallModCtrl", [
     "$scope", "$lobbyService", "$routeParams", "$rootScope", "$location", function($scope, $lobbyService, $routeParams, $rootScope, $location) {
       var mod, modname;

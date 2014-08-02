@@ -89,6 +89,33 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.signOut = ->
       window.location.href = "/logout"
       return
+]).controller("FriendCtrl", [
+  "$scope"
+  "$lobbyService"
+  "$rootScope"
+  "$authService"
+  ($scope, $lobbyService, $rootScope, $authService) ->
+    $scope.getStatusText = (s) ->
+        switch (s)
+            when $lobbyService.FRIENDSTATUS.NotRegistered then "Not registered"
+            when $lobbyService.FRIENDSTATUS.Offline then "Offline"
+            when $lobbyService.FRIENDSTATUS.Online then "Online"
+            when $lobbyService.FRIENDSTATUS.Idle then "Idle"
+            when $lobbyService.FRIENDSTATUS.InLobby then "In Lobby"
+            when $lobbyService.FRIENDSTATUS.Spectating then "Spectating"
+            when $lobbyService.FRIENDSTATUS.InGame then "In Game"
+    $scope.statusenum = $lobbyService.FRIENDSTATUS
+    $scope.auth = $authService
+    $scope.friends = $lobbyService.friends
+
+    $scope.inviteFriend = (steamid) ->
+      $lobbyService.inviteFriend steamid
+
+    $scope.joinFriendLobby = (steamid) ->
+      $lobbyService.joinFriendLobby steamid
+
+    $rootScope.friendsOnline = (friend) ->
+      friend.status >= 2
 ]).controller("InstallModCtrl", [
   "$scope"
   "$lobbyService"
