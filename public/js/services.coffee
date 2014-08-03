@@ -49,6 +49,7 @@ class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
     @publicLobbies = []
+    @friends = []
     @socket = null
     @isDuplicate = false
     @scope = $rootScope
@@ -57,12 +58,22 @@ class LobbyService
     @hasAttemptedConnection = false
     @status =
       managerConnected: false
-      managerStatus: "Authenticating with the lobby server..."
+      managerStatus: "Connecting to the lobby server..."
       managerDownloading: false
+    @FRIENDSTATUS = {
+        NotRegistered:0,
+        Offline:1,
+        Online:2,
+        Idle:3,
+        InLobby:4,
+        Spectating:5,
+        InGame:6
+    }
+    @friendstatus = "Loading..."
     @colls =
       lobbies: @lobbies
       publicLobbies: @publicLobbies
-  
+      friends: @friends
   disconnect: ->
     if @socket != null
       @socket.close()
@@ -70,6 +81,7 @@ class LobbyService
     @hasAuthed = false
     @lobbies.length = 0
     @publicLobbies.length = 0
+    @friends.length = 0
     console.log "Disconnected."
 
   send: (data)->
@@ -139,6 +151,14 @@ class LobbyService
       name: name
       mod: modid
 
+  inviteFriend: (steamid)->
+    @call 'invitefriend',
+      steamid: steamid
+
+  joinFriendLobby: (steamid)->
+    @call 'joinfriendlobby',
+      steamid: steamid
+
   sendAuth: ()->
     if !@auth.isAuthed
       console.log "Not authed, not sending auth."
@@ -154,6 +174,7 @@ class LobbyService
             key: @auth.token
 
   handleMsg: (data)->
+    console.log data.msg
     switch data.msg
       when "error"
         $.pnotify
@@ -165,8 +186,16 @@ class LobbyService
         @scope.$broadcast 'lobby:chatMsg', data.message
       when "modneeded"
         @scope.$broadcast 'lobby:modNeeded', data.name
+      when "invite"
+        console.log "Invite received, #{data.source}, #{data.mod}"
+        @scope.$broadcast 'friend:invite',
+          steam: data.source
+          modname: data.mod
+        window.invitesound.play()
       when "testneeded"
         @scope.$broadcast 'lobby:testNeeded', data.name
+      when "updatemods"
+        @scope.$broadcast 'mods:updated'
       when "installres"
         @status.managerDownloading = false
         @scope.$broadcast 'lobby:installres', data.success, data.message
@@ -241,33 +270,47 @@ class LobbyService
           type: "success"
         @hasAuthed = true
       else
-        @safeApply @scope, =>
-          @lobbies.length = 0
-          @publicLobbies.length = 0
-          $.pnotify
-            title: "Deauthed"
-            text: "You are no longer authed with the lobby server."
-            type: "error"
-          @hasAuthed = false
-    so.publicLobbies = (msg)=>
+        @lobbies.length = 0
+        @publicLobbies.length = 0
+        @friends.length = 0
+        @scope.$digest()
+        $.pnotify
+          title: "Deauthed"
+          text: "You are no longer authed with the lobby server."
+          type: "error"
+        @hasAuthed = false
+
+    so.on 'updatemods', (msg)=>
       @handleMsg msg
 
-    so.lobby = (msg)=>
+    so.on 'publicLobbies', (msg)=>
       @handleMsg msg
-    so.manager = (msg)=>
-      @safeApply @scope, =>
-        if msg.msg is 'status'
-          if msg.status
-            @status.managerConnected = true
-            @status.managerStatus = "Manager running and ready."
-          else
-            @status.managerConnected = false
-            @status.managerStatus = "Manager is not connected."
-    so.onclose =>
+
+    so.on 'invite', (msg)=>
+      @handleMsg msg
+
+    so.on 'lobby', (msg)=>
+      @handleMsg msg
+      
+    so.on 'friend', (msg)=>
+      @handleMsg msg
+      
+    so.on 'manager', (msg)=>
+      if msg.msg is 'status'
+        if msg.status
+          @status.managerConnected = true
+          @status.managerStatus = "Manager running and ready."
+        else
+          @status.managerConnected = false
+          @status.managerStatus = "Manager is not connected."
+        @scope.$digest()
+
+    so.on "close", =>
       @disconnect()
       @safeApply @scope, =>
         @lobbies.length = 0
         @publicLobbies.length = 0
+        @friends.length = 0
         @status.managerConnected = false
         if !@isDuplicate
           @status.managerStatus = "You have lost connection with the lobby server..."
@@ -321,6 +364,15 @@ angular.module("d2mp.services", []).factory("safeApply", [
         $rootScope.$broadcast "auth:data", data
         authService.user = data.user
         authService.token = data.token
+        if data.version isnt window.d2version
+          $.pnotify
+            title: "Out of Date"
+            text: "Your browser will refresh in a few seconds to download the new web app."
+            type: "info"
+            close: false
+          window.setTimeout =>
+            window.location.reload(true)
+          , 5000
         return
       ).error (data, status, headers, config) ->
         $log.log "Error fetching auth status: " + data
@@ -358,6 +410,36 @@ angular.module("d2mp.services", []).factory("safeApply", [
         service.disconnect()
     global.service = service
     service
+]).factory('$handleInvites', [
+  "$rootScope"
+  "$lobbyService"
+  ($rootScope, $lobbyService)->
+    $rootScope.$on "friend:invite", (event, data)->
+      friend = _.findWhere $lobbyService.friends, {_id: data.steam}
+      if !friend?
+        $.pnotify
+          title: "Invite Failed"
+          text: "An unknown friend (#{data.steam}) has sent you an invite to a lobby."
+          type: "error"
+          delay: 5000
+      else
+        bootbox.dialog
+          message: "#{friend.name} has invited you to join their #{data.modname} lobby."
+          title: "Invite"
+          buttons:
+            decline:
+              label: "Ignore"
+              className: "btn-danger"
+              callback: ->
+                $.pnotify
+                  title: "Invite Declined"
+                  text: "Invite from #{friend.name} has been declined."
+                  type: "info"
+            accept:
+              label: "Accept & Join"
+              className: "btn-success"
+              callback: ->
+                service.joinFriendLobby data.steam
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'

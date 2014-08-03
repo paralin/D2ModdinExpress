@@ -1,6 +1,7 @@
 "use strict"
 
 window.readysound = new buzz.sound("http://static.d2modd.in/d2moddin/match_ready.ogg")
+window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3")
 
 app = angular.module("d2mp", [
   "ngRoute"
@@ -13,6 +14,7 @@ app = angular.module("d2mp", [
   'ngAnimate'
   'angular-loading-bar'
   'ngSanitize'
+  'ng-context-menu'
 ]).config([
   "$routeProvider"
   "$locationProvider"
@@ -66,16 +68,29 @@ app = angular.module("d2mp", [
   "$lobbyService"
   "$forceLobbyPage"
   "$notService"
-  ($rootScope, $lobbyService, $forceLobbyPage, $notService) =>
+  "safeApply"
+  "$route"
+  "$location"
+  "$handleInvites"
+  ($rootScope, $lobbyService, $forceLobbyPage, $notService, safeApply, $route, $location, $handleInvites) =>
     $rootScope.mods = []
 
+    $rootScope.locationPath = $location.path;
+    $location.path = (path, reload) ->
+      if reload is false
+        lastRoute = $route.current
+        un = $rootScope.$on '$locationChangeSuccess', ->
+          $route.current = lastRoute
+          un()
+      $rootScope.locationPath.apply($location, [path])
+
     $rootScope.totalPlayerCount = (lobby)->
-      count = 0
+      lobby.count = 0
       for plyr in lobby.dire
-        count+=1 if plyr?
+        lobby.count+=1 if plyr?
       for plyr in lobby.radiant
-        count+=1 if plyr?
-      count
+        lobby.count+=1 if plyr?
+      lobby.count
 
     $rootScope.launchManager = ->
       window.open "https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe"
@@ -115,9 +130,13 @@ app = angular.module("d2mp", [
       MATCHMAKING: 2
 
     $notService.fetch()
-    $.getJSON "/data/mods", (data) ->
-      $rootScope.$apply ->
-        window.rootScope = $rootScope
-        window.mods = $rootScope.mods = data
+    updateMods = =>
+      $.getJSON "/data/mods", (data) ->
+        safeApply $rootScope, ->
+          window.rootScope = $rootScope
+          window.mods = $rootScope.mods = data
+    $rootScope.$on "mods:updated", =>
+      updateMods()
+    updateMods()
 ])
 return

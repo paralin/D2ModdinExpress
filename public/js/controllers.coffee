@@ -20,25 +20,20 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$lobbyService"
   "$authService"
   ($scope, $location, $routeParams, $rootScope, $lobbyService, $authService) ->
-    publicLobbies = $lobbyService.publicLobbies
-    $scope.hasMod = $routeParams.modname?
+    $scope.lobbies = $lobbyService.publicLobbies
     $scope.auth = $authService
     $scope.lobbyFilter = {}
+    $scope.fullFilter = true
     $scope.sort = { order:$scope.totalPlayerCount, reverse:true }
-    modName = null
-    mod = null
-    if $scope.hasMod
-      modName = $routeParams.modname
-      $scope.mod = mod = _.findWhere $rootScope.mods,
-        name: modName
-      $scope.lobbyFilter.mod = mod._id
 
-    $scope.lobbies = publicLobbies
+    if $routeParams.modname?
+      $scope.mod = mod = _.findWhere $rootScope.mods,
+        name: $routeParams.modname
+      $scope.lobbyFilter.mod = mod._id
+      $location.path('/lobbies', false)
+
     $scope.createLobby = ->
-      if $scope.hasMod
-        $lobbyService.createLobby(null, mod._id)
-      else
-        $location.url('/newlobby')
+      $location.url('/newlobby')
 
     $scope.joinLobby = (lobby) ->
       $lobbyService.joinLobby lobby._id
@@ -54,6 +49,19 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         mod.thumbsmall
       else
         ""
+
+    $scope.updateFilter = (prop,value) ->
+      if value is null
+        delete $scope.lobbyFilter[prop]
+      else
+        $scope.lobbyFilter[prop] = value
+
+    $scope.showFullLobbies = (value) ->
+      if value is true
+        delete $scope.lobbyFilter['count']
+      else
+        $scope.lobbyFilter.count = "!10"
+        
 ]).controller("ResultListCtrl", [
   "$scope"
   "$location"
@@ -81,6 +89,33 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.signOut = ->
       window.location.href = "/logout"
       return
+]).controller("FriendCtrl", [
+  "$scope"
+  "$lobbyService"
+  "$rootScope"
+  "$authService"
+  ($scope, $lobbyService, $rootScope, $authService) ->
+    $scope.getStatusText = (s) ->
+        switch (s)
+            when $lobbyService.FRIENDSTATUS.NotRegistered then "Not registered"
+            when $lobbyService.FRIENDSTATUS.Offline then "Offline"
+            when $lobbyService.FRIENDSTATUS.Online then "Online"
+            when $lobbyService.FRIENDSTATUS.Idle then "Idle"
+            when $lobbyService.FRIENDSTATUS.InLobby then "In Lobby"
+            when $lobbyService.FRIENDSTATUS.Spectating then "Spectating"
+            when $lobbyService.FRIENDSTATUS.InGame then "In Game"
+    $scope.statusenum = $lobbyService.FRIENDSTATUS
+    $scope.auth = $authService
+    $scope.friends = $lobbyService.friends
+
+    $scope.inviteFriend = (steamid) ->
+      $lobbyService.inviteFriend steamid
+
+    $scope.joinFriendLobby = (steamid) ->
+      $lobbyService.joinFriendLobby steamid
+
+    $rootScope.friendsOnline = (friend) ->
+      friend.status >= 2
 ]).controller("InstallModCtrl", [
   "$scope"
   "$lobbyService"
@@ -106,8 +141,9 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$scope"
   "$location"
   "$lobbyService"
+  "$rootScope"
   "$authService"
-  ($scope, $location, $lobbyService, $authService)->
+  ($scope, $location, $lobbyService, $rootScope, $authService)->
     $scope.isAuthed = $authService.isAuthed
     $scope.user = $authService.user
     $scope.selectMod = (mod)->

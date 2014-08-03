@@ -1,5 +1,4 @@
 var express = require('express'),
-bodyParser = require('body-parser'),
 methodOverride = require('method-override'),
 morgan = require('morgan'),
 routes = require('./routes'),
@@ -16,6 +15,7 @@ session = require('express-session'),
 path = require('path'),
 cluster = require('cluster');
 require('coffee-script/register');
+version = require('./version');
 var _ = require('underscore');
 
 var cacheOpts = {
@@ -108,6 +108,7 @@ if(cluster.isMaster&&useCluster){
     app.get('/data/authStatus', function(req, res){
       var resp = {};
       resp.isAuthed = req.user != null;
+      resp.version = version;
       if(req.user){
         resp.token = req.sessionID;
         resp.user = {

@@ -1,4 +1,62 @@
-.item-box {
+.mod-descrip {
   border-radius: 0;
-  box-shadow: 0 0 30px 0 rgba(146,146,146,0.78);
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  height: 25%;
+  padding: 10px;
+}
+.mod-descrip p {
+  margin: 0;
+}
+.mod-thumbn {
+  height: 60%;
+  background: #000;
+}
+.mod-box {
+  height: 300px;
+  margin-bottom: 10px;
+}
+.mod-name {
+  height: 30%;
+  width: 100%;
+  background: rgba(0,0,0,0.65);
+  line-height: 50px;
+  color: #fff;
+  font-weight: 100;
+  font-size: 2em;
+  padding-left: 15px;
+}
+.mod-name-spacer {
+  height: 70%;
+  width: 100%;
+}
+.mod-author-img {
+  height: 100%;
+  width: 40%;
+  float: right;
+  padding: 2px;
+}
+.mod-author-img img {
+  width: 50px;
+  height: 50px;
+  float: right;
+  background-color: #fff;
+}
+.author-name {
+  width: 70%;
+  vertical-align: middle;
+  float: left;
+  margin: 0;
+  padding: 0;
+  line-height: 16px;
+  font-size: 15px;
+  padding: 2px;
+  text-align: right;
+}
+.mod-buttons {
+  height: 15%;
+  width: 100%;
+  background: #fff;
+  padding: 5px;
 }

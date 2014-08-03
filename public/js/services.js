@@ -101,6 +101,7 @@
       this.safeApply = safeApply;
       this.lobbies = [];
       this.publicLobbies = [];
+      this.friends = [];
       this.socket = null;
       this.isDuplicate = false;
       this.scope = $rootScope;
@@ -109,12 +110,23 @@
       this.hasAttemptedConnection = false;
       this.status = {
         managerConnected: false,
-        managerStatus: "Authenticating with the lobby server...",
+        managerStatus: "Connecting to the lobby server...",
         managerDownloading: false
       };
+      this.FRIENDSTATUS = {
+        NotRegistered: 0,
+        Offline: 1,
+        Online: 2,
+        Idle: 3,
+        InLobby: 4,
+        Spectating: 5,
+        InGame: 6
+      };
+      this.friendstatus = "Loading...";
       this.colls = {
         lobbies: this.lobbies,
-        publicLobbies: this.publicLobbies
+        publicLobbies: this.publicLobbies,
+        friends: this.friends
       };
     }
 
@@ -126,6 +138,7 @@
       this.hasAuthed = false;
       this.lobbies.length = 0;
       this.publicLobbies.length = 0;
+      this.friends.length = 0;
       return console.log("Disconnected.");
     };
 
@@ -227,6 +240,18 @@
       });
     };
 
+    LobbyService.prototype.inviteFriend = function(steamid) {
+      return this.call('invitefriend', {
+        steamid: steamid
+      });
+    };
+
+    LobbyService.prototype.joinFriendLobby = function(steamid) {
+      return this.call('joinfriendlobby', {
+        steamid: steamid
+      });
+    };
+
     LobbyService.prototype.sendAuth = function() {
       if (!this.auth.isAuthed) {
         console.log("Not authed, not sending auth.");
@@ -247,6 +272,7 @@
     };
 
     LobbyService.prototype.handleMsg = function(data) {
+      console.log(data.msg);
       switch (data.msg) {
         case "error":
           $.pnotify({
@@ -259,8 +285,17 @@
           return this.scope.$broadcast('lobby:chatMsg', data.message);
         case "modneeded":
           return this.scope.$broadcast('lobby:modNeeded', data.name);
+        case "invite":
+          console.log("Invite received, " + data.source + ", " + data.mod);
+          this.scope.$broadcast('friend:invite', {
+            steam: data.source,
+            modname: data.mod
+          });
+          return window.invitesound.play();
         case "testneeded":
           return this.scope.$broadcast('lobby:testNeeded', data.name);
+        case "updatemods":
+          return this.scope.$broadcast('mods:updated');
         case "installres":
           this.status.managerDownloading = false;
           return this.scope.$broadcast('lobby:installres', data.success, data.message);
@@ -375,50 +410,65 @@
             });
             return _this.hasAuthed = true;
           } else {
-            return _this.safeApply(_this.scope, function() {
-              _this.lobbies.length = 0;
-              _this.publicLobbies.length = 0;
-              $.pnotify({
-                title: "Deauthed",
-                text: "You are no longer authed with the lobby server.",
-                type: "error"
-              });
-              return _this.hasAuthed = false;
+            _this.lobbies.length = 0;
+            _this.publicLobbies.length = 0;
+            _this.friends.length = 0;
+            _this.scope.$digest();
+            $.pnotify({
+              title: "Deauthed",
+              text: "You are no longer authed with the lobby server.",
+              type: "error"
             });
+            return _this.hasAuthed = false;
           }
         };
       })(this);
-      so.publicLobbies = (function(_this) {
+      so.on('updatemods', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };
-      })(this);
-      so.lobby = (function(_this) {
+      })(this));
+      so.on('publicLobbies', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
         };
-      })(this);
-      so.manager = (function(_this) {
+      })(this));
+      so.on('invite', (function(_this) {
         return function(msg) {
-          return _this.safeApply(_this.scope, function() {
-            if (msg.msg === 'status') {
-              if (msg.status) {
-                _this.status.managerConnected = true;
-                return _this.status.managerStatus = "Manager running and ready.";
-              } else {
-                _this.status.managerConnected = false;
-                return _this.status.managerStatus = "Manager is not connected.";
-              }
+          return _this.handleMsg(msg);
+        };
+      })(this));
+      so.on('lobby', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
+        };
+      })(this));
+      so.on('friend', (function(_this) {
+        return function(msg) {
+          return _this.handleMsg(msg);
+        };
+      })(this));
+      so.on('manager', (function(_this) {
+        return function(msg) {
+          if (msg.msg === 'status') {
+            if (msg.status) {
+              _this.status.managerConnected = true;
+              _this.status.managerStatus = "Manager running and ready.";
+            } else {
+              _this.status.managerConnected = false;
+              _this.status.managerStatus = "Manager is not connected.";
             }
-          });
+            return _this.scope.$digest();
+          }
         };
-      })(this);
-      so.onclose((function(_this) {
+      })(this));
+      so.on("close", (function(_this) {
         return function() {
           _this.disconnect();
           _this.safeApply(_this.scope, function() {
             _this.lobbies.length = 0;
             _this.publicLobbies.length = 0;
+            _this.friends.length = 0;
             _this.status.managerConnected = false;
             if (!_this.isDuplicate) {
               return _this.status.managerStatus = "You have lost connection with the lobby server...";
@@ -491,6 +541,19 @@
           $rootScope.$broadcast("auth:data", data);
           authService.user = data.user;
           authService.token = data.token;
+          if (data.version !== window.d2version) {
+            $.pnotify({
+              title: "Out of Date",
+              text: "Your browser will refresh in a few seconds to download the new web app.",
+              type: "info",
+              close: false
+            });
+            window.setTimeout((function(_this) {
+              return function() {
+                return window.location.reload(true);
+              };
+            })(this), 5000);
+          }
         }).error(function(data, status, headers, config) {
           $log.log("Error fetching auth status: " + data);
         });
@@ -523,6 +586,48 @@
       });
       global.service = service;
       return service;
+    }
+  ]).factory('$handleInvites', [
+    "$rootScope", "$lobbyService", function($rootScope, $lobbyService) {
+      return $rootScope.$on("friend:invite", function(event, data) {
+        var friend;
+        friend = _.findWhere($lobbyService.friends, {
+          _id: data.steam
+        });
+        if (friend == null) {
+          return $.pnotify({
+            title: "Invite Failed",
+            text: "An unknown friend (" + data.steam + ") has sent you an invite to a lobby.",
+            type: "error",
+            delay: 5000
+          });
+        } else {
+          return bootbox.dialog({
+            message: "" + friend.name + " has invited you to join their " + data.modname + " lobby.",
+            title: "Invite",
+            buttons: {
+              decline: {
+                label: "Ignore",
+                className: "btn-danger",
+                callback: function() {
+                  return $.pnotify({
+                    title: "Invite Declined",
+                    text: "Invite from " + friend.name + " has been declined.",
+                    type: "info"
+                  });
+                }
+              },
+              accept: {
+                label: "Accept & Join",
+                className: "btn-success",
+                callback: function() {
+                  return service.joinFriendLobby(data.steam);
+                }
+              }
+            }
+          });
+        }
+      });
     }
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {

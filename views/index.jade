@@ -5,17 +5,30 @@ block body
 
   div(ng-controller="BottomBarCtrl")
     .statusBar(ng-if="auth.isAuthed")
-      .left
-        i.fa.fa-tachometer 
-        span.status  {{status.managerStatus}}
-      .rightButtons
-        a.btn.btn-danger(href="https://github.com/kidovate/d2moddinclient/issues",target="_blank")
-          | Report Issues
-        a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
-          | Source
-        button.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()")
-          | Download Launcher
+      ul#topNav.left.navbar-nav.nav-main.mega-menu.nav.nav-main.scroll-menu
+        li
+          a(href="https://github.com/kidovate/D2ModdinClient/issues?state=open") REPORT ISSUES
+        li
+          a(href="https://fundrazr.com/campaigns/2nfla/pay",target="_blank") DONATE
+        li
+          a(href="/about") ABOUT
+      .right
+        | {{status.managerStatus}}
+        button.btn.btn-primary(ng-click="launchManager()",ng-if="!status.managerConnected",style="margin-left: 5px") Download Launcher
+      //-
+        .left
+          i.fa.fa-tachometer 
+          span.status  {{status.managerStatus}}
+        .rightButtons
+          a.btn.btn-danger(href="https://github.com/kidovate/d2moddinclient/issues",target="_blank")
+            | Report Issues
+          a.btn.btn-info(href="https://github.com/kidovate/d2moddinclient",target="_blank")
+            | Source
+          button.btn.btn-success(ng-if="!status.managerConnected",ng-click="launchManager()")
+            | Download Launcher
 
+  script
+    window.d2version = "#{version}";
   script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
   script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
   script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js')
@@ -33,6 +46,7 @@ block body
   script(src='/js/lib/angularitics/angulartics.min.js')
   script(src='/js/lib/angularitics/angulartics-ga.min.js')
   script(src='/js/lib/bootbox/bootbox.min.js')
+  script(src='/js/lib/contextmenu/ng-context-menu.js')
   script(src='/js/app.js')
   script(src='/js/services.js')
   script(src='/js/controllers.js')
