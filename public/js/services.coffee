@@ -85,8 +85,8 @@ class LobbyService
     console.log "Disconnected."
 
   send: (data)->
-    return if !@socket?
-    @socket.publish 'data', data
+    return if !@cont?
+    @cont.publish 'data', data
 
   startLoadTest: ->
     @call "startLoadTest", {}
@@ -249,8 +249,8 @@ class LobbyService
       return
     console.log "Attempting connection..."
     @socket = con = new XSockets.WebSocket 'ws://net1.d2modd.in:4502', ['BrowserController']
-    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502', ['BrowserController']
-    @cont = so = @socket.controller('BrowserController')
+    #@socket = so = new XSockets.WebSocket 'ws://172.250.79.95:4502', ['browsercontroller']
+    @cont = so = @socket.controller('browsercontroller')
     so.duplicate = =>
       @safeApply @scope, =>
         @lobbies.length = 0
@@ -262,7 +262,8 @@ class LobbyService
           type: "error"
           hide: false
         @status.managerStatus = "Already open in another tab. Refresh to re-try connection."
-    so.auth = (data)=>
+    so.on "auth", (data)=>
+      console.log data
       if data.status
         $.pnotify
           title: "Authenticated"

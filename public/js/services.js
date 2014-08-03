@@ -143,10 +143,10 @@
     };
 
     LobbyService.prototype.send = function(data) {
-      if (this.socket == null) {
+      if (this.cont == null) {
         return;
       }
-      return this.socket.publish('data', data);
+      return this.cont.publish('data', data);
     };
 
     LobbyService.prototype.startLoadTest = function() {
@@ -375,15 +375,15 @@
     };
 
     LobbyService.prototype.connect = function() {
-      var con, so;
+      var so;
       this.disconnect();
       if (!this.auth.isAuthed || this.isDuplicate) {
         console.log("Not connecting as we aren't logged in/are a duplicate.");
         return;
       }
       console.log("Attempting connection...");
-      this.socket = con = new XSockets.WebSocket('ws://net1.d2modd.in:4502', ['BrowserController']);
-      this.cont = so = this.socket.controller('BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502', ['browsercontroller']);
+      this.cont = so = this.socket.controller('browsercontroller');
       so.duplicate = (function(_this) {
         return function() {
           return _this.safeApply(_this.scope, function() {
@@ -400,8 +400,9 @@
           });
         };
       })(this);
-      so.auth = (function(_this) {
+      so.on("auth", (function(_this) {
         return function(data) {
+          console.log(data);
           if (data.status) {
             $.pnotify({
               title: "Authenticated",
@@ -422,7 +423,7 @@
             return _this.hasAuthed = false;
           }
         };
-      })(this);
+      })(this));
       so.on('updatemods', (function(_this) {
         return function(msg) {
           return _this.handleMsg(msg);
