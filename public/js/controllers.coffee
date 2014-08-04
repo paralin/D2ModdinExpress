@@ -12,6 +12,21 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("ModsCtrl", [
   "$scope"
   ($scope) ->
+]).controller("LeaderboardCtrl", [
+  "$scope"
+  "$rootScope"
+  "$lobbyService"
+  "$authService"
+  "leaderboard"
+  ($scope, $rootScope, $lobbyService, $authService, leaderboard) ->
+    $scope.auth = $authService
+    $scope.players = leaderboard.get()
+    updateMods = ->
+      $scope.mod = _.findWhere $rootScope.mods, {name: "reflex"}
+    clear = $rootScope.$on "mods:downloaded", updateMods
+    updateMods()
+    $scope.$on "$destroy", ->
+      clear()
 ]).controller("LobbyListCtrl", [
   "$scope"
   "$location"

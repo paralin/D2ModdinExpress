@@ -7,7 +7,7 @@
 
   window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3");
 
-  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ng-context-menu']).config([
+  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ngResource', 'ng-context-menu']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
       $routeProvider.when("/", {
@@ -49,6 +49,13 @@
       $routeProvider.when('/dotest', {
         templateUrl: '/partials/dotest',
         controller: 'DoTestCtrl'
+      });
+      $routeProvider.when('/leaderboard', {
+        templateUrl: '/partials/leaderboard',
+        controller: 'LeaderboardCtrl'
+      });
+      $routeProvider.when('/leaderboards', {
+        redirectTo: "/leaderboard"
       });
       $routeProvider.when('/matchmake', {
         templateUrl: '/partials/matchmake',
@@ -148,8 +155,8 @@
         updateMods = function() {
           return $.getJSON("/data/mods", function(data) {
             return safeApply($rootScope, function() {
-              window.rootScope = $rootScope;
-              return window.mods = $rootScope.mods = data;
+              $rootScope.mods = data;
+              return $rootScope.$broadcast("mods:downloaded", data);
             });
           });
         };

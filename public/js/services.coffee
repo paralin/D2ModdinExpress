@@ -447,6 +447,13 @@ angular.module("d2mp.services", []).factory("safeApply", [
               className: "btn-success"
               callback: ->
                 service.joinFriendLobby data.steam
+]).factory("leaderboard", [
+  '$resource'
+  ($resource)->
+    $resource '/data/leaders/:name', {name: "reflex"},
+      get:
+        method: "GET"
+        isArray: true
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'

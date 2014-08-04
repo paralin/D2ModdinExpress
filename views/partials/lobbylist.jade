@@ -8,46 +8,37 @@
     h1.text-center
       strong Lobbies
       br
+      div(ng-if="hasMod",style="width:251px;margin-left:auto;margin-right:auto")
+        div(modthumbnail)
+      a.btn.btn-link(ng-if="hasMod",href="/lobbies/") Show All Lobbies
       button.btn.btn-link(ng-click="createLobby()") Create a Lobby
       button.btn.btn-link(ng-click="enterPassword()") Enter Lobby Password
   #mods
     section.container
       .row
-        div.lobbyFilter(style="max-width: 1000px;margin-left:auto;margin-right:auto")
-          span.combo
-            label Game Mode:
-            select(ng-model="mod",ng-options="obj.fullname for obj in mods | filter:{playable:true}",ng-change="updateFilter('mod',mod._id)")
-              option(value="") Any
-          span.combo
-            label Region:
-            select(ng-model="regFilter",ng-options="txt as idx for (txt , idx) in REGIONSH",ng-change="updateFilter('region',regFilter)")
-              option(value="") Any
-          span.check
-            input(ng-model="fullFilter",id="fulllobbies",type="checkbox",ng-change="showFullLobbies(fullFilter)")
-            label(for="fulllobbies") Show full lobbies
-      .row
-        table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
+        table.table.table-hover
           thead
-            tr(style="min-width: 100%;height:39px")
-              th(customsort,style="min-width:50px",order="'mod'",sort="sort") Mod
-              th(customsort,style="min-width:50px",order="totalPlayerCount",sort="sort") #
-              th(customsort,style="min-width:250px",order="'name'",sort="sort") Name
-              th(customsort,style="min-width:140px",order="'region'",sort="sort") Region
-              th(style="width:100%") Teams
+            tr
+              th(style="width:50px") Mod
+              th(style="width:150px") Name
+              th(style="width:140px") Region
+              th Teams
+              th(style="width:70px")
           tbody
-            tr.llrow(ng-repeat="lobby in lobbies | orderBy:sort.order:sort.reverse | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}",ng-click="joinLobby(lobby)",style="cursor:pointer")
-              td(style="padding:5px;min-width:50px;max-width:50px")
+            tr(ng-repeat="lobby in lobbies | orderBy:totalPlayerCount:true | filter:lobbyFilter",ng-class="{info:(totalPlayerCount(lobby)==10),success:(totalPlayerCount(lobby)<10)}",ng-click="joinLobby(lobby)",style="cursor:pointer")
+              td(style="padding:5px")
                 img(ng-src="{{getModThumbnail(lobby.mod)}}",style="width:35px;height:35px")
-              td {{totalPlayerCount(lobby)}}/10
-              td(style="min-width:250px") {{lobby.name | limitTo: 25}}
-              td(style="min-width:140px") {{REGIONSH[lobby.region]}}
-              td(style="margin:0;padding:0;width:100%")
+              td ({{totalPlayerCount(lobby)}}/10) {{lobby.name}}
+              td {{REGIONSH[lobby.region]}}
+              td(style="margin:0;padding:0")
                 .ilteams
                   p
                     span.avi(ng-repeat="player in lobby.radiant track by $index",ng-class="{adminStyl:player.icon}")
                       img(ng-src="{{player.avatar}}",ng-hide="player==null")
-                      |  {{player.name | limitTo:10}}
+                      |  {{player.name}}
                   p
                     span.avi(ng-repeat="player in lobby.dire track by $index",ng-class="{adminStyl:player.icon}")
                       img(ng-src="{{player.avatar}}",ng-hide="player==null")
-                      |  {{player.name | limitTo:10}}
+                      |  {{player.name}}
+              td
+                button.btn.btn-success(ng-click="joinLobby(lobby)") Join

@@ -14,6 +14,7 @@ app = angular.module("d2mp", [
   'ngAnimate'
   'angular-loading-bar'
   'ngSanitize'
+  'ngResource'
   'ng-context-menu'
 ]).config([
   "$routeProvider"
@@ -60,6 +61,13 @@ app = angular.module("d2mp", [
     $routeProvider.when '/dotest',
       templateUrl: '/partials/dotest'
       controller: 'DoTestCtrl'
+
+    $routeProvider.when '/leaderboard',
+      templateUrl: '/partials/leaderboard'
+      controller: 'LeaderboardCtrl'
+
+    $routeProvider.when '/leaderboards',
+      redirectTo: "/leaderboard"
 
     $routeProvider.when '/matchmake',
       templateUrl: '/partials/matchmake'
@@ -145,8 +153,8 @@ app = angular.module("d2mp", [
     updateMods = =>
       $.getJSON "/data/mods", (data) ->
         safeApply $rootScope, ->
-          window.rootScope = $rootScope
-          window.mods = $rootScope.mods = data
+          $rootScope.mods = data
+          $rootScope.$broadcast "mods:downloaded", data
     $rootScope.$on "mods:updated", =>
       updateMods()
     updateMods()

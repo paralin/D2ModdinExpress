@@ -638,6 +638,17 @@
         }
       });
     }
+  ]).factory("leaderboard", [
+    '$resource', function($resource) {
+      return $resource('/data/leaders/:name', {
+        name: "reflex"
+      }, {
+        get: {
+          method: "GET",
+          isArray: true
+        }
+      });
+    }
   ]).factory('$forceLobbyPage', [
     '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {
       $rootScope.$on('lobbyUpdate:matchmake', function(event, op) {
