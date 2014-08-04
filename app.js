@@ -18,11 +18,13 @@ require('coffee-script/register');
 version = require('./version');
 var _ = require('underscore');
 
+
 var cacheOpts = {
     max:25,
     maxAge:1000*60*2//cache for 2min
 };
 require('mongoose-cache').install(mongoose, cacheOpts);
+var user = require('./schema/user');
 
 var useCluster = process.env.USE_CLUSTER != null;
 
@@ -119,6 +121,13 @@ if(cluster.isMaster&&useCluster){
         };
       }
       res.json(resp);
+    });
+    
+    app.get('/data/leaders/:name', function(req, res){
+      var users = user.find({"profile.mmr.reflex": {$exists: 1}}, 'profile steam.steamid steam.avatar steam.profileurl profile.metrics').sort({"profile.mmr.reflex": 1}).cache().exec(function(err, data){
+        if(err) console.log(err);
+        res.json(data);
+      });
     });
 
     app.get('*', routes.index);
