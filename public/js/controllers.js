@@ -32,6 +32,9 @@
       window.scope = $scope;
       page = $scope.filter.page;
       fetching = false;
+      $scope.getTotalItems = function() {
+        return Math.ceil(matchData.count / matchData.perPage);
+      };
       $scope.goToResult = function(result) {
         return $location.path("/result/" + result.match_id);
       };

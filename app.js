@@ -126,7 +126,7 @@ if(cluster.isMaster&&useCluster){
     });
     
     app.get('/data/leaders/:name', function(req, res){
-      var users = user.find({"profile.mmr.reflex": {$exists: 1}}, 'profile steam.steamid steam.avatar steam.profileurl profile.metrics').sort({"profile.mmr.reflex": 1}).cache().exec(function(err, data){
+      var users = user.find({"profile.mmr.reflex": {$exists: 1}}, 'profile steam.steamid steam.avatar steam.profileurl profile.metrics').sort({"profile.mmr.reflex": 1}).exec(function(err, data){
         if(err) console.log(err);
         res.json(data);
       });
@@ -142,7 +142,6 @@ if(cluster.isMaster&&useCluster){
       iquery.count(function(err, count){
         if(err)console.log(err);
         var results = match.find(query).select('_id date steamids duration mod good_guys_win match_id teams.players.name teams.players.hero_id ranked').sort("-date").skip(skip).limit(perPage);//.cache();
-        console.log("Page: "+page+" skip "+skip+" query "+JSON.stringify(query));
         results.exec(function(err, data){
           if(err) console.log(err);
           res.json({count: count, data: data, perPage: perPage});

@@ -40,6 +40,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     window.scope = $scope
     page = $scope.filter.page
     fetching = false
+    $scope.getTotalItems = ->
+      Math.ceil matchData.count/matchData.perPage
     $scope.goToResult = (result)->
       $location.path("/result/#{result.match_id}")
     $scope.fetchPage = ->
