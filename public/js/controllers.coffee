@@ -17,10 +17,14 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "matchResult"
   "$routeParams"
   "$rootScope"
-  ($scope, matchResult, $routeParams, $rootScope)->
+  "$location"
+  ($scope, matchResult, $routeParams, $rootScope, $location)->
     $scope.match = matchResult.get {match_id: $routeParams.match_id}, (data)->
       $scope.mod = _.findWhere $rootScope.mods, {name: data.mod}
       window.match = data
+      if data.error?
+        $.pnotify {title: "Not Found", text: "That match result was not found.", type: "error"}
+        $location.path("/results/")
 ]).controller("MatchHistoryCtrl", [
   "$scope"
   "$rootScope"

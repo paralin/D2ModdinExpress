@@ -2,14 +2,22 @@
 (function() {
   "use strict";
   angular.module("d2mp.controllers", []).controller("HomeCtrl", ["$scope", function($scope) {}]).controller("AboutCtrl", ["$scope", function($scope) {}]).controller("ModsCtrl", ["$scope", function($scope) {}]).controller('ResultCtrl', [
-    "$scope", "matchResult", "$routeParams", "$rootScope", function($scope, matchResult, $routeParams, $rootScope) {
+    "$scope", "matchResult", "$routeParams", "$rootScope", "$location", function($scope, matchResult, $routeParams, $rootScope, $location) {
       return $scope.match = matchResult.get({
         match_id: $routeParams.match_id
       }, function(data) {
         $scope.mod = _.findWhere($rootScope.mods, {
           name: data.mod
         });
-        return window.match = data;
+        window.match = data;
+        if (data.error != null) {
+          $.pnotify({
+            title: "Not Found",
+            text: "That match result was not found.",
+            type: "error"
+          });
+          return $location.path("/results/");
+        }
       });
     }
   ]).controller("MatchHistoryCtrl", [
