@@ -36,6 +36,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   ($scope, $rootScope, $lobbyService, $authService, matchResults, $routeParams, $location) ->
     $scope.auth = $authService
     $scope.filter = $routeParams
+    $scope.sort = { order: "date", reverse:true }
     window.scope = $scope
     page = $scope.filter.page
     fetching = false
@@ -84,6 +85,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   ($scope, $rootScope, $lobbyService, $authService, leaderboard) ->
     $scope.auth = $authService
     $scope.players = leaderboard.get()
+    $scope.sort = { order: "profile.mmr.reflex", reverse:true }
     updateMods = ->
       $scope.mod = _.findWhere $rootScope.mods, {name: "reflex"}
     clear = $rootScope.$on "mods:downloaded", updateMods

@@ -25,6 +25,10 @@
       var fetching, page;
       $scope.auth = $authService;
       $scope.filter = $routeParams;
+      $scope.sort = {
+        order: "date",
+        reverse: true
+      };
       window.scope = $scope;
       page = $scope.filter.page;
       fetching = false;
@@ -93,6 +97,10 @@
       var clear, updateMods;
       $scope.auth = $authService;
       $scope.players = leaderboard.get();
+      $scope.sort = {
+        order: "profile.mmr.reflex",
+        reverse: true
+      };
       updateMods = function() {
         return $scope.mod = _.findWhere($rootScope.mods, {
           name: "reflex"

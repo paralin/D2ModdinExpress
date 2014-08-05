@@ -17,12 +17,12 @@
           thead
             tr(style="min-width: 100%;height:39px")
               th(style="min-width:50px;max-width:50px") //Icon
-              th(style="min-width:250px") Name
-              th Wins
-              th Losses
-              th MMR
+              th(customsort,order="'profile.name'",sort="sort",style="min-width:250px") Name
+              th(customsort,order="'profile.metrics.reflex.wins'",sort="sort") Wins
+              th(customsort,order="'profile.metrics.reflex.losses'",sort="sort") Losses
+              th(customsort,order="'profile.mmr.reflex'",sort="sort") MMR
           tbody
-            tr.llrow(ng-repeat="player in players | orderBy:'profile.mmr.reflex':true")
+            tr.llrow(ng-repeat="player in players | orderBy:sort.order:sort.reverse")
               td(style="padding:5px;min-width:50px;max-width:50px;width:50px")
                 img(ng-src="{{player.steam.avatar}}",style="width:35px;height:35px")
               td(style="min-width:250px")
