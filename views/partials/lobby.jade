@@ -7,6 +7,8 @@
       |  &#91;{{REGIONSH[lobby.region]}}&#93;
       span.subtitle(ng-if="lobby.status==0",style="margin-top:10px")
         | Waiting for the host to start the game...
+      span.subtitle(ng-if="mod.ranked",style="margin-top:10px;color:red")
+        | WARNING: Normal lobbies do NOT count towards MMR.
   div(style="margin-left:auto;margin-right:auto;width:251px")
     div(modthumbnail)
   div(ng-if="lobby.status < 2",style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px")

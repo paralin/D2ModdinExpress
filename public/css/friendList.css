@@ -6,9 +6,6 @@
   padding: 15px;
   white-space: nowrap;
 }
-#friend-dropdown-list .table {
-  margin-right: 5px;
-}
 #friend-dropdown-list .table>tbody>tr:first-child>td {
   border-top: none;
   vertical-align: middle;

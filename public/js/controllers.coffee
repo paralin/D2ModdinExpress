@@ -38,24 +38,16 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
     $scope.filter = $routeParams
     $scope.sort = { order: "date", reverse:true }
     window.scope = $scope
-    page = $scope.filter.page
-    fetching = false
     $scope.getTotalItems = ->
       Math.ceil matchData.count/matchData.perPage
     $scope.goToResult = (result)->
       $location.path("/result/#{result.match_id}")
     $scope.fetchPage = ->
-      if fetching
-        $scope.filter.page = page
-        return
-      fetching = true
       if $scope.mod?
         $scope.filter.mod = $scope.mod.name
       else
         $scope.filter.mod = undefined
-      page = $scope.filter.page
       data = matchResults.get $scope.filter, (data)->
-        fetching = false
         $scope.matchData = data
       window.matchData = data
     $scope.matchData = {count: 60000, data: [], perPage: 20}
