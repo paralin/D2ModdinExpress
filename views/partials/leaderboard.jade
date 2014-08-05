@@ -22,7 +22,7 @@
               th Losses
               th MMR
           tbody
-            tr.llrow(ng-repeat="player in players")
+            tr.llrow(ng-repeat="player in players | orderBy:'profile.mmr.reflex':true")
               td(style="padding:5px;min-width:50px;max-width:50px;width:50px")
                 img(ng-src="{{player.steam.avatar}}",style="width:35px;height:35px")
               td(style="min-width:250px")

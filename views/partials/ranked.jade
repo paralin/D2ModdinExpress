@@ -8,7 +8,7 @@
         p.app-description
           .feature(ng-repeat="mod in mods | filter:{ranked:true}")
             span(style="font-size:21px") Reflex MMR: 
-              b {{(auth.user.profile.mmr[mod._id] || 2000) | number}}
+              b {{(auth.user.profile.mmr[mod.name] || 2000) | number}}
             br
             a.btn.btn-success(ng-click="startQueue(mod._id)") Queue
             a.btn.btn-info Leaderboards
