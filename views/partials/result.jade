@@ -18,26 +18,26 @@
       table.table.table-striped
         thead
           th Player
-          th(style="width:20px") K
-          th(style="width:20px") D
-          th(style="width:20px") A
+          th(style="width:35px") K
+          th(style="width:35px") D
+          th(style="width:35px") A
         tbody
           tr(ng-repeat="player in match.teams[0].players")
             td {{player.name}}
-            td(style="width:20px") {{player.kills}}
-            td(style="width:20px") {{player.deaths}}
-            td(style="width:20px") {{player.assists}}
+            td(style="width:35px") {{player.kills}}
+            td(style="width:35px") {{player.deaths}}
+            td(style="width:35px") {{player.assists}}
     div.col-sm-6.teamCol.niceShadow(style="height:260px")
       .tileTitle Dire
       table.table.table-striped
         thead
           th Player
-          th(style="width:20px") K
-          th(style="width:20px") D
-          th(style="width:20px") A
+          th(style="width:35px") K
+          th(style="width:35px") D
+          th(style="width:35px") A
         tbody
           tr(ng-repeat="player in match.teams[1].players")
             td {{player.name}}
-            td(style="width:20px") {{player.kills}}
-            td(style="width:20px") {{player.deaths}}
-            td(style="width:20px") {{player.assists}}
+            td(style="width:35px") {{player.kills}}
+            td(style="width:35px") {{player.deaths}}
+            td(style="width:35px") {{player.assists}}
