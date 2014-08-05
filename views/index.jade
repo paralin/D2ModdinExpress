@@ -7,11 +7,11 @@ block body
     .statusBar(ng-if="auth.isAuthed")
       ul#topNav.left.navbar-nav.nav-main.mega-menu.nav.nav-main.scroll-menu
         li
-          a(href="https://github.com/kidovate/D2ModdinClient/issues?state=open") REPORT ISSUES
+          a(href="https://github.com/kidovate/D2ModdinClient/issues?state=open",target="_blank") REPORT ISSUES
         li
           a(href="https://fundrazr.com/campaigns/2nfla/pay",target="_blank") DONATE
         li
-          a(href="/about") ABOUT
+          a(href="/about",target="_blank") ABOUT
       .right
         | {{status.managerStatus}}
         button.btn.btn-primary(ng-click="launchManager()",ng-if="!status.managerConnected",style="margin-left: 5px") Download Launcher
