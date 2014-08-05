@@ -6,12 +6,12 @@
 #friend-dropdown-list .dropdown-menu
   min-width:    200px;
   max-height:   500px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 15px;
   white-space: nowrap;
 #friend-dropdown-list .table>tbody>tr:first-child>td
   border-top: none;
-#friend-dropdown-list .table>tbody>tr:first-child>td
   vertical-align: middle 
 #friend-dropdown-list a
   cursor: pointer;
@@ -26,11 +26,14 @@
 .avatar img
   width: 32px;
   height: 32px;
-  border-radius: 30%
+  border-radius: 20%
 .offline
-  border:   2px solid grey;
+  border: 2px solid grey;
 .online
-  border:   2px solid green;
+  border: 2px solid green;
+.onlineStatus
+  color: green
+  font-weight: bold
 .dropdown-submenu:hover>.dropdown-menu
   display: block;
 .position-fixed 

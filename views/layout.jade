@@ -53,19 +53,21 @@ html.no-js(data-ng-app="d2mp",lang="en")
             |  
             span {{(friends|filter:friendsOnline).length}} Online
           .dropdown-menu(ng-if="auth.isAuthed", ng-if="friends.length > 0")
-            table.table-condensed(style="margin-left:auto;margin-right:auto")
+            table.table-condensed.table-hover.pointer(style="margin-left:auto;margin-right:auto")
               tr.success(style="font-size: 15px; color:red") Right click to interact.
-              tr(ng-repeat="friend in friends | orderBy:['status','name']:true", context-menu, data-target="friendMenu{{ $index }}")
+              tr(ng-repeat="friend in friends | orderBy:['status','-name']:true", context-menu, data-target="friendMenu{{ $index }}", ng-class="{onlineStatus:friend.status != statusenum.Offline && friend.status != statusenum.NotRegistered}")
                 td.avatar
                     img(ng-src="{{friend.avatar}}", ng-class="{offline: friend.status == statusenum.Offline, online: friend.status != statusenum.Offline && friend.status != statusenum.NotRegistered}")
                 td {{friend.name}} 
                 td {{getStatusText(friend.status)}}
-                td.dropdown.position-fixed(id="friendMenu{{ $index }}")
-                  ul.dropdown-menu(role='menu',style="padding:5px;border-radius:0px")
-                    li
-                      a.pointer(role='menuitem', tabindex='1', ng-click="joinFriendLobby(friend._id)") Join Lobby
-                    li
-                      a.pointer(role='menuitem', tabindex='2', ng-click="inviteFriend(friend._id)") Invite Friend
+                  span.dropdown.position-fixed(id="friendMenu{{ $index }}")
+                    ul.dropdown-menu(role='menu',style="padding:5px;border-radius:0px")
+                      li.disabled(ng-class="{disabled:friend.status != statusenum.InGame}")
+                        a.pointer(role="menuitem", tabindex="0") Spectate (Soon)
+                      li(ng-class="{disabled:friend.status != statusenum.InLobby || friend.status == statusenum.InGame}")
+                        a.pointer(role='menuitem', tabindex='1', ng-click="joinFriendLobby(friend._id)") Join Lobby
+                      li(ng-class="{disabled:friend.status != statusenum.Online && friend.status != statusenum.InLobby}")
+                        a.pointer(role='menuitem', tabindex='2', ng-click="inviteFriend(friend._id)") Invite Friend
     header#topNav(ng-controller="NavCtrl")
       .container
         a(href="/").logo
