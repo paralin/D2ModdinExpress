@@ -304,7 +304,7 @@ html {
 }
 .blueBorder {
   border-color: #0037ff;
-  border-width: 2px;
+  border-width: 3px;
   border-style: solid;
 }
 #resultPaginate {
