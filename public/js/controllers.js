@@ -19,6 +19,11 @@
           return;
         }
         fetching = true;
+        if ($scope.mod != null) {
+          $scope.filter.mod = $scope.mod.name;
+        } else {
+          $scope.filter.mod = void 0;
+        }
         page = $scope.filter.page;
         data = matchResults.get($scope.filter, function(data) {
           fetching = false;

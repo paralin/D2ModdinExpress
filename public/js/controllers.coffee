@@ -34,6 +34,10 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
         $scope.filter.page = page
         return
       fetching = true
+      if $scope.mod?
+        $scope.filter.mod = $scope.mod.name
+      else
+        $scope.filter.mod = undefined
       page = $scope.filter.page
       data = matchResults.get $scope.filter, (data)->
         fetching = false
