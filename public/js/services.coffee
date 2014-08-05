@@ -433,6 +433,13 @@ angular.module("d2mp.services", []).factory("safeApply", [
       get:
         method: "GET"
         isArray: true
+]).factory("matchResult", [
+  '$resource'
+  ($resource)->
+    $resource '/data/match/:match_id', {},
+      get:
+        method: "GET"
+        isArray: false
 ]).factory("matchResults", [
   '$resource'
   ($resource)->

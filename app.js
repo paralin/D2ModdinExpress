@@ -150,6 +150,17 @@ if(cluster.isMaster&&useCluster){
       });
     });
 
+    app.get('/data/match/:match_id', function(req, res){
+      var match_id = req.params.match_id;
+      if(!/[A-Z]{17}/.test(req.params.match_id)){
+        res.json({error: "That match ID is invalid."});
+        return;
+      }
+      match.findOne({match_id: match_id}, function(err, match){
+        res.json(match);
+      });
+    });
+
     app.get('*', routes.index);
 
     http.createServer(app).listen(app.get('port'), function () {

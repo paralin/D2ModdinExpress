@@ -615,6 +615,15 @@
         }
       });
     }
+  ]).factory("matchResult", [
+    '$resource', function($resource) {
+      return $resource('/data/match/:match_id', {}, {
+        get: {
+          method: "GET",
+          isArray: false
+        }
+      });
+    }
   ]).factory("matchResults", [
     '$resource', function($resource) {
       return $resource('/data/matches/:page', {

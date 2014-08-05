@@ -12,8 +12,16 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("ModsCtrl", [
   "$scope"
   ($scope) ->
-])
-.controller("MatchHistoryCtrl", [
+]).controller('ResultCtrl', [
+  "$scope"
+  "matchResult"
+  "$routeParams"
+  "$rootScope"
+  ($scope, matchResult, $routeParams, $rootScope)->
+    $scope.match = matchResult.get {match_id: $routeParams.match_id}, (data)->
+      $scope.mod = _.findWhere $rootScope.mods, {name: data.mod}
+      window.match = data
+]).controller("MatchHistoryCtrl", [
   "$scope"
   "$rootScope"
   "$lobbyService"
