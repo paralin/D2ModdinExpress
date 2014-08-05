@@ -32,7 +32,7 @@ html.no-js(data-ng-app="d2mp",lang="en")
         #login-buttons.login-buttons-dropdown-align-right
         li#login-dropdown-list.dropdown
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed==false") SIGN IN
-          a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed") {{auth.user.profile.name}}
+          a.dropdown-toggle.ng-cloak(data-toggle="dropdown",ng-if="auth.isAuthed") {{auth.user.profile.name}}
           .dropdown-menu(ng-if="auth.isAuthed")
             .login-text-and-button
               #login-buttons-steam.login-button.single-login-button.col-sm-12.btn.btn-danger(ng-click="signOut()")
@@ -51,7 +51,7 @@ html.no-js(data-ng-app="d2mp",lang="en")
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
             i.fa.fa-user
             |  
-            span {{(friends|filter:friendsOnline).length}} Online
+            span.ng-cloak {{(friends|filter:friendsOnline).length}} Online
           .dropdown-menu(ng-if="auth.isAuthed", ng-if="friends.length > 0")
             table.table-condensed.table-hover.pointer(style="margin-left:auto;margin-right:auto")
               tr.success(style="font-size: 15px; color:red") Right click to interact.
