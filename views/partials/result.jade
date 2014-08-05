@@ -1,24 +1,43 @@
 #wrapper
   section.container.text-center(style="margin-top:30px")
+    h3.text-center
+      strong Match Result 
     h1.text-center
-      strong 
-        | Match Result {{match.match_id}}
+      strong
+        span.radiant(ng-if="match.good_guys_win") Radiant 
+        span.dire(ng-if="!match.good_guys_win") Dire 
+        | Victory
+    .text-center ID: {{match.match_id}}
   div(style="margin-left:auto;margin-right:auto;width:251px")
     div(modthumbnail)
   div(style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px")
     a.btn.btn-danger(href="javascript:history.back()") Return to List
   div.teamRow
-    .col-sm-6.teamCol.niceShadow
+    div.col-sm-6.teamCol.niceShadow(style="height:260px")
       .tileTitle Radiant
       table.table.table-striped
+        thead
+          th Player
+          th(style="width:20px") K
+          th(style="width:20px") D
+          th(style="width:20px") A
         tbody
           tr(ng-repeat="player in match.teams[0].players")
-            td
-              |  {{player.name}}
-    .col-sm-6.teamCol.niceShadow
+            td {{player.name}}
+            td(style="width:20px") {{player.kills}}
+            td(style="width:20px") {{player.deaths}}
+            td(style="width:20px") {{player.assists}}
+    div.col-sm-6.teamCol.niceShadow(style="height:260px")
       .tileTitle Dire
       table.table.table-striped
+        thead
+          th Player
+          th(style="width:20px") K
+          th(style="width:20px") D
+          th(style="width:20px") A
         tbody
           tr(ng-repeat="player in match.teams[1].players")
-            td
-              |  {{player.name}}
+            td {{player.name}}
+            td(style="width:20px") {{player.kills}}
+            td(style="width:20px") {{player.deaths}}
+            td(style="width:20px") {{player.assists}}

@@ -316,3 +316,9 @@ html {
   margin-left: auto;
   margin-right: auto;
 }
+.radiant {
+  color: #008000;
+}
+.dire {
+  color: #d9534f;
+}
