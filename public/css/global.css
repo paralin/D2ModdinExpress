@@ -307,3 +307,12 @@ html {
   border-width: 2px;
   border-style: solid;
 }
+#resultPaginate {
+  margin-left: auto;
+  margin-right: auto;
+  width: 450px;
+}
+#resultPaginate .pagination {
+  margin-left: auto;
+  margin-right: auto;
+}

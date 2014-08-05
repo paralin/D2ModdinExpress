@@ -4,7 +4,7 @@
       strong Match Results
   #mods
     section.container
-      .row(style="margin-left:auto;margin-right:auto;width:450px")
+      .row#resultPaginate.text-center
         pagination.pagination-sm(total-items='matchData.count/matchData.perPage',page='filter.page',max-size='5',boundary-links='true',rotate='false',num-pages='numPages',on-select-page="fetchPage()")
       .row
         div.lobbyfilter(style="max-width: 1000px;margin-left:auto;margin-right:auto")
