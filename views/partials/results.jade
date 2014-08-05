@@ -10,7 +10,7 @@
         div.lobbyfilter(style="max-width: 1000px;margin-left:auto;margin-right:auto")
           span.combo
             label Game Mode:
-            select(ng-model="filter.mod",ng-options="obj.fullname for obj in mods | filter:{playable:true}",ng-change="fetchPage()")
+            select(ng-model="mod",ng-options="obj.fullname for obj in mods | filter:{playable:true}",ng-change="fetchPage()")
               option(value="") any
       .row
         table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
