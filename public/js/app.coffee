@@ -16,6 +16,7 @@ app = angular.module("d2mp", [
   'ngSanitize'
   'ngResource'
   'ng-context-menu'
+  'ui.bootstrap'
 ]).config([
   "$routeProvider"
   "$locationProvider"
@@ -77,9 +78,17 @@ app = angular.module("d2mp", [
       templateUrl: '/partials/ranked'
       controller: 'RankedCtrl'
 
-    $routeProvider.when '/profile/:id',
-      templateUrl: '/partials/profile'
-      controller: 'ProfileCtrl'
+    $routeProvider.when '/results/:page',
+      templateUrl: '/partials/results'
+      controller: 'MatchHistoryCtrl'
+      reloadOnSearch: false
+
+    $routeProvider.when '/result/:match_id',
+      templateUrl: '/partials/result'
+      controller: 'ResultCtrl'
+
+    $routeProvider.when '/results',
+      redirectTo: '/results/1'
 
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)

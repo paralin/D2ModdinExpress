@@ -1,0 +1,44 @@
+#wrapper
+  section.container.text-container(style="margin-top:30px")
+    h1.text-center
+      strong Match Results
+  #mods
+    section.container
+      .row(style="margin-left:auto;margin-right:auto;width:450px")
+        pagination.pagination-sm(total-items='matchData.count/matchData.perPage',page='filter.page',max-size='5',boundary-links='true',rotate='false',num-pages='numPages',on-select-page="fetchPage()")
+      .row
+        div.lobbyfilter(style="max-width: 1000px;margin-left:auto;margin-right:auto")
+          span.combo
+            label Game Mode:
+            select(ng-model="filter.mod",ng-options="obj.fullname for obj in mods | filter:{playable:true}",ng-change="fetchPage()")
+              option(value="") any
+      .row
+        table.table.table-hover(style="max-width: 1000px;margin-left:auto;margin-right:auto")
+          thead
+            tr(style="min-width: 100%;height:39px")
+              th(style="width:50px")
+              th(style="width:120px") Game Mode
+              th(style="width:100px") Duration
+              th(style="width:150px") Date
+              th Players
+          tbody
+            tr.llrow(ng-repeat="game in matchData.data",ng-class="{success:game.good_guys_win,danger:!game.good_guys_win,blueBorder:game.ranked}",style="cursor:pointer",ng-click="goToResult(game)")
+              td(style="padding:5px")
+                img(ng-src="{{getModThumbnail(game.mod)}}",style="width:45px;height:45px")
+              td
+                {{getModByName(game.mod).fullname}}
+              td(style="white-space:pre-line")
+                {{duration(game.duration, "s")}}
+              td(style="white-space:pre-line")
+                {{game.date}}
+                //{{moment.unix(game.date).fromNow()}}
+              td(style="margin:0;padding:0")
+                .ilteams
+                  p
+                    span.avi(ng-repeat="player in game.teams[0].players track by $index")
+                      i(class="d2mh hero-{{player.hero_id}}",style="zoom:0.5;-moz-transform:scale(0.5);-moz-transform-origin: 0 0;position:relative;top:7px;left:5px")
+                      |  {{player.name}}
+                  p
+                    span.avi(ng-repeat="player in game.teams[1].players track by $index")
+                      i(class="d2mh hero-{{player.hero_id}}",style="zoom:0.5;-moz-transform:scale(0.5);-moz-transform-origin: 0 0;position:relative;top:7px;left:5px")
+                      |  {{player.name}}

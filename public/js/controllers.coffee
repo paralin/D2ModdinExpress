@@ -12,6 +12,53 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
 ]).controller("ModsCtrl", [
   "$scope"
   ($scope) ->
+])
+.controller("MatchHistoryCtrl", [
+  "$scope"
+  "$rootScope"
+  "$lobbyService"
+  "$authService"
+  "matchResults"
+  "$routeParams"
+  "$location"
+  ($scope, $rootScope, $lobbyService, $authService, matchResults, $routeParams, $location) ->
+    $scope.auth = $authService
+    $scope.filter = $routeParams
+    window.scope = $scope
+    page = $scope.filter.page
+    fetching = false
+    $scope.goToResult = (result)->
+      $location.path("/result/#{result.match_id}")
+    $scope.fetchPage = ->
+      if fetching
+        $scope.filter.page = page
+        return
+      fetching = true
+      page = $scope.filter.page
+      data = matchResults.get $scope.filter, (data)->
+        fetching = false
+        $scope.matchData = data
+      window.matchData = data
+    $scope.matchData = {count: 60000, data: [], perPage: 20}
+    $scope.fetchPage()
+    $scope.getModThumbnail = (modid) ->
+      mod = _.findWhere($rootScope.mods, name: modid)
+      if mod?
+        mod.thumbsmall
+      else
+        ""
+    $scope.getModByName = (modid) ->
+      mod = _.findWhere($rootScope.mods, name: modid)
+    $scope.moment = moment
+    $scope.duration = (input,units)->
+      duration = moment().startOf('day').add(units, input)
+      format = ""
+      if duration.hour() > 0
+        format += "H [hours] [\n]"
+      if duration.minute() > 0
+        format += "m [min] [\n]"
+      format += " s [sec]"
+      return duration.format(format)
 ]).controller("LeaderboardCtrl", [
   "$scope"
   "$rootScope"
@@ -77,22 +124,8 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
       else
         $scope.lobbyFilter.count = "!10"
         
-]).controller("ResultListCtrl", [
-  "$scope"
-  "$location"
-  "$routeParams"
-  "$rootScope"
-  "$resultService"
-  ($scope, $location, $routeParams, $rootScope, $resultService) ->
-    $resultService.fetch(parseInt($routeParams.page))
-    $scope.results = $resultServices.results
-    $scope.getModThumbnailN = (modid) ->
-      mod = _.findWhere($rootScope.mods, name: modid)
-      if mod?
-        mod.thumbsmall
-      else
-        ""
-]).controller("AuthCtrl", [
+])
+.controller("AuthCtrl", [
   "$scope"
   "$authService"
   ($scope, $authService) ->

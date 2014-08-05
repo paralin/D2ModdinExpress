@@ -302,3 +302,8 @@ html {
   color: #d9534f;
   border-color: #d9534f;
 }
+.blueBorder {
+  border-color: #0037ff;
+  border-width: 2px;
+  border-style: solid;
+}

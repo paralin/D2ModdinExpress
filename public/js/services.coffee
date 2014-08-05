@@ -30,21 +30,6 @@ class NotService
         @notifications = data
         @clear()
         @render()
-class ResultService
-  constructor:(@scope, @safeApply, @http)->
-    @results = []
-    @totalCount = 10
-  fetch: (page)->
-    @http.get('/data/results/'+page)
-      .success (data, status)=>
-        @results = data.results
-        @totalCount = data.count
-      .error (data, status)=>
-        $.pnotify
-          title: "Fetch Failed"
-          text: "Sorry, we can't download match results right now."
-          type: "error"
-
 class LobbyService
   constructor:($rootScope, $authService, @safeApply)->
     @lobbies = []
@@ -391,12 +376,6 @@ angular.module("d2mp.services", []).factory("safeApply", [
     updateAuth()
     $interval updateAuth, 60000
     return authService
-]).factory("$resultService", [
-  "$rootScope"
-  "safeApply"
-  "$http"
-  ($rootScope, safeApply)->
-    new ResultService $rootScope, safeApply, $http
 ]).factory("$notService", [
   "$http"
   ($http)->
@@ -454,6 +433,13 @@ angular.module("d2mp.services", []).factory("safeApply", [
       get:
         method: "GET"
         isArray: true
+]).factory("matchResults", [
+  '$resource'
+  ($resource)->
+    $resource '/data/matches/:page', {page: 1},
+      get:
+        method: "GET"
+        isArray: false
 ]).factory('$forceLobbyPage', [
   '$rootScope'
   '$location'

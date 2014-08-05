@@ -7,7 +7,7 @@
 
   window.invitesound = new buzz.sound("http://hydra-media.cursecdn.com/dota2.gamepedia.com/3/31/Drag_underattack_02.mp3");
 
-  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ngResource', 'ng-context-menu']).config([
+  app = angular.module("d2mp", ["ngRoute", "d2mp.controllers", "d2mp.filters", "d2mp.services", "d2mp.directives", 'angulartics', 'angulartics.google.analytics', 'ngAnimate', 'angular-loading-bar', 'ngSanitize', 'ngResource', 'ng-context-menu', 'ui.bootstrap']).config([
     "$routeProvider", "$locationProvider", "$sceDelegateProvider", function($routeProvider, $locationProvider, $sceDelegateProvider) {
       $sceDelegateProvider.resourceUrlWhitelist(["**"]);
       $routeProvider.when("/", {
@@ -65,9 +65,17 @@
         templateUrl: '/partials/ranked',
         controller: 'RankedCtrl'
       });
-      $routeProvider.when('/profile/:id', {
-        templateUrl: '/partials/profile',
-        controller: 'ProfileCtrl'
+      $routeProvider.when('/results/:page', {
+        templateUrl: '/partials/results',
+        controller: 'MatchHistoryCtrl',
+        reloadOnSearch: false
+      });
+      $routeProvider.when('/result/:match_id', {
+        templateUrl: '/partials/result',
+        controller: 'ResultCtrl'
+      });
+      $routeProvider.when('/results', {
+        redirectTo: '/results/1'
       });
       $routeProvider.otherwise({
         redirectTo: "/"
