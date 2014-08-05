@@ -111,6 +111,7 @@
       this.lobbies.length = 0;
       this.publicLobbies.length = 0;
       this.friends.length = 0;
+      this.matchmake.length = 0;
       return console.log("Disconnected.");
     };
 

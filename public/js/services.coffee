@@ -69,6 +69,7 @@ class LobbyService
     @lobbies.length = 0
     @publicLobbies.length = 0
     @friends.length = 0
+    @matchmake.length = 0
     console.log "Disconnected."
 
   send: (data)->
