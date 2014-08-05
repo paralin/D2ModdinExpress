@@ -322,3 +322,6 @@ html {
 .dire {
   color: #d9534f;
 }
+.pagination {
+  cursor: pointer;
+}
