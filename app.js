@@ -141,7 +141,7 @@ if(cluster.isMaster&&useCluster){
       var iquery = match.find(query).cache();
       iquery.count(function(err, count){
         if(err)console.log(err);
-        var results = match.find(query).select('_id date steamids duration mod good_guys_win match_id teams.players.name teams.players.hero_id').sort("-date").skip(skip).limit(perPage);//.cache();
+        var results = match.find(query).select('_id date steamids duration mod good_guys_win match_id teams.players.name teams.players.hero_id ranked').sort("-date").skip(skip).limit(perPage);//.cache();
         console.log("Page: "+page+" skip "+skip+" query "+JSON.stringify(query));
         results.exec(function(err, data){
           if(err) console.log(err);
