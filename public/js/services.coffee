@@ -117,6 +117,7 @@ class LobbyService
   startMatchmake: (mods)->
     @call "matchmake",
       mods: mods
+      region: 0
 
   stopFinding: ->
     @call "stopqueue", null
