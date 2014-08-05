@@ -119,7 +119,7 @@
           return lobby.count;
         };
         $rootScope.launchManager = function() {
-          window.open("https://mega.co.nz/#!MxlBCRKD!ggSb9TagedoS0HVT6o8NC_mK0Yazh8eJYSiZiYloxA8");
+          window.open("https://mega.co.nz/#!M1FAHYLC!SHIdo5dLRZGscug8mu7uxEZSn6E7XwBabFhQ9YjasHY");
           return $.pnotify({
             title: "Download Started",
             text: "Run the launcher (downloading now) to start joining lobbies.",
