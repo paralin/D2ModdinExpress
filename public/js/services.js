@@ -365,7 +365,7 @@
         return;
       }
       console.log("Attempting connection...");
-      this.socket = so = new XSockets.WebSocket('ws://172.250.79.95:4502/BrowserController');
+      this.socket = so = new XSockets.WebSocket('ws://net1.d2modd.in:4502/BrowserController');
       so.on('duplicate', (function(_this) {
         return function(data) {
           return _this.safeApply(_this.scope, function() {

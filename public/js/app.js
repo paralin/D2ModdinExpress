@@ -119,7 +119,7 @@
           return lobby.count;
         };
         $rootScope.launchManager = function() {
-          window.open("https://mega.co.nz/#!M1FAHYLC!SHIdo5dLRZGscug8mu7uxEZSn6E7XwBabFhQ9YjasHY");
+          window.open("https://s3-us-west-2.amazonaws.com/d2mpclient/D2MPLauncher.exe");
           return $.pnotify({
             title: "Download Started",
             text: "Run the launcher (downloading now) to start joining lobbies.",
