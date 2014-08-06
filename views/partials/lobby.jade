@@ -9,9 +9,11 @@
         | Waiting for the host to start the game...
       span.subtitle(ng-if="mod.ranked",style="margin-top:10px;color:red")
         | WARNING: Normal lobbies do NOT count towards MMR.
+      span.subtitle(ng-if="mod.allowLeave",style="margin-top:10px;color:red;font-weight:bold")
+        | You are allowed to leave early with NO PENALTY in this game mode.
   div(style="margin-left:auto;margin-right:auto;width:251px")
     div(modthumbnail)
-  div(ng-if="lobby.status < 2",style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px")
+  div(ng-if="lobby.status < 2||(mod.allowLeave&&lobby.state>1)",style="margin-left:auto;margin-right:auto;width:110px;margin-top:5px")
     button.btn.btn-danger(ng-click="leaveLobby()") Leave Lobby
   .findDialog(style="margin-top:20px",ng-if="lobby.status>0")
     .dTitle
