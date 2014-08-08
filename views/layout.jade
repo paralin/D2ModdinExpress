@@ -45,7 +45,7 @@ html.no-js(data-ng-app="d2mp",lang="en")
                 #login-buttons-image-steam.login-image
                 span.text-besides-image.sign-in-text-steam
                   | Sign in with Steam
-    .friendControlContainer(ng-controller="FriendCtrl",style="font-weight:100")
+    //- .friendControlContainer(ng-controller="FriendCtrl",style="font-weight:100")
       ul.nav.navbar-nav.navbar-right(ng-if="auth.isAuthed")
         li#friend-dropdown-list.dropdown
           a.dropdown-toggle(data-toggle="dropdown",ng-if="auth.isAuthed")
@@ -72,18 +72,18 @@ html.no-js(data-ng-app="d2mp",lang="en")
       .container
         a(href="/").logo
           img(src="http://i.imgur.com/UgN4uSs.png",alt="D2MODD.IN")
-        .pull-right(style="position:fixed;top:17px;right:200px")
+        .pull-right(style="position:fixed;top:17px;right:120px")
           nav.navbar-nav.navbar-right.nav-main.mega-menu
             ul.nav.nav-pills.nav-main.scroll-menu#topMain
               li
                 a(href="/mods") MODS
-              li
+              //- li
                 a(href="/lobbies") LOBBIES
               li(ng-if="auth.isAuthed")
                 a(href="/ranked") RANKED
-              li
+              //- li
                 a(href="/leaderboards") LEADERBOARD
-              li
+              //- li
                 a(href="/results") RESULTS
               li
                 a(href="http://forum.d2modd.in") FORUM

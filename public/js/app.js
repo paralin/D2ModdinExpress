@@ -18,10 +18,11 @@
         templateUrl: "partials/about",
         controller: "AboutCtrl"
       });
-      $routeProvider.when("/lobbies/:modname?", {
-        templateUrl: "partials/lobbylist",
+
+      /*$routeProvider.when "/lobbies/:modname?",
+        templateUrl: "partials/lobbylist"
         controller: "LobbyListCtrl"
-      });
+       */
       $routeProvider.when("/mods", {
         templateUrl: "partials/mods",
         controller: "ModsCtrl"
@@ -30,53 +31,55 @@
         templateUrl: "partials/moddetail",
         controller: "ModDetailCtrl"
       });
-      $routeProvider.when("/install/:modname", {
-        templateUrl: "partials/installmod",
+
+      /*
+      $routeProvider.when "/install/:modname",
+        templateUrl: "partials/installmod"
         controller: "InstallModCtrl"
-      });
-      $routeProvider.when("/newlobby", {
-        templateUrl: "/partials/newlobby",
+      
+      $routeProvider.when "/newlobby",
+        templateUrl: "/partials/newlobby"
         controller: "CreateLobbyCtrl"
-      });
-      $routeProvider.when("/lobby/:lobbyid", {
-        templateUrl: "/partials/lobby",
+      
+      $routeProvider.when "/lobby/:lobbyid",
+        templateUrl: "/partials/lobby"
         controller: "LobbyCtrl"
-      });
-      $routeProvider.when('/setup', {
-        templateUrl: '/partials/setup',
+      
+      $routeProvider.when '/setup',
+        templateUrl: '/partials/setup'
         controller: 'LoadTestCtrl'
-      });
-      $routeProvider.when('/dotest', {
-        templateUrl: '/partials/dotest',
+      
+      $routeProvider.when '/dotest',
+        templateUrl: '/partials/dotest'
         controller: 'DoTestCtrl'
-      });
-      $routeProvider.when('/leaderboard', {
-        templateUrl: '/partials/leaderboard',
+      
+      $routeProvider.when '/leaderboard',
+        templateUrl: '/partials/leaderboard'
         controller: 'LeaderboardCtrl'
-      });
-      $routeProvider.when('/leaderboards', {
+      
+      $routeProvider.when '/leaderboards',
         redirectTo: "/leaderboard"
-      });
-      $routeProvider.when('/matchmake', {
-        templateUrl: '/partials/matchmake',
+      
+      $routeProvider.when '/matchmake',
+        templateUrl: '/partials/matchmake'
         controller: 'MatchmakeCtrl'
-      });
-      $routeProvider.when('/ranked', {
-        templateUrl: '/partials/ranked',
+      
+      $routeProvider.when '/ranked',
+        templateUrl: '/partials/ranked'
         controller: 'RankedCtrl'
-      });
-      $routeProvider.when('/results/:page', {
-        templateUrl: '/partials/results',
-        controller: 'MatchHistoryCtrl',
+      
+      $routeProvider.when '/results/:page',
+        templateUrl: '/partials/results'
+        controller: 'MatchHistoryCtrl'
         reloadOnSearch: false
-      });
-      $routeProvider.when('/result/:match_id', {
-        templateUrl: '/partials/result',
+      
+      $routeProvider.when '/result/:match_id',
+        templateUrl: '/partials/result'
         controller: 'ResultCtrl'
-      });
-      $routeProvider.when('/results', {
+      
+      $routeProvider.when '/results',
         redirectTo: '/results/1'
-      });
+       */
       $routeProvider.otherwise({
         redirectTo: "/"
       });

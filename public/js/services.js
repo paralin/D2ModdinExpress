@@ -550,18 +550,19 @@
     }
   ]).factory("$lobbyService", [
     "$interval", "$log", "$authService", "$rootScope", "safeApply", function($interval, $log, $authService, $rootScope, safeApply) {
-      var service;
-      service = new LobbyService($rootScope, $authService, safeApply);
-      $(window).unload(service.disconnect);
-      $rootScope.$on("auth:data", function(event, data) {
-        if ($authService.isAuthed) {
-          return service.sendAuth();
-        } else {
-          return service.disconnect();
-        }
-      });
-      global.service = service;
-      return service;
+      return console.log("Lobby service disabled");
+
+      /*
+      service = new LobbyService $rootScope, $authService, safeApply
+      $(window).unload service.disconnect
+      $rootScope.$on "auth:data", (event,data)->
+        if $authService.isAuthed
+          service.sendAuth()
+        else
+          service.disconnect()
+      global.service = service
+      service
+       */
     }
   ]).factory('$handleInvites', [
     "$rootScope", "$lobbyService", function($rootScope, $lobbyService) {

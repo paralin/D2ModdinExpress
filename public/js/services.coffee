@@ -388,6 +388,8 @@ angular.module("d2mp.services", []).factory("safeApply", [
   "$rootScope"
   "safeApply"
   ($interval, $log, $authService, $rootScope, safeApply)->
+    console.log "Lobby service disabled"
+    ###
     service = new LobbyService $rootScope, $authService, safeApply
     $(window).unload service.disconnect
     $rootScope.$on "auth:data", (event,data)->
@@ -397,6 +399,7 @@ angular.module("d2mp.services", []).factory("safeApply", [
         service.disconnect()
     global.service = service
     service
+    ###
 ]).factory('$handleInvites', [
   "$rootScope"
   "$lobbyService"

@@ -31,9 +31,10 @@ app = angular.module("d2mp", [
       templateUrl: "partials/about"
       controller: "AboutCtrl"
 
-    $routeProvider.when "/lobbies/:modname?",
+    ###$routeProvider.when "/lobbies/:modname?",
       templateUrl: "partials/lobbylist"
       controller: "LobbyListCtrl"
+      ###
 
     $routeProvider.when "/mods",
       templateUrl: "partials/mods"
@@ -43,6 +44,7 @@ app = angular.module("d2mp", [
       templateUrl: "partials/moddetail"
       controller: "ModDetailCtrl"
 
+    ###
     $routeProvider.when "/install/:modname",
       templateUrl: "partials/installmod"
       controller: "InstallModCtrl"
@@ -89,6 +91,7 @@ app = angular.module("d2mp", [
 
     $routeProvider.when '/results',
       redirectTo: '/results/1'
+      ###
 
     $routeProvider.otherwise redirectTo: "/"
     return $locationProvider.html5Mode(true)
