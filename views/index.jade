@@ -4,7 +4,7 @@ block body
   .fade(ng-view,style="width:100%;height:100%")
 
   div(ng-controller="BottomBarCtrl")
-    .statusBar(ng-if="auth.isAuthed")
+    .statusBar//(ng-if="auth.isAuthed")
       ul#topNav.left.navbar-nav.nav-main.mega-menu.nav.nav-main.scroll-menu
         //- li
           a(href="https://github.com/kidovate/D2ModdinClient/issues?state=open",target="_blank") REPORT ISSUES
@@ -14,7 +14,7 @@ block body
           a(href="http://docs.d2modd.in") DOCS
         li
           a(href="/about") ABOUT
-      .right
+      //- .right
         | {{status.managerStatus}}
         button.btn.btn-primary(ng-click="launchManager()",ng-if="!status.managerConnected",style="margin-left: 5px") Download Launcher
       //-
