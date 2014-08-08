@@ -241,8 +241,7 @@
     }
   ]).controller("BottomBarCtrl", [
     "$scope", "$authService", "$lobbyService", function($scope, $authService, $lobbyService) {
-      $scope.auth = $authService;
-      return $scope.status = $lobbyService.status;
+      return $scope.auth = $authService;
     }
   ]).controller('LobbyCtrl', [
     "$scope", "$authService", "$lobbyService", "$location", "$rootScope", function($scope, $authService, $lobbyService, $location, $rootScope) {

@@ -216,7 +216,7 @@ angular.module("d2mp.controllers", []).controller("HomeCtrl", [
   "$lobbyService"
   ($scope, $authService, $lobbyService)->
     $scope.auth = $authService
-    $scope.status = $lobbyService.status
+    #$scope.status = $lobbyService.status
 ]).controller('LobbyCtrl', [
   "$scope"
   "$authService"
