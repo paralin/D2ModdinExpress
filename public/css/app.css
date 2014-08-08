@@ -158,7 +158,7 @@ body {
 #wrapper {
   padding:75px 0; 	/* top nav height */
   padding-bottom: 0;
-  z-index:98;			/* under top nav */
+/*  z-index:98;			 under top nav. Interferes with context menu of friends list */
   min-height:57vh;	/* keep footer at bottom on empty page */
   position:relative;
   overflow:hidden;

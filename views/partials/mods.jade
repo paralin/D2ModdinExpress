@@ -20,7 +20,7 @@
             p(ng-repeat="feature in mod.features") {{feature}}
           .mod-buttons
             a.btn.btn-success(style="margin-right:10px",href="/mods/{{mod.name}}") ABOUT
-            a.btn.btn-primary(href="/lobbies/{{mod.name}}") FIND GAME
+            a.btn.btn-primary(href="/lobbies/{{mod.name}}",ng-if="mod.playable") FIND GAME
 
 
 

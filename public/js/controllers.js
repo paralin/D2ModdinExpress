@@ -22,7 +22,6 @@
     }
   ]).controller("MatchHistoryCtrl", [
     "$scope", "$rootScope", "$lobbyService", "$authService", "matchResults", "$routeParams", "$location", function($scope, $rootScope, $lobbyService, $authService, matchResults, $routeParams, $location) {
-      var fetching, page;
       $scope.auth = $authService;
       $scope.filter = $routeParams;
       $scope.sort = {
@@ -30,26 +29,20 @@
         reverse: true
       };
       window.scope = $scope;
-      page = $scope.filter.page;
-      fetching = false;
+      $scope.getTotalItems = function() {
+        return Math.ceil(matchData.count / matchData.perPage);
+      };
       $scope.goToResult = function(result) {
         return $location.path("/result/" + result.match_id);
       };
       $scope.fetchPage = function() {
         var data;
-        if (fetching) {
-          $scope.filter.page = page;
-          return;
-        }
-        fetching = true;
         if ($scope.mod != null) {
           $scope.filter.mod = $scope.mod.name;
         } else {
           $scope.filter.mod = void 0;
         }
-        page = $scope.filter.page;
         data = matchResults.get($scope.filter, function(data) {
-          fetching = false;
           return $scope.matchData = data;
         });
         return window.matchData = data;
