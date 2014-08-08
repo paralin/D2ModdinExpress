@@ -178,7 +178,8 @@
 
     LobbyService.prototype.startMatchmake = function(mods) {
       return this.call("matchmake", {
-        mods: mods
+        mods: mods,
+        region: 0
       });
     };
 
@@ -638,128 +639,8 @@
       });
     }
   ]).factory('$forceLobbyPage', [
-    '$rootScope', '$location', '$lobbyService', '$authService', '$timeout', "safeApply", function($rootScope, $location, $lobbyService, $authService, $timeout, safeApply) {
-      $rootScope.$on('lobbyUpdate:matchmake', function(event, op) {
-        var path;
-        path = $location.path();
-        if (op === 'update' || op === 'insert') {
-          if ($lobbyService.matchmake.length > 0) {
-            if ($location.url().indexOf('matchmake') === -1) {
-              $timeout((function(_this) {
-                return function() {
-                  return $location.url('/matchmake');
-                };
-              })(this));
-            }
-          }
-        } else {
-          if (path.indexOf('matchmake') !== -1) {
-            return safeApply($rootScope, function() {
-              return $location.path('/ranked');
-            });
-          }
-        }
-      });
-      $rootScope.$on('lobbyUpdate:lobbies', function(event, op) {
-        var lobby, path;
-        path = $location.path();
-        if (op === 'update' || op === 'insert') {
-          if ($lobbyService.lobbies.length > 0 && $lobbyService.lobbies[0].LobbyType === 1) {
-            if ($location.url().indexOf('dotest') === -1) {
-              $timeout((function(_this) {
-                return function() {
-                  return $location.url('/dotest');
-                };
-              })(this));
-              return;
-            }
-          }
-          lobby = $lobbyService.lobbies[0];
-          if (lobby.radiant.length + lobby.dire.length === 10 && lobby.creatorid === $authService.user._id && lobby.status === 0) {
-            $rootScope.playReadySound();
-          }
-          if (path.indexOf('lobby/') === -1 && $lobbyService.lobbies.length > 0) {
-            return safeApply($rootScope, function() {
-              return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
-            });
-          }
-        } else {
-          if (path.indexOf('lobby/') !== -1 || path.indexOf('dotest') !== -1) {
-            return safeApply($rootScope, function() {
-              return $location.path('/lobbies');
-            });
-          }
-        }
-      });
-      $rootScope.$on('lobby:installres', function(event, success, message) {
-        $.pnotify({
-          title: "Install Result",
-          text: message,
-          type: success ? "success" : "error",
-          delay: 5000
-        });
-        if (success && $location.url().indexOf('setup') === -1) {
-          return $location.url('/lobbies/');
-        }
-      });
-      $rootScope.$on('lobby:modNeeded', function(event, mod) {
-        if ($location.url().indexOf('setup') !== -1) {
-          $pnotify({
-            title: "Install Needed",
-            text: "You still need to install the " + mod + " mod before you can start.",
-            type: "error",
-            delay: 4000
-          });
-          return;
-        }
-        return safeApply($rootScope, function() {
-          return $location.url('/install/' + mod);
-        });
-      });
-      $rootScope.$on('lobby:testNeeded', function(event, mod) {
-        return safeApply($rootScope, function() {
-          return $location.url('/setup');
-        });
-      });
-      return $rootScope.$on('$locationChangeStart', function(event, newurl, oldurl) {
-        window.FundRazr = void 0;
-        $("#fr_hovercard-outer").remove();
-        if ($lobbyService.matchmake.length > 0) {
-          if (newurl.indexOf('matchmake') !== -1) {
-            return;
-          }
-          event.preventDefault();
-          if (oldurl.indexOf('matchmake') === -1) {
-            return safeApply($rootScope, function() {
-              return $location.url('/matchmake');
-            });
-          }
-        } else if ($lobbyService.lobbies.length > 0) {
-          if ($lobbyService.lobbies[0].LobbyType === 1) {
-            if (newurl.indexOf('dotest') !== -1) {
-              return;
-            }
-            event.preventDefault();
-            if (oldurl.indexOf('dotest') === -1) {
-              return $location.url('/dotest');
-            }
-          } else if ($lobbyService.lobbies[0].LobbyType === 0) {
-            if (newurl.indexOf('/lobby/') !== -1) {
-              return;
-            }
-            event.preventDefault();
-            if (oldurl.indexOf('lobby/') === -1) {
-              return safeApply($rootScope, function() {
-                return $location.url("/lobby/" + $lobbyService.lobbies[0]._id);
-              });
-            }
-          }
-        } else {
-          if (newurl.indexOf('/lobby/') !== -1) {
-            return $location.url('/lobbies');
-          }
-        }
-      });
+    function() {
+      return console.log("force lobby page disabled");
     }
   ]);
 
